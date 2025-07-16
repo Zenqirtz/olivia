@@ -1,0 +1,87 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+@layer components {
+  .sidebar-item {
+    @apply flex items-center gap-3 w-full py-3 px-4 hover:bg-blue-700 dark:hover:bg-gray-700 text-white transition-all;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-blue-700 dark:bg-gray-700;
+  }
+  
+  .card {
+    @apply bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all;
+  }
+  
+  .stat-card {
+    @apply bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden;
+  }
+  
+  .date-button {
+    @apply px-3 py-1.5 border border-gray-200 dark:border-gray-600 rounded-lg text-sm whitespace-nowrap flex items-center transition-all hover:bg-gray-50 dark:hover:bg-gray-700 dark:text-gray-300;
+  }
+  
+  .date-button.active {
+    @apply bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300;
+  }
+  
+  .badge-bagus {
+    @apply px-3 py-1 bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300 rounded-full text-xs font-medium;
+  }
+  
+  .badge-jelek {
+    @apply px-3 py-1 bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300 rounded-full text-xs font-medium;
+  }
+  
+  .btn {
+    @apply px-4 py-2 rounded-lg transition-all font-medium;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-600 dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-800 shadow-sm;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600;
+  }
+  
+  .btn-outline {
+    @apply border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700;
+  }
+  
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+  
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-700 rounded;
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 dark:bg-gray-500 rounded hover:bg-gray-400 dark:hover:bg-gray-400;
+  }
+}
+
+/* Dark mode text colors */
+.dark {
+  color-scheme: dark;
+}
+
+.dark body {
+  @apply bg-gray-900 text-gray-100;
+}
