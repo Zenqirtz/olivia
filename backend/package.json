@@ -16,7 +16,15 @@
     "force-fix-reports": "node scripts/force_fix_reports.js",
     "ultimate-fix-reports": "node scripts/ultimate_fix_reports.js",
     "emergency-fix": "node scripts/run_emergency_fix.js",
-    "smart-fix-reports": "node scripts/smart_fix_reports.js"
+    "smart-fix-reports": "node scripts/smart_fix_reports.js",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:prod": "prisma migrate deploy",
+    "db:push": "prisma db push",
+    "db:seed": "prisma db seed",
+    "db:reset": "prisma migrate reset",
+    "db:studio": "prisma studio",
+    "db:format": "prisma format"
   },
   "keywords": [
     "iot",
@@ -30,6 +38,7 @@
   "license": "MIT",
   "type": "commonjs",
   "dependencies": {
+    "@prisma/client": "^5.22.0",
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.4",
     "cors": "^2.8.5",
@@ -46,6 +55,10 @@
     "pdfkit": "^0.15.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.0"
+    "nodemon": "^3.1.0",
+    "prisma": "^5.22.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }
