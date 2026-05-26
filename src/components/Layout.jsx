@@ -3,6 +3,7 @@ import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
+import AiChat from './AiChat';
 
 const Layout = ({ children }) => {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -86,7 +87,8 @@ const Layout = ({ children }) => {
             {children}
           </div>
         </div>
-      </div>
+    </div>
+      <AiChat />
     </div>
   );
 };

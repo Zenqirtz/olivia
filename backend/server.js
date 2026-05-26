@@ -16,6 +16,7 @@ const userRoutes = require('./routes/users');
 const dashboardRoutes = require('./routes/dashboard');
 const eggRoutes = require('./routes/eggs');
 const reportRoutes = require('./routes/reports');
+const chatRoutes = require('./routes/chat');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -90,6 +91,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/eggs', eggRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/chat', chatRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {

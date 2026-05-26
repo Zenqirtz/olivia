@@ -63,7 +63,7 @@ CREATE TABLE `egg_scans` (
   UNIQUE KEY `egg_scans_egg_code_unique` (`egg_code`),
   KEY `idx_egg_scans_quality` (`quality`),
   KEY `idx_egg_scans_scanned_at` (`scanned_at`),
-  KEY `idx_egg_scans_date` (DATE(`scanned_at`))
+  KEY `idx_egg_scans_date` (`scanned_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ============================================
@@ -227,7 +227,7 @@ ORDER BY scan_date DESC;
 -- ============================================
 
 -- Additional indexes for performance
-CREATE INDEX idx_egg_scans_quality_date ON egg_scans (quality, DATE(scanned_at));
+CREATE INDEX idx_egg_scans_quality_date ON egg_scans (quality, scanned_at);
 CREATE INDEX idx_reports_user_type_date ON reports (user_id, report_type, generated_at);
 
 -- ============================================
