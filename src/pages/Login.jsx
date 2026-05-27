@@ -13,7 +13,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  
+
   const { login } = useAuth();
   const navigate = useNavigate();
   const { isDarkMode, toggleTheme } = useTheme();
@@ -24,7 +24,7 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -36,33 +36,33 @@ const Login = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.email) {
       newErrors.email = 'Email harus diisi';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Format email tidak valid';
     }
-    
+
     if (!formData.password) {
       newErrors.password = 'Password harus diisi';
     } else if (formData.password.length < 6) {
       newErrors.password = 'Password minimal 6 karakter';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setLoading(true);
-    
+
     try {
       const result = await login(formData.email, formData.password);
-      
+
       if (result.success) {
         navigate('/dashboard');
       } else {
@@ -80,7 +80,7 @@ const Login = () => {
       {/* Decorative Elements */}
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 dark:from-blue-900/20 dark:to-indigo-900/20 transform -skew-y-6 -translate-y-24 z-0"></div>
       <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-blue-600/20 to-indigo-600/20 dark:from-blue-900/20 dark:to-indigo-900/20 transform skew-y-6 translate-y-24 z-0"></div>
-      
+
       <div className="max-w-md w-full z-10">
         {/* Theme Toggle Button */}
         <div className="flex justify-end mb-6">
@@ -102,10 +102,10 @@ const Login = () => {
           <div className="mx-auto bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
             <div className="flex justify-center">
               <div className="w-64 h-16">
-                <img 
-                  src={newLogo} 
-                  alt="Smarternak Logo" 
-                  className="w-full h-full object-contain" 
+                <img
+                  src={newLogo}
+                  alt="Smarternak Logo"
+                  className="w-full h-full object-contain"
                 />
               </div>
             </div>
@@ -143,11 +143,10 @@ const Login = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                    errors.email 
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.email
+                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
-                  } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
+                    } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
                   placeholder="Masukkan email Anda"
                 />
               </div>
@@ -170,11 +169,10 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${
-                    errors.password 
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' 
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.password
+                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
-                  } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
+                    } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
                   placeholder="Masukkan password Anda"
                 />
                 <button

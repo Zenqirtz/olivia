@@ -203,14 +203,24 @@ const getDailyEggSummary = async (req, res) => {
         COUNT(*) as total_eggs,
         SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
         SUM(CASE WHEN quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
-        ROUND((SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) / COUNT(*)) * 100, 2) as good_percentage,
+        ROUND((SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)) * 100, 2) as good_percentage,
         MIN(scanned_at) as first_scan,
         MAX(scanned_at) as last_scan
       FROM egg_scans 
       WHERE DATE(scanned_at) = ?
     `;
 
-    const summaryResult = await executeQuery(summaryQuery, [date]);
+    const yesterdayQuery = `
+      SELECT COUNT(*) as total_eggs
+      FROM egg_scans
+      WHERE DATE(scanned_at) = DATE_SUB(?, INTERVAL 1 DAY)
+    `;
+
+    const [summaryResult, yesterdayResult] = await Promise.all([
+      executeQuery(summaryQuery, [date]),
+      executeQuery(yesterdayQuery, [date])
+    ]);
+
     const summary = summaryResult.data[0] || {
       total_eggs: 0,
       good_eggs: 0,
@@ -219,6 +229,24 @@ const getDailyEggSummary = async (req, res) => {
       first_scan: null,
       last_scan: null
     };
+
+    const yesterdayTotal = yesterdayResult.data && yesterdayResult.data.length > 0
+      ? yesterdayResult.data[0].total_eggs
+      : 0;
+
+    let trend = 0;
+    if (yesterdayTotal > 0) {
+      trend = ((summary.total_eggs - yesterdayTotal) / yesterdayTotal) * 100;
+    } else if (summary.total_eggs > 0) {
+      trend = 100.0;
+    } else {
+      trend = 0.0;
+    }
+
+    // Batasi trend peningkatan maksimal 100% dan minimal -100%
+    trend = Math.max(-100.0, Math.min(100.0, trend));
+
+    summary.trend = trend;
 
     res.json({
       success: true,
@@ -302,6 +330,84 @@ const getWeeklyEggSummary = async (req, res) => {
   }
 };
 
+// POST /api/eggs - Add a new egg scan
+const addEggScan = async (req, res) => {
+  try {
+    const { 
+      egg_code, 
+      quality, 
+      ai_confidence, 
+      quality_score, 
+      image, 
+      weight, 
+      length, 
+      width, 
+      height 
+    } = req.body;
+
+    if (!quality) {
+      return res.status(400).json({
+        success: false,
+        message: 'Quality is required'
+      });
+    }
+
+    // Generate a unique egg code if not provided
+    const finalEggCode = egg_code || `EGG-${new Date().toISOString().replace(/[-:T.]/g, '').substring(0, 14)}-${Math.floor(1000 + Math.random() * 9000)}`;
+
+    const query = `
+      INSERT INTO egg_scans (
+        egg_code, 
+        quality, 
+        ai_confidence, 
+        quality_score, 
+        image, 
+        weight, 
+        length, 
+        width, 
+        height, 
+        scanned_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+    `;
+
+    const result = await executeQuery(query, [
+      finalEggCode,
+      quality,
+      ai_confidence || null,
+      quality_score || null,
+      image || null,
+      weight || null,
+      length || null,
+      width || null,
+      height || null
+    ]);
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Failed to save egg scan to database',
+        error: result.error
+      });
+    }
+
+    res.status(201).json({
+      success: true,
+      message: 'Data scan telur berhasil disimpan',
+      data: {
+        scan_id: result.insertId,
+        egg_code: finalEggCode,
+        quality
+      }
+    });
+  } catch (error) {
+    console.error('Add egg scan error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Gagal menyimpan data scan telur'
+    });
+  }
+};
+
 module.exports = {
   getAllEggs,
   getEggStatistics,
@@ -309,5 +415,6 @@ module.exports = {
   getRecentEggs,
   getDailyEggSummary,
   getAvailableDates,
-  getWeeklyEggSummary
+  getWeeklyEggSummary,
+  addEggScan
 }; 

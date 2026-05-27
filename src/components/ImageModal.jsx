@@ -33,12 +33,12 @@ const ImageModal = ({ isOpen, onClose, imageData, eggCode }) => {
   // Format base64 image data
   const getImageSrc = () => {
     if (!imageData) return null;
-    
+
     // If imageData already includes data:image prefix, use as is
     if (imageData.startsWith('data:image/')) {
       return imageData;
     }
-    
+
     // Otherwise, assume it's base64 and add the prefix
     return `data:image/jpeg;base64,${imageData}`;
   };
@@ -46,7 +46,7 @@ const ImageModal = ({ isOpen, onClose, imageData, eggCode }) => {
   const imageSrc = getImageSrc();
 
   return (
-    <div 
+    <div
       className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4"
       onClick={handleBackdropClick}
     >
@@ -82,7 +82,7 @@ const ImageModal = ({ isOpen, onClose, imageData, eggCode }) => {
                   e.target.nextSibling.style.display = 'block';
                 }}
               />
-              <div 
+              <div
                 className="hidden text-center py-12"
                 style={{ display: 'none' }}
               >

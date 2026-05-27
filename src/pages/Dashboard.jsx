@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useTheme } from '../contexts/ThemeContext';
-import { 
-  getDailyEggSummary, 
-  getRecentEggs, 
+import {
+  getDailyEggSummary,
+  getRecentEggs,
   getEggStatistics,
   getWeeklyEggSummary,
   formatDateForDisplay,
-  getQualityText 
+  getQualityText
 } from '../services/eggService';
 import sensorService from '../services/sensorService';
 
@@ -25,7 +25,7 @@ const Dashboard = () => {
 
   const { isDarkMode } = useTheme();
   const navigate = useNavigate();
-  
+
   const [weeklyData, setWeeklyData] = useState({
     labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
     datasets: [
@@ -47,7 +47,7 @@ const Dashboard = () => {
       }
     ]
   });
-  
+
   const [donutData, setDonutData] = useState({
     labels: ['Telur Bagus', 'Telur Jelek'],
     datasets: [
@@ -60,14 +60,14 @@ const Dashboard = () => {
       }
     ]
   });
-  
+
   const [recentEggs, setRecentEggs] = useState([]);
   const [activeDate, setActiveDate] = useState(new Date().toISOString().split('T')[0]);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [lastRefresh, setLastRefresh] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
+
   // State untuk donut mode (harian/mingguan)
   const [donutMode, setDonutMode] = useState('harian');
   const [donutStats, setDonutStats] = useState({
@@ -84,8 +84,8 @@ const Dashboard = () => {
     datasets: []
   });
   const [latestSensor, setLatestSensor] = useState(null);
-  const [sensorLoading, setSensorLoading] = useState(true);
-  
+  const [sensorLoading, setSensorLoading] = useState(false);
+
   // State untuk data dashboard yang bisa di-refresh
   const [dashboardStats, setDashboardStats] = useState({
     totalEggs: 0,
@@ -96,9 +96,11 @@ const Dashboard = () => {
   });
 
   // Load sensor data
-  const loadSensorData = async (period = sensorPeriod) => {
+  const loadSensorData = async (period = sensorPeriod, showLoading = false) => {
     try {
-      setSensorLoading(true);
+      if (showLoading) {
+        setSensorLoading(true);
+      }
       const [readingsRes, latestRes] = await Promise.all([
         sensorService.getSensorReadings(period),
         sensorService.getLatestSensorReading()
@@ -207,7 +209,7 @@ const Dashboard = () => {
   const loadDashboardData = async () => {
     try {
       setError(null);
-      
+
       // Load daily summary
       const summaryResponse = await getDailyEggSummary();
       if (summaryResponse.success) {
@@ -217,7 +219,7 @@ const Dashboard = () => {
           goodEggs: summary.good_eggs || 0,
           badEggs: summary.bad_eggs || 0,
           goodPercentage: summary.good_percentage || 0,
-          trend: 0
+          trend: summary.trend || 0
         });
 
         // Also set donut data if in harian mode
@@ -276,9 +278,9 @@ const Dashboard = () => {
         const date = new Date();
         date.setDate(date.getDate() - i);
         const dateStr = date.toISOString().split('T')[0];
-        
+
         const response = await getEggStatistics({ date: dateStr });
-        
+
         if (response.success && response.data.statistics.length > 0) {
           const stats = response.data.statistics[0];
           goodEggsData.push(stats.good_eggs || 0);
@@ -287,10 +289,10 @@ const Dashboard = () => {
           goodEggsData.push(0);
           badEggsData.push(0);
         }
-        
-        labels.push(date.toLocaleDateString('id-ID', { 
-          day: 'numeric', 
-          month: 'short' 
+
+        labels.push(date.toLocaleDateString('id-ID', {
+          day: 'numeric',
+          month: 'short'
         }));
       }
 
@@ -324,13 +326,13 @@ const Dashboard = () => {
   // Fungsi untuk refresh data
   const handleRefresh = async () => {
     setIsRefreshing(true);
-    
+
     try {
       await loadDashboardData();
       setLastRefresh(new Date());
-      
+
       console.log('Data refreshed successfully');
-      
+
     } catch (error) {
       console.error('Error refreshing data:', error);
       setError('Gagal memperbarui data');
@@ -345,21 +347,30 @@ const Dashboard = () => {
   };
 
   // Handle donut mode change
-  const handleDonutModeChange = async (mode) => {
+  const handleDonutModeChange = (mode) => {
     setDonutMode(mode);
-    await loadDonutData(mode);
   };
 
   // Handle sensor period change
-  const handleSensorPeriodChange = async (period) => {
+  const handleSensorPeriodChange = (period) => {
     setSensorPeriod(period);
-    await loadSensorData(period);
+    setSensorLoading(true);
   };
 
-  // Load data on component mount
+  // Load data on component mount and setup auto-update (polling) every 5 seconds
   useEffect(() => {
+    // Initial load
     loadDashboardData();
-  }, []);
+
+    // Set interval to auto-update every 5 seconds
+    const intervalId = setInterval(() => {
+      loadDashboardData();
+      setLastRefresh(new Date());
+    }, 5000);
+
+    // Clean up the interval on unmount
+    return () => clearInterval(intervalId);
+  }, [donutMode, sensorPeriod]);
 
   if (loading) {
     return (
@@ -371,7 +382,7 @@ const Dashboard = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="max-w-7xl mx-auto">
       <div className="flex justify-between items-center mb-8">
@@ -382,17 +393,16 @@ const Dashboard = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button 
+          <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className={`flex items-center gap-2 border border-blue-200 dark:border-gray-600 rounded-lg px-4 py-2 text-blue-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all ${
-              isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
+            className={`flex items-center gap-2 border border-blue-200 dark:border-gray-600 rounded-lg px-4 py-2 text-blue-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
+              }`}
           >
             <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
             <span>{isRefreshing ? 'Memperbarui...' : 'Refresh'}</span>
           </button>
-          <button 
+          <button
             onClick={handleViewAllData}
             className="flex items-center gap-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg px-4 py-2 hover:bg-blue-700 dark:hover:bg-blue-800 transition-all shadow-sm"
           >
@@ -408,7 +418,7 @@ const Dashboard = () => {
           <div className="flex items-center">
             <i className="fas fa-exclamation-triangle mr-2"></i>
             <span>{error}</span>
-            <button 
+            <button
               onClick={() => {
                 setError(null);
                 handleRefresh();
@@ -420,21 +430,19 @@ const Dashboard = () => {
           </div>
         </div>
       )}
-      
+
       {/* Stat Cards */}
-      <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-opacity duration-300 ${
-        isRefreshing ? 'opacity-70' : 'opacity-100'
-      }`}>
+      <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
+        }`}>
         <div className="bg-blue-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
             <p className="text-blue-600 dark:text-gray-400 mb-1">Jumlah Telur Hari ini</p>
             <h2 className="text-3xl font-bold text-blue-800 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
-            <p className={`text-sm flex items-center gap-1 mt-1 ${
-              dashboardStats.trend >= 0 
-                ? 'text-green-500 dark:text-green-400' 
+            <p className={`text-sm flex items-center gap-1 mt-1 ${dashboardStats.trend >= 0
+                ? 'text-green-500 dark:text-green-400'
                 : 'text-red-500 dark:text-red-400'
-            }`}>
+              }`}>
               <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs`}></i>
               <span>{formatPercentage(Math.abs(dashboardStats.trend || 0))}% dari kemarin</span>
             </p>
@@ -445,7 +453,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
@@ -462,7 +470,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 dark:bg-red-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
@@ -479,7 +487,7 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-        
+
         {/* Card keempat - Status Sistem */}
         <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 dark:bg-purple-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
@@ -505,7 +513,7 @@ const Dashboard = () => {
       <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700 mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
           <div>
-            <p className="text-blue-600 dark:text-gray-400 text-sm">Pemantauan IoT</p>
+            <p className="text-blue-600 dark:text-gray-400 text-sm">Pemantauan Sensor</p>
             <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
               Suhu, Kelembapan & Gas Amonia
             </h3>
@@ -519,11 +527,10 @@ const Dashboard = () => {
               <button
                 key={key}
                 onClick={() => handleSensorPeriodChange(key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  sensorPeriod === key
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sensorPeriod === key
                     ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
-                }`}
+                  }`}
               >
                 {label}
               </button>
@@ -571,7 +578,7 @@ const Dashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
             </div>
           ) : sensorChartData.labels.length > 0 ? (
-            <Line 
+            <Line
               data={sensorChartData}
               options={{
                 maintainAspectRatio: false,
@@ -597,7 +604,7 @@ const Dashboard = () => {
                     borderWidth: 1,
                     padding: 12,
                     callbacks: {
-                      label: function(context) {
+                      label: function (context) {
                         let label = context.dataset.label || '';
                         let value = context.parsed.y;
                         if (label.includes('Suhu')) return `${label}: ${value}°C`;
@@ -680,11 +687,11 @@ const Dashboard = () => {
               Mingguan
             </button>
           </div>
-          
+
           <div className="h-64">
-            <Line 
-              data={weeklyData} 
-              options={{ 
+            <Line
+              data={weeklyData}
+              options={{
                 maintainAspectRatio: false,
                 plugins: {
                   legend: {
@@ -711,7 +718,7 @@ const Dashboard = () => {
                     }
                   }
                 }
-              }} 
+              }}
             />
           </div>
         </div>
@@ -722,7 +729,7 @@ const Dashboard = () => {
             <div>
               <p className="text-blue-600 dark:text-gray-400 text-sm">Statistik Telur</p>
               <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
-                {donutMode === 'harian' 
+                {donutMode === 'harian'
                   ? `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
                   : 'Statistik Telur 7 Hari Terakhir'
                 }
@@ -731,31 +738,29 @@ const Dashboard = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => handleDonutModeChange('harian')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  donutMode === 'harian'
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'harian'
                     ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
-                }`}
+                  }`}
               >
                 Harian
               </button>
               <button
                 onClick={() => handleDonutModeChange('mingguan')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
-                  donutMode === 'mingguan'
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'mingguan'
                     ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
-                }`}
+                  }`}
               >
                 Mingguan
               </button>
             </div>
           </div>
-          
+
           <div className="h-64 flex justify-center items-center">
-            <Doughnut 
-              data={donutData} 
-              options={{ 
+            <Doughnut
+              data={donutData}
+              options={{
                 maintainAspectRatio: false,
                 plugins: {
                   legend: {
@@ -763,7 +768,7 @@ const Dashboard = () => {
                   },
                   tooltip: {
                     callbacks: {
-                      label: function(context) {
+                      label: function (context) {
                         const label = context.label || '';
                         const value = context.raw || 0;
                         const total = donutStats.totalEggs;
@@ -774,10 +779,10 @@ const Dashboard = () => {
                   }
                 },
                 cutout: '70%'
-              }} 
+              }}
             />
           </div>
-          
+
           <div className="flex justify-center gap-6 mt-4">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
@@ -794,13 +799,13 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Recent Eggs */}
       <div className="grid grid-cols-1 gap-8 mb-8">
         <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700">
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-lg font-semibold text-blue-800 dark:text-gray-100">Daftar Telur Terbaru</h2>
-            <button 
+            <button
               onClick={handleViewAllData}
               className="text-blue-600 dark:text-blue-400 text-sm hover:text-blue-700 dark:hover:text-blue-300 transition-all flex items-center gap-1"
             >
@@ -808,7 +813,7 @@ const Dashboard = () => {
               <i className="fas fa-chevron-right text-xs"></i>
             </button>
           </div>
-          
+
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
@@ -824,11 +829,10 @@ const Dashboard = () => {
                     <tr key={egg.scan_id || index} className="border-b border-blue-100 dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700 transition-all">
                       <td className="py-3 px-4 text-blue-800 dark:text-gray-200">{egg.egg_code}</td>
                       <td className="py-3 px-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          egg.quality === 'good' 
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
                             ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300'
                             : 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300'
-                        }`}>
+                          }`}>
                           {getQualityText(egg.quality)}
                         </span>
                       </td>
@@ -845,9 +849,9 @@ const Dashboard = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className="mt-5">
-            <button 
+            <button
               onClick={handleViewAllData}
               className="text-blue-600 dark:text-blue-400 flex items-center gap-1 hover:text-blue-700 dark:hover:text-blue-300 transition-all"
             >

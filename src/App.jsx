@@ -18,7 +18,7 @@ const AuthenticatedApp = () => {
     <Routes>
       {/* Redirect root to dashboard if authenticated */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      
+
       {/* Protected Routes */}
       <Route path="/dashboard" element={
         <ProtectedRoute>
@@ -27,7 +27,7 @@ const AuthenticatedApp = () => {
           </Layout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/data-kualitas-telur" element={
         <ProtectedRoute>
           <Layout>
@@ -35,7 +35,7 @@ const AuthenticatedApp = () => {
           </Layout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/unduh-laporan" element={
         <ProtectedRoute>
           <Layout>
@@ -43,7 +43,7 @@ const AuthenticatedApp = () => {
           </Layout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/manajemen-akun" element={
         <ProtectedRoute requiredRole="superadmin">
           <Layout>
@@ -51,7 +51,7 @@ const AuthenticatedApp = () => {
           </Layout>
         </ProtectedRoute>
       } />
-      
+
       <Route path="/pengaturan" element={
         <ProtectedRoute>
           <Layout>
@@ -62,7 +62,7 @@ const AuthenticatedApp = () => {
 
       {/* Redirect to login if accessing login while authenticated */}
       <Route path="/login" element={<Navigate to="/dashboard" replace />} />
-      
+
       {/* Catch all route */}
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

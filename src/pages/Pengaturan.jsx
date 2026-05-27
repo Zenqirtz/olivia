@@ -88,11 +88,11 @@ const Pengaturan = () => {
   // Validate password form
   const validatePasswordForm = () => {
     const errors = {};
-    
+
     if (!passwordData.currentPassword) {
       errors.currentPassword = 'Password lama harus diisi';
     }
-    
+
     if (!passwordData.newPassword) {
       errors.newPassword = 'Password baru harus diisi';
     } else if (passwordData.newPassword.length < 6) {
@@ -100,13 +100,13 @@ const Pengaturan = () => {
     } else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(passwordData.newPassword)) {
       errors.newPassword = 'Password harus mengandung huruf kecil, huruf besar, dan angka';
     }
-    
+
     if (!passwordData.confirmPassword) {
       errors.confirmPassword = 'Konfirmasi password harus diisi';
     } else if (passwordData.newPassword !== passwordData.confirmPassword) {
       errors.confirmPassword = 'Konfirmasi password tidak cocok';
     }
-    
+
     setPasswordErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -114,23 +114,23 @@ const Pengaturan = () => {
   // Handle password update
   const handleUpdatePassword = async () => {
     if (!validatePasswordForm()) return;
-    
+
     try {
       setIsUpdatingPassword(true);
       setPasswordMessage({ type: '', text: '' });
-      
+
       const result = await changePassword({
         currentPassword: passwordData.currentPassword,
         newPassword: passwordData.newPassword,
         confirmPassword: passwordData.confirmPassword
       });
-      
+
       if (result.success) {
-        setPasswordMessage({ 
-          type: 'success', 
-          text: 'Password berhasil diperbarui' 
+        setPasswordMessage({
+          type: 'success',
+          text: 'Password berhasil diperbarui'
         });
-        
+
         // Reset form
         setPasswordData({
           currentPassword: '',
@@ -138,16 +138,16 @@ const Pengaturan = () => {
           confirmPassword: ''
         });
       } else {
-        setPasswordMessage({ 
-          type: 'error', 
-          text: result.message || 'Gagal memperbarui password' 
+        setPasswordMessage({
+          type: 'error',
+          text: result.message || 'Gagal memperbarui password'
         });
       }
     } catch (error) {
       console.error('Password update error:', error);
-      setPasswordMessage({ 
-        type: 'error', 
-        text: 'Terjadi kesalahan saat memperbarui password' 
+      setPasswordMessage({
+        type: 'error',
+        text: 'Terjadi kesalahan saat memperbarui password'
       });
     } finally {
       setIsUpdatingPassword(false);
@@ -229,23 +229,23 @@ const Pengaturan = () => {
     const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const numbers = '0123456789';
     const special = '!@#$%^&*()_-+=<>?';
-    
+
     let password = '';
-    
+
     // Ensure at least one of each character type
     password += lowercase.charAt(Math.floor(Math.random() * lowercase.length));
     password += uppercase.charAt(Math.floor(Math.random() * uppercase.length));
     password += numbers.charAt(Math.floor(Math.random() * numbers.length));
-    
+
     // Add more random characters to reach minimum length of 8
     const allChars = lowercase + uppercase + numbers;
     for (let i = password.length; i < 8; i++) {
       password += allChars.charAt(Math.floor(Math.random() * allChars.length));
     }
-    
+
     // Shuffle the password characters
     password = password.split('').sort(() => 0.5 - Math.random()).join('');
-    
+
     setPasswordData(prev => ({
       ...prev,
       newPassword: password,
@@ -256,10 +256,10 @@ const Pengaturan = () => {
   // Determine if current user can delete their own account
   const canDeleteOwnAccount = () => {
     if (!user) return false;
-    
+
     // Default superadmin (user_id = 1) cannot delete their own account
     if (user.user_id === 1) return false;
-    
+
     // Regular superadmin and admin cannot delete their own accounts
     // Only allow deletion by other superadmins
     return false;
@@ -269,18 +269,17 @@ const Pengaturan = () => {
     <div className="space-y-6">
       {/* Status Message - Only show success/error messages within the tab content */}
       {message.text && (
-        <div className={`${
-          message.type === 'success' 
-            ? 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300' 
+        <div className={`${message.type === 'success'
+            ? 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300'
             : 'bg-red-100 dark:bg-red-900/30 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300'
-        } px-4 py-3 rounded-xl border`}>
+          } px-4 py-3 rounded-xl border`}>
           <div className="flex items-center">
             <i className={`fas fa-${message.type === 'success' ? 'check-circle' : 'exclamation-triangle'} mr-2`}></i>
             <span>{message.text}</span>
           </div>
         </div>
       )}
-      
+
       {/* Theme Toggle */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Tema Aplikasi</h3>
@@ -345,11 +344,10 @@ const Pengaturan = () => {
           <button
             onClick={() => isEditing ? handleProfileSave() : setIsEditing(true)}
             disabled={isSaving}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-              isEditing 
-                ? 'bg-green-500 hover:bg-green-600 text-white' 
+            className={`px-4 py-2 rounded-lg font-medium transition-colors ${isEditing
+                ? 'bg-green-500 hover:bg-green-600 text-white'
                 : 'bg-blue-500 hover:bg-blue-600 text-white'
-            } ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
+              } ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
           >
             {isSaving ? (
               <>
@@ -373,11 +371,10 @@ const Pengaturan = () => {
               value={profileData.name}
               onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
               disabled={!isEditing || isSaving}
-              className={`w-full border rounded-lg px-4 py-2 ${
-                isEditing 
-                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500' 
+              className={`w-full border rounded-lg px-4 py-2 ${isEditing
+                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-              } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
+                } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
             />
           </div>
 
@@ -398,11 +395,10 @@ const Pengaturan = () => {
               value={profileData.phone}
               onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
               disabled={!isEditing || isSaving}
-              className={`w-full border rounded-lg px-4 py-2 ${
-                isEditing 
-                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500' 
+              className={`w-full border rounded-lg px-4 py-2 ${isEditing
+                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-              } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
+                } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
             />
           </div>
 
@@ -424,11 +420,10 @@ const Pengaturan = () => {
             onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
             disabled={!isEditing || isSaving}
             rows={3}
-            className={`w-full border rounded-lg px-4 py-2 ${
-              isEditing 
-                ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500' 
+            className={`w-full border rounded-lg px-4 py-2 ${isEditing
+                ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                 : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
-            } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
+              } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
           />
         </div>
       </div>
@@ -448,18 +443,17 @@ const Pengaturan = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <i className="fas fa-lock text-gray-400 dark:text-gray-500"></i>
                 </div>
-              <input
+                <input
                   type={showPasswords.currentPassword ? "text" : "password"}
                   name="currentPassword"
                   value={passwordData.currentPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    passwordErrors.currentPassword 
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${passwordErrors.currentPassword
+                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
-                  } text-gray-900 dark:text-gray-100`}
-                placeholder="Masukkan password lama"
-              />
+                    } text-gray-900 dark:text-gray-100`}
+                  placeholder="Masukkan password lama"
+                />
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -480,18 +474,17 @@ const Pengaturan = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <i className="fas fa-key text-gray-400 dark:text-gray-500"></i>
                 </div>
-              <input
+                <input
                   type={showPasswords.newPassword ? "text" : "password"}
                   name="newPassword"
                   value={passwordData.newPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    passwordErrors.newPassword 
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${passwordErrors.newPassword
+                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
-                  } text-gray-900 dark:text-gray-100`}
-                placeholder="Masukkan password baru"
-              />
+                    } text-gray-900 dark:text-gray-100`}
+                  placeholder="Masukkan password baru"
+                />
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -520,18 +513,17 @@ const Pengaturan = () => {
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <i className="fas fa-check-circle text-gray-400 dark:text-gray-500"></i>
                 </div>
-              <input
+                <input
                   type={showPasswords.confirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   value={passwordData.confirmPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-                    passwordErrors.confirmPassword 
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${passwordErrors.confirmPassword
+                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
-                  } text-gray-900 dark:text-gray-100`}
-                placeholder="Konfirmasi password baru"
-              />
+                    } text-gray-900 dark:text-gray-100`}
+                  placeholder="Konfirmasi password baru"
+                />
                 <button
                   onClick={(e) => {
                     e.preventDefault();
@@ -559,21 +551,20 @@ const Pengaturan = () => {
               ) : (
                 <>
                   <i className="fas fa-save mr-2"></i>
-              Update Password
+                  Update Password
                 </>
               )}
             </button>
           </div>
           {passwordMessage.text && (
-            <div className={`${
-              passwordMessage.type === 'success' 
-                ? 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300' 
+            <div className={`${passwordMessage.type === 'success'
+                ? 'bg-green-100 dark:bg-green-900/30 border-green-400 dark:border-green-700 text-green-700 dark:text-green-300'
                 : 'bg-red-100 dark:bg-red-900/30 border-red-400 dark:border-red-700 text-red-700 dark:text-red-300'
-            } px-4 py-3 rounded-xl border mt-4`}>
+              } px-4 py-3 rounded-xl border mt-4`}>
               <div className="flex items-center">
                 <i className={`fas fa-${passwordMessage.type === 'success' ? 'check-circle' : 'exclamation-triangle'} mr-2`}></i>
                 <span>{passwordMessage.text}</span>
-                <button 
+                <button
                   onClick={() => setPasswordMessage({ type: '', text: '' })}
                   className="ml-auto text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                 >
@@ -603,15 +594,15 @@ const Pengaturan = () => {
                 <div>
                   <h4 className="font-medium text-gray-600 dark:text-gray-400">Hapus Akun</h4>
                   <p className="text-sm text-gray-500 dark:text-gray-500">
-                    {user?.user_id === 1 
+                    {user?.user_id === 1
                       ? "Superadmin default tidak dapat menghapus akun sendiri"
                       : user?.role === 'superadmin'
-                      ? "Akun superadmin hanya dapat dihapus oleh superadmin default"
-                      : "Akun admin hanya dapat dihapus oleh superadmin"
+                        ? "Akun superadmin hanya dapat dihapus oleh superadmin default"
+                        : "Akun admin hanya dapat dihapus oleh superadmin"
                     }
                   </p>
                 </div>
-                <button 
+                <button
                   disabled
                   className="bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 px-4 py-2 rounded-lg font-medium cursor-not-allowed"
                 >
@@ -646,11 +637,10 @@ const Pengaturan = () => {
                   onClick={() => {
                     setActiveTab(tab.id);
                   }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${
-                    activeTab === tab.id
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
                       ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                  }`}
+                    }`}
                 >
                   <i className={`fas fa-${tab.icon} text-lg`}></i>
                   <span className="font-medium">{tab.label}</span>

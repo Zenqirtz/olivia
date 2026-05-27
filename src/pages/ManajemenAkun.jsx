@@ -43,19 +43,19 @@ const ManajemenAkun = () => {
   const canDeleteUser = (targetUser) => {
     // Cannot delete yourself
     if (targetUser.user_id === user.user_id) return false;
-    
+
     // Default superadmin (user_id = 1) can delete anyone except themselves
     if (user.user_id === 1) return true;
-    
+
     // Regular superadmin can only delete admin users
     if (user.role === 'superadmin' && targetUser.role === 'admin') return true;
-    
+
     // Regular superadmin cannot delete other superadmins (including default superadmin)
     if (user.role === 'superadmin' && targetUser.role === 'superadmin') return false;
-    
+
     // Admin cannot delete anyone
     if (user.role === 'admin') return false;
-    
+
     return false;
   };
 
@@ -63,19 +63,19 @@ const ManajemenAkun = () => {
   const canEditUser = (targetUser) => {
     // Users can edit their own profile
     if (targetUser.user_id === user.user_id) return true;
-    
+
     // Default superadmin (user_id = 1) can edit anyone
     if (user.user_id === 1) return true;
-    
+
     // Regular superadmin can only edit admin users (not other superadmins)
     if (user.role === 'superadmin' && targetUser.role === 'admin') return true;
-    
+
     // Regular superadmin cannot edit other superadmins (including default superadmin)
     if (user.role === 'superadmin' && targetUser.role === 'superadmin') return false;
-    
+
     // Admin cannot edit others
     if (user.role === 'admin') return false;
-    
+
     return false;
   };
 
@@ -96,7 +96,7 @@ const ManajemenAkun = () => {
   const handleOpenModal = (type, userData = null) => {
     setModalType(type);
     setSelectedUser(userData);
-    
+
     if (type === 'create') {
       setFormData({
         name: '',
@@ -118,7 +118,7 @@ const ManajemenAkun = () => {
         bio: userData.bio || ''
       });
     }
-    
+
     setErrors({});
     setShowModal(true);
   };
@@ -144,7 +144,7 @@ const ManajemenAkun = () => {
       ...prev,
       [name]: value
     }));
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -156,52 +156,52 @@ const ManajemenAkun = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    
+
     if (!formData.name.trim()) {
       newErrors.name = 'Nama harus diisi';
     }
-    
+
     if (!formData.email.trim()) {
       newErrors.email = 'Email harus diisi';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Format email tidak valid';
     } else {
       // Check if email already exists (except for current user in edit mode)
-      const existingUser = users.find(u => 
-        u.email === formData.email && 
+      const existingUser = users.find(u =>
+        u.email === formData.email &&
         (modalType === 'create' || u.user_id !== selectedUser?.user_id)
       );
       if (existingUser) {
         newErrors.email = 'Email sudah digunakan';
       }
     }
-    
+
     if (modalType === 'create' || formData.password) {
       if (!formData.password) {
         newErrors.password = 'Password harus diisi';
       } else if (formData.password.length < 6) {
         newErrors.password = 'Password minimal 6 karakter';
       }
-      
+
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = 'Konfirmasi password tidak cocok';
       }
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setSubmitting(true);
-    
+
     try {
       let response;
-      
+
       if (modalType === 'create') {
         response = await userService.createUser(formData);
       } else if (modalType === 'edit') {
@@ -213,7 +213,7 @@ const ManajemenAkun = () => {
         }
         response = await userService.updateUser(selectedUser.user_id, updateData);
       }
-      
+
       if (response.success) {
         handleCloseModal();
         await loadUsers(); // Reload users list
@@ -230,20 +230,20 @@ const ManajemenAkun = () => {
 
   const handleDelete = async () => {
     if (!selectedUser) return;
-    
+
     // Check permission before attempting to delete
     if (!canDeleteUser(selectedUser)) {
-      setErrors({ 
-        general: 'Anda tidak memiliki izin untuk menghapus akun ini.' 
+      setErrors({
+        general: 'Anda tidak memiliki izin untuk menghapus akun ini.'
       });
       return;
     }
-    
+
     setSubmitting(true);
-    
+
     try {
       const response = await userService.deleteUser(selectedUser.user_id);
-      
+
       if (response.success) {
         handleCloseModal();
         await loadUsers(); // Reload users list
@@ -261,7 +261,7 @@ const ManajemenAkun = () => {
   const toggleUserStatus = async (userId) => {
     try {
       const response = await userService.toggleUserStatus(userId);
-      
+
       if (response.success) {
         await loadUsers(); // Reload users list
       } else {
@@ -414,11 +414,10 @@ const ManajemenAkun = () => {
                       <button
                         onClick={() => toggleUserStatus(userData.user_id)}
                         disabled={userData.user_id === user.user_id}
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          userData.is_active
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${userData.is_active
                             ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
                             : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-                        } ${userData.user_id === user.user_id ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80 cursor-pointer'}`}
+                          } ${userData.user_id === user.user_id ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80 cursor-pointer'}`}
                       >
                         {userData.is_active ? 'Aktif' : 'Nonaktif'}
                       </button>
@@ -496,9 +495,8 @@ const ManajemenAkun = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                        errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                      } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan nama lengkap"
                     />
                     {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>}
@@ -513,9 +511,8 @@ const ManajemenAkun = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                        errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                      } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan email"
                     />
                     {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
@@ -548,9 +545,8 @@ const ManajemenAkun = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                        errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                      } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan password"
                     />
                     {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
@@ -566,9 +562,8 @@ const ManajemenAkun = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${
-                          errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
-                        } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                          } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                         placeholder="Konfirmasi password"
                       />
                       {errors.confirmPassword && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>}

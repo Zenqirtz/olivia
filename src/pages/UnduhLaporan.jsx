@@ -17,7 +17,7 @@ const UnduhLaporan = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  
+
   // Add new state for date range
   const [startDate, setStartDate] = useState(new Date().toISOString().split('T')[0]);
   const [endDate, setEndDate] = useState(new Date().toISOString().split('T')[0]);
@@ -57,8 +57,8 @@ const UnduhLaporan = () => {
       setLoading(true);
       // Add timestamp to prevent caching
       const timestamp = new Date().getTime();
-      const response = await getReportHistory({ 
-        limit: 10, 
+      const response = await getReportHistory({
+        limit: 10,
         _t: timestamp,
         refresh: forceRefresh ? 'true' : 'false'
       });
@@ -92,17 +92,17 @@ const UnduhLaporan = () => {
         setError('Silakan pilih tanggal terlebih dahulu');
         return;
       }
-      
+
       if (selectedPeriod === 'date_range') {
         // Validate date range
         if (!startDate || !endDate) {
           setError('Silakan pilih tanggal mulai dan tanggal akhir');
           return;
         }
-        
+
         const start = new Date(startDate);
         const end = new Date(endDate);
-        
+
         if (start > end) {
           setError('Tanggal mulai tidak boleh lebih besar dari tanggal akhir');
           return;
@@ -115,7 +115,7 @@ const UnduhLaporan = () => {
         period: selectedPeriod,
         format: format
       };
-      
+
       // Add appropriate date parameters based on period type
       if (selectedPeriod === 'custom') {
         requestData.date = selectedDate;
@@ -135,7 +135,7 @@ const UnduhLaporan = () => {
         setSuccessMessage(`Laporan ${format.toUpperCase()} berhasil diunduh`);
         // Reload report history to show the new report
         await loadReportHistory();
-        
+
         // Clear success message after 5 seconds
         setTimeout(() => setSuccessMessage(null), 5000);
       }
@@ -175,10 +175,10 @@ const UnduhLaporan = () => {
   const handleViewDetails = (report) => {
     // Close dropdown
     setOpenDropdownId(null);
-    
+
     // Show file details in a modal or alert for now
     alert(`Detail Laporan:\n\nNama: ${report.report_name || getReportTypeDisplayName(report.report_type)}\nUkuran: ${formatFileSize(report.file_size || 0)}\nFormat: ${(report.file_format || report.format)?.toUpperCase()}\nDibuat: ${new Date(report.generated_at || report.created_at).toLocaleString('id-ID')}`);
-    
+
     // In a real app, you might show a modal with more details
   };
 
@@ -225,7 +225,7 @@ const UnduhLaporan = () => {
           <div className="flex items-center">
             <i className="fas fa-exclamation-triangle mr-2"></i>
             <span>{error}</span>
-            <button 
+            <button
               onClick={() => setError(null)}
               className="ml-auto text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
             >
@@ -241,7 +241,7 @@ const UnduhLaporan = () => {
           <div className="flex items-center">
             <i className="fas fa-check-circle mr-2"></i>
             <span>{successMessage}</span>
-            <button 
+            <button
               onClick={() => setSuccessMessage(null)}
               className="ml-auto text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-200"
             >
@@ -254,7 +254,7 @@ const UnduhLaporan = () => {
       {/* Date Range Selector */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Pilih Periode Laporan</h2>
-        
+
         {/* Period Selection */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Periode</label>
@@ -263,11 +263,10 @@ const UnduhLaporan = () => {
               <button
                 key={option.id}
                 onClick={() => setSelectedPeriod(option.id)}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${
-                  selectedPeriod === option.id
+                className={`p-4 rounded-xl border-2 transition-all text-left ${selectedPeriod === option.id
                     ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
                     : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-blue-300 dark:hover:border-blue-500'
-                }`}
+                  }`}
               >
                 <div className="font-medium text-sm">{option.label}</div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{option.description}</div>
@@ -340,28 +339,28 @@ const UnduhLaporan = () => {
           </div>
           {selectedPeriod === 'custom' && (
             <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-              Tanggal: {new Date(selectedDate).toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              Tanggal: {new Date(selectedDate).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               })}
             </div>
           )}
           {selectedPeriod === 'date_range' && (
             <div className="text-sm text-blue-600 dark:text-blue-400 mt-1">
-              Dari: {new Date(startDate).toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              Dari: {new Date(startDate).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               })}
               <br />
-              Sampai: {new Date(endDate).toLocaleDateString('id-ID', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+              Sampai: {new Date(endDate).toLocaleDateString('id-ID', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
               })}
             </div>
           )}
@@ -371,25 +370,23 @@ const UnduhLaporan = () => {
       {/* Report Types */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {reportTypes.map((report) => (
-          <div 
+          <div
             key={report.id}
             onClick={() => setSelectedReportType(report.id)}
-            className={`p-6 rounded-2xl shadow-md border transition-all cursor-pointer ${
-              selectedReportType === report.id 
-                ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30 transform scale-[1.02]' 
+            className={`p-6 rounded-2xl shadow-md border transition-all cursor-pointer ${selectedReportType === report.id
+                ? 'border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/30 transform scale-[1.02]'
                 : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-200 dark:hover:border-blue-600 hover:bg-blue-50/30 dark:hover:bg-blue-900/10'
-            }`}
+              }`}
           >
             <div className="flex items-start">
-              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${
-                selectedReportType === report.id ? 'bg-blue-500 text-white' : 'bg-blue-100 dark:bg-blue-800 text-blue-500 dark:text-blue-300'
-              }`}>
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${selectedReportType === report.id ? 'bg-blue-500 text-white' : 'bg-blue-100 dark:bg-blue-800 text-blue-500 dark:text-blue-300'
+                }`}>
                 <i className={`fas fa-${report.icon} text-xl`}></i>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{report.title}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">{report.description}</p>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {report.formats.map((format) => (
                     <button
@@ -400,10 +397,10 @@ const UnduhLaporan = () => {
                       }}
                       disabled={isGenerating || (selectedPeriod === 'custom' && !selectedDate) || (selectedPeriod === 'date_range' && (!startDate || !endDate)) || selectedReportType !== report.id}
                       className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-all
-                        ${isGenerating || selectedReportType !== report.id ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed' : 
+                        ${isGenerating || selectedReportType !== report.id ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed' :
                           format === 'pdf' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800' :
-                          format === 'excel' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800' :
-                          'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
+                            format === 'excel' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800' :
+                              'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-800'
                         }
                         ${((selectedPeriod === 'custom' && !selectedDate) || (selectedPeriod === 'date_range' && (!startDate || !endDate)) || selectedReportType !== report.id) ? 'opacity-50 cursor-not-allowed' : ''}
                       `}
@@ -411,11 +408,10 @@ const UnduhLaporan = () => {
                       {isGenerating ? (
                         <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-current"></div>
                       ) : (
-                        <i className={`fas fa-${
-                          format === 'pdf' ? 'file-pdf' :
-                          format === 'excel' ? 'file-excel' :
-                          'file-csv'
-                        }`}></i>
+                        <i className={`fas fa-${format === 'pdf' ? 'file-pdf' :
+                            format === 'excel' ? 'file-excel' :
+                              'file-csv'
+                          }`}></i>
                       )}
                       <span className="uppercase">{format}</span>
                     </button>
@@ -431,7 +427,7 @@ const UnduhLaporan = () => {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Unduhan Terakhir</h2>
-          <button 
+          <button
             onClick={handleForceRefresh}
             disabled={loading}
             className="bg-blue-500 hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-700 text-white p-2 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
@@ -444,7 +440,7 @@ const UnduhLaporan = () => {
             )}
           </button>
         </div>
-        
+
         {loading && reportHistory.length === 0 ? (
           <div className="flex justify-center items-center h-32">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -474,23 +470,22 @@ const UnduhLaporan = () => {
                 {reportHistory.map((report, index) => (
                   <tr key={report.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                      {report.report_name ? 
+                      {report.report_name ?
                         report.report_name.split(' - ')[0] || getReportTypeDisplayName(report.report_type) :
                         getReportTypeDisplayName(report.report_type)
                       }
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 hidden md:table-cell">
-                      {report.report_name ? 
-                        report.report_name.split(' - ').slice(1).join(' - ') || 'Hari Ini' : 
+                      {report.report_name ?
+                        report.report_name.split(' - ').slice(1).join(' - ') || 'Hari Ini' :
                         formatPeriodForDisplay(report.period, report.date)
                       }
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        report.file_format === 'pdf' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' :
-                        report.file_format === 'excel' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
-                        'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
-                      }`}>
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${report.file_format === 'pdf' ? 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200' :
+                          report.file_format === 'excel' ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200' :
+                            'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200'
+                        }`}>
                         {(report.file_format || report.format)?.toUpperCase()}
                       </span>
                     </td>
@@ -509,17 +504,17 @@ const UnduhLaporan = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <div 
-                        className="relative" 
+                      <div
+                        className="relative"
                         ref={(el) => setDropdownRef(report.id || report.report_id || index, el)}
                       >
-                        <button 
+                        <button
                           onClick={() => toggleDropdown(report.id || report.report_id || index)}
                           className="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 focus:outline-none"
                         >
                           <i className="fas fa-ellipsis-v"></i>
                         </button>
-                        
+
                         {openDropdownId === (report.id || report.report_id || index) && (
                           <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-600">
                             <div className="py-1">

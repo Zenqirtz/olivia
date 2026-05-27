@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImageModal from '../components/ImageModal';
-import { 
-  getAllEggs, 
-  getEggStatistics, 
+import {
+  getAllEggs,
+  getEggStatistics,
   getAvailableDates,
   formatDateForAPI,
   formatDateForDisplay,
@@ -68,9 +68,9 @@ const DataKualitasTelur = () => {
         sort_by: 'scanned_at',
         sort_order: 'DESC'
       };
-  
+
       const response = await getAllEggs(params);
-      
+
       if (response.success) {
         setEggData(response.data.eggs || []);
         setPagination(response.data.pagination || {});
@@ -88,10 +88,10 @@ const DataKualitasTelur = () => {
   // Load statistics
   const loadStatistics = async () => {
     try {
-      const response = await getEggStatistics({ 
-        date: formatDateForAPI(activeDate) 
+      const response = await getEggStatistics({
+        date: formatDateForAPI(activeDate)
       });
-      
+
       if (response.success && response.data.statistics.length > 0) {
         const stats = response.data.statistics[0];
         setStatistics({
@@ -119,7 +119,7 @@ const DataKualitasTelur = () => {
   const loadAvailableDates = async () => {
     try {
       const response = await getAvailableDates(30);
-      
+
       if (response.success) {
         setAvailableDates(response.data.available_dates || []);
       }
@@ -135,14 +135,14 @@ const DataKualitasTelur = () => {
     setActiveDate(newDate);
     setFilters(prev => ({ ...prev, page: 1 })); // Reset to first page
   };
-  
+
   // Handle filter apply
   const handleApplyFilter = () => {
     setActiveDate(selectedDate);
     setFilters(prev => ({ ...prev, page: 1 })); // Reset to first page
     setFilterVisible(false);
   };
-  
+
   // Handle filter reset
   const handleReset = () => {
     const today = new Date().toISOString().split('T')[0];
@@ -158,10 +158,10 @@ const DataKualitasTelur = () => {
 
   // Handle quality filter change
   const handleQualityFilterChange = (quality) => {
-    setFilters(prev => ({ 
-      ...prev, 
+    setFilters(prev => ({
+      ...prev,
       quality: quality,
-      page: 1 
+      page: 1
     }));
   };
 
@@ -213,7 +213,7 @@ const DataKualitasTelur = () => {
       </div>
     );
   }
-  
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
       {/* Header */}
@@ -221,7 +221,7 @@ const DataKualitasTelur = () => {
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Data Kualitas Telur</h1>
           <p className="text-blue-100">Monitoring dan analisis kualitas produksi telur</p>
-          
+
           <div className="flex flex-wrap gap-4 mt-6 items-center">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -234,16 +234,16 @@ const DataKualitasTelur = () => {
                 onChange={handleDateChange}
               />
             </div>
-            
+
             <div className="flex gap-3 ml-auto">
-              <button 
+              <button
                 className="flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-blue-300/30 rounded-xl px-4 py-2.5 text-white hover:bg-white/30 transition-all"
                 onClick={() => setFilterVisible(!filterVisible)}
               >
                 <i className="fas fa-filter"></i>
                 <span>Filter</span>
               </button>
-              <button 
+              <button
                 className="flex items-center gap-2 bg-white text-indigo-600 rounded-xl px-4 py-2.5 hover:bg-blue-50 transition-all shadow-sm font-medium"
                 onClick={handleExportData}
               >
@@ -261,7 +261,7 @@ const DataKualitasTelur = () => {
           <div className="flex items-center">
             <i className="fas fa-exclamation-triangle mr-2"></i>
             <span>{error}</span>
-            <button 
+            <button
               onClick={() => {
                 setError(null);
                 loadEggsData();
@@ -274,20 +274,20 @@ const DataKualitasTelur = () => {
           </div>
         </div>
       )}
-      
+
       {/* Filter Panel */}
       {filterVisible && (
         <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg mb-8 border border-gray-100 dark:border-gray-700 relative animate-fadeIn">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Filter Data</h3>
-            <button 
+            <button
               className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 absolute top-6 right-6 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
               onClick={() => setFilterVisible(false)}
             >
               <i className="fas fa-times"></i>
             </button>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tanggal</label>
@@ -303,55 +303,55 @@ const DataKualitasTelur = () => {
                 />
               </div>
             </div>
-            
+
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Kualitas</label>
               <div className="flex gap-6">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     name="quality"
                     value="all"
                     checked={filters.quality === 'all'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500" 
+                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Semua</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     name="quality"
                     value="good"
                     checked={filters.quality === 'good'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500" 
+                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Bagus</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input 
-                    type="radio" 
+                  <input
+                    type="radio"
                     name="quality"
                     value="bad"
                     checked={filters.quality === 'bad'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500" 
+                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Jelek</span>
                 </label>
               </div>
             </div>
           </div>
-          
+
           <div className="flex justify-end mt-8 gap-3">
-            <button 
+            <button
               onClick={handleReset}
               className="px-6 py-3 border border-gray-200 dark:border-gray-600 rounded-xl text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-all"
             >
               Reset
             </button>
-            <button 
+            <button
               onClick={handleApplyFilter}
               className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:opacity-90 shadow-md font-medium transition-all"
             >
@@ -360,7 +360,7 @@ const DataKualitasTelur = () => {
           </div>
         </div>
       )}
-      
+
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all relative overflow-hidden group border border-gray-100 dark:border-gray-700">
@@ -378,7 +378,7 @@ const DataKualitasTelur = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all relative overflow-hidden group border border-gray-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-40 h-40 bg-green-50 dark:bg-green-900 rounded-bl-full -mt-8 -mr-8 opacity-70 z-0 group-hover:bg-green-100 dark:group-hover:bg-green-800 transition-all"></div>
           <div className="relative z-10">
@@ -399,7 +399,7 @@ const DataKualitasTelur = () => {
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all relative overflow-hidden group border border-gray-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-40 h-40 bg-red-50 dark:bg-red-900 rounded-bl-full -mt-8 -mr-8 opacity-70 z-0 group-hover:bg-red-100 dark:group-hover:bg-red-800 transition-all"></div>
           <div className="relative z-10">
@@ -421,7 +421,7 @@ const DataKualitasTelur = () => {
           </div>
         </div>
       </div>
-      
+
       {/* Data Table */}
       <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700">
         <div className="flex justify-between items-center mb-6">
@@ -431,7 +431,7 @@ const DataKualitasTelur = () => {
             <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Total: {statistics.total_eggs} telur</span>
           </div>
         </div>
-        
+
         {loading ? (
           <div className="flex justify-center items-center h-32">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
@@ -478,7 +478,7 @@ const DataKualitasTelur = () => {
                         </div>
                       </td>
                       <td className="py-4 px-6 text-right">
-                        <button 
+                        <button
                           className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900 p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
                           onClick={() => handleViewImage(egg)}
                           title="Lihat foto telur"
@@ -491,21 +491,21 @@ const DataKualitasTelur = () => {
                 </tbody>
               </table>
             </div>
-            
+
             {/* Pagination */}
             <div className="flex flex-wrap justify-between items-center mt-6 pt-4 border-t border-gray-100 dark:border-gray-700">
               <div className="text-sm text-gray-500 dark:text-gray-400 mb-4 md:mb-0">
                 Menampilkan {((pagination.current_page - 1) * pagination.per_page) + 1}-{Math.min(pagination.current_page * pagination.per_page, pagination.total_records)} dari {pagination.total_records} data
               </div>
               <div className="flex gap-2">
-                <button 
-                  className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed" 
+                <button
+                  className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!pagination.has_prev}
                   onClick={() => handlePageChange(pagination.current_page - 1)}
                 >
                   <i className="fas fa-chevron-left"></i>
                 </button>
-                
+
                 {/* Page numbers */}
                 {Array.from({ length: Math.min(5, pagination.total_pages) }, (_, i) => {
                   const pageNum = Math.max(1, pagination.current_page - 2) + i;
@@ -513,11 +513,10 @@ const DataKualitasTelur = () => {
                     return (
                       <button
                         key={pageNum}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                          pageNum === pagination.current_page
+                        className={`px-4 py-2 rounded-lg font-medium transition-all ${pageNum === pagination.current_page
                             ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
                             : 'border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
-                        }`}
+                          }`}
                         onClick={() => handlePageChange(pageNum)}
                       >
                         {pageNum}
@@ -526,9 +525,9 @@ const DataKualitasTelur = () => {
                   }
                   return null;
                 })}
-                
-                <button 
-                  className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed" 
+
+                <button
+                  className="px-3 py-2 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!pagination.has_next}
                   onClick={() => handlePageChange(pagination.current_page + 1)}
                 >

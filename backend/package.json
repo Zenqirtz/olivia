@@ -9,6 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test-db": "node test-db-connection.js",
     "test-egg-api": "node test-egg-api.js",
+    "test-gemini": "node test_gemini.js",
     "setup-reports": "node scripts/setup_reports.js",
     "test-reports": "node scripts/test_reports.js",
     "fix-report-names": "node scripts/fix_report_names.js",

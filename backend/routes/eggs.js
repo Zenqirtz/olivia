@@ -8,7 +8,8 @@ const {
   getRecentEggs,
   getDailyEggSummary,
   getAvailableDates,
-  getWeeklyEggSummary
+  getWeeklyEggSummary,
+  addEggScan
 } = require('../controllers/eggController');
 
 // Apply authentication middleware to all routes
@@ -16,6 +17,9 @@ const {
 
 // GET /api/eggs - Get all eggs with filtering and pagination
 router.get('/', getAllEggs);
+
+// POST /api/eggs - Add a new egg scan
+router.post('/', addEggScan);
 
 // GET /api/eggs/statistics - Get egg statistics by date
 router.get('/statistics', getEggStatistics);
