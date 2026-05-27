@@ -145,7 +145,7 @@ const createUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     // Create user
-    const createUserQuery = `INSERT INTO users (name, email, password_hash, role, phone, bio, created_by, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, TRUE)`;
+    const createUserQuery = `INSERT INTO users (name, email, password_hash, role, phone, bio, created_by, is_active, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, TRUE, NOW())`;
 
     const createResult = await executeQuery(createUserQuery, [
       name, email, hashedPassword, role, phone, bio, req.user.user_id

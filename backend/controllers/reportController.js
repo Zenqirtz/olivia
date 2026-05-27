@@ -173,9 +173,10 @@ const generateReport = async (req, res) => {
         file_size, 
         generated_at, 
         expires_at, 
-        download_count
+        download_count,
+        updated_at
       )
-      VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, 0)
+      VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), ?, 0, NOW())
     `;
     
     try {

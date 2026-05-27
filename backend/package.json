@@ -24,6 +24,7 @@
     "db:push": "prisma db push",
     "db:seed": "prisma db seed",
     "db:reset": "prisma migrate reset",
+    "db:fresh-keep-users": "node scripts/migrate-fresh-keep-users.js",
     "db:studio": "prisma studio",
     "db:format": "prisma format"
   },

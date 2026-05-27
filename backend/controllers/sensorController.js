@@ -14,20 +14,20 @@ const getSensorReadings = async (req, res) => {
         intervalClause = 'INTERVAL 7 DAY';
         // Group by 6-hour blocks for 7-day view
         groupBy = `DATE(recorded_at), FLOOR(HOUR(recorded_at) / 6)`;
-        dateFormat = `DATE_FORMAT(recorded_at, '%d/%m %Hh')`;
+        dateFormat = `DATE_FORMAT(MIN(recorded_at), '%d/%m %Hh')`;
         break;
       case '30d':
         intervalClause = 'INTERVAL 30 DAY';
         // Group by day for 30-day view
         groupBy = `DATE(recorded_at)`;
-        dateFormat = `DATE_FORMAT(recorded_at, '%d/%m')`;
+        dateFormat = `DATE_FORMAT(MIN(recorded_at), '%d/%m')`;
         break;
       case '24h':
       default:
         intervalClause = 'INTERVAL 24 HOUR';
         // Every reading for 24h view
         groupBy = `reading_id`;
-        dateFormat = `DATE_FORMAT(recorded_at, '%H:%i')`;
+        dateFormat = `DATE_FORMAT(MIN(recorded_at), '%H:%i')`;
         break;
     }
 
@@ -45,6 +45,14 @@ const getSensorReadings = async (req, res) => {
     `;
 
     const result = await executeQuery(query, []);
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Gagal mengambil data sensor dari database',
+        error: result.error
+      });
+    }
 
     res.json({
       success: true,
@@ -77,6 +85,15 @@ const getLatestSensorReading = async (req, res) => {
     `;
 
     const result = await executeQuery(query, []);
+    
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Gagal mengambil data sensor terbaru dari database',
+        error: result.error
+      });
+    }
+
     const latest = result.data && result.data.length > 0 ? result.data[0] : null;
 
     res.json({
@@ -111,7 +128,15 @@ const addSensorReading = async (req, res) => {
       VALUES (?, ?, ?, ?, NOW())
     `;
 
-    await executeQuery(query, [device_id || null, temperature, humidity, ammonia]);
+    const result = await executeQuery(query, [device_id || null, temperature, humidity, ammonia]);
+
+    if (!result.success) {
+      return res.status(500).json({
+        success: false,
+        message: 'Gagal menyimpan data sensor ke database',
+        error: result.error
+      });
+    }
 
     res.status(201).json({
       success: true,

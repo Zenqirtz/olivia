@@ -366,8 +366,9 @@ const addEggScan = async (req, res) => {
         length, 
         width, 
         height, 
-        scanned_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        scanned_at,
+        updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
     `;
 
     const result = await executeQuery(query, [
