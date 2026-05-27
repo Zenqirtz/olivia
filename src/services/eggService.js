@@ -84,6 +84,17 @@ export const getAvailableDates = async (limit = 30) => {
   }
 };
 
+// Get weekly egg summary for donut chart
+export const getWeeklyEggSummary = async () => {
+  try {
+    const response = await apiClient.get('/eggs/weekly-summary');
+    return response;
+  } catch (error) {
+    console.error('Get weekly egg summary error:', error);
+    throw error;
+  }
+};
+
 // Helper function to format date for API
 export const formatDateForAPI = (date) => {
   if (!date) return null;
@@ -153,6 +164,7 @@ export default {
   getRecentEggs,
   getDailyEggSummary,
   getAvailableDates,
+  getWeeklyEggSummary,
   formatDateForAPI,
   formatDateForDisplay,
   formatTimeForDisplay,

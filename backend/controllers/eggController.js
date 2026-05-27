@@ -261,11 +261,53 @@ const getAvailableDates = async (req, res) => {
   }
 };
 
+// Get weekly egg summary for dashboard donut chart (weekly mode)
+const getWeeklyEggSummary = async (req, res) => {
+  try {
+    const summaryQuery = `
+      SELECT 
+        COUNT(*) as total_eggs,
+        SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
+        SUM(CASE WHEN quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
+        ROUND((SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) / NULLIF(COUNT(*), 0)) * 100, 2) as good_percentage,
+        MIN(DATE(scanned_at)) as start_date,
+        MAX(DATE(scanned_at)) as end_date
+      FROM egg_scans 
+      WHERE DATE(scanned_at) >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
+    `;
+
+    const summaryResult = await executeQuery(summaryQuery, []);
+    const summary = summaryResult.data[0] || {
+      total_eggs: 0,
+      good_eggs: 0,
+      bad_eggs: 0,
+      good_percentage: 0,
+      start_date: null,
+      end_date: null
+    };
+
+    res.json({
+      success: true,
+      data: {
+        period: '7days',
+        summary: summary
+      }
+    });
+  } catch (error) {
+    console.error('Get weekly egg summary error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch weekly egg summary'
+    });
+  }
+};
+
 module.exports = {
   getAllEggs,
   getEggStatistics,
   getEggById,
   getRecentEggs,
   getDailyEggSummary,
-  getAvailableDates
+  getAvailableDates,
+  getWeeklyEggSummary
 }; 

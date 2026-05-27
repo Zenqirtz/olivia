@@ -7,7 +7,8 @@ const {
   getEggById,
   getRecentEggs,
   getDailyEggSummary,
-  getAvailableDates
+  getAvailableDates,
+  getWeeklyEggSummary
 } = require('../controllers/eggController');
 
 // Apply authentication middleware to all routes
@@ -27,6 +28,9 @@ router.get('/daily-summary', getDailyEggSummary);
 
 // GET /api/eggs/available-dates - Get available dates with egg data
 router.get('/available-dates', getAvailableDates);
+
+// GET /api/eggs/weekly-summary - Get weekly egg summary for donut chart
+router.get('/weekly-summary', getWeeklyEggSummary);
 
 // GET /api/eggs/:id - Get egg details by ID
 router.get('/:id', getEggById);

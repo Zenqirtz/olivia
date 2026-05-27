@@ -1,18 +1,20 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from 'chart.js';
 import { Line, Doughnut } from 'react-chartjs-2';
 import { useTheme } from '../contexts/ThemeContext';
 import { 
   getDailyEggSummary, 
   getRecentEggs, 
   getEggStatistics,
+  getWeeklyEggSummary,
   formatDateForDisplay,
   getQualityText 
 } from '../services/eggService';
+import sensorService from '../services/sensorService';
 
 // Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler);
 
 const Dashboard = () => {
   // Helper function untuk format percentage yang aman
@@ -66,6 +68,24 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // State untuk donut mode (harian/mingguan)
+  const [donutMode, setDonutMode] = useState('harian');
+  const [donutStats, setDonutStats] = useState({
+    totalEggs: 0,
+    goodEggs: 0,
+    badEggs: 0,
+    goodPercentage: 0,
+  });
+
+  // State untuk sensor/IoT chart
+  const [sensorPeriod, setSensorPeriod] = useState('24h');
+  const [sensorChartData, setSensorChartData] = useState({
+    labels: [],
+    datasets: []
+  });
+  const [latestSensor, setLatestSensor] = useState(null);
+  const [sensorLoading, setSensorLoading] = useState(true);
+  
   // State untuk data dashboard yang bisa di-refresh
   const [dashboardStats, setDashboardStats] = useState({
     totalEggs: 0,
@@ -74,6 +94,114 @@ const Dashboard = () => {
     goodPercentage: 0,
     trend: 0
   });
+
+  // Load sensor data
+  const loadSensorData = async (period = sensorPeriod) => {
+    try {
+      setSensorLoading(true);
+      const [readingsRes, latestRes] = await Promise.all([
+        sensorService.getSensorReadings(period),
+        sensorService.getLatestSensorReading()
+      ]);
+
+      if (readingsRes.success && readingsRes.data.readings) {
+        const readings = readingsRes.data.readings;
+        setSensorChartData({
+          labels: readings.map(r => r.label),
+          datasets: [
+            {
+              label: 'Suhu (°C)',
+              data: readings.map(r => r.temperature),
+              borderColor: '#f97316',
+              backgroundColor: 'rgba(249, 115, 22, 0.1)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: period === '24h' ? 3 : 2,
+              yAxisID: 'y',
+            },
+            {
+              label: 'Kelembapan (%)',
+              data: readings.map(r => r.humidity),
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: period === '24h' ? 3 : 2,
+              yAxisID: 'y',
+            },
+            {
+              label: 'Amonia (ppm)',
+              data: readings.map(r => r.ammonia),
+              borderColor: '#22c55e',
+              backgroundColor: 'rgba(34, 197, 94, 0.1)',
+              fill: true,
+              tension: 0.4,
+              borderWidth: 2,
+              pointRadius: period === '24h' ? 3 : 2,
+              yAxisID: 'y1',
+            }
+          ]
+        });
+      }
+
+      if (latestRes.success && latestRes.data.latest) {
+        setLatestSensor(latestRes.data.latest);
+      }
+    } catch (error) {
+      console.error('Error loading sensor data:', error);
+    } finally {
+      setSensorLoading(false);
+    }
+  };
+
+  // Load donut data based on mode
+  const loadDonutData = async (mode = donutMode) => {
+    try {
+      if (mode === 'harian') {
+        const summaryResponse = await getDailyEggSummary();
+        if (summaryResponse.success) {
+          const summary = summaryResponse.data.summary;
+          const stats = {
+            totalEggs: summary.total_eggs || 0,
+            goodEggs: summary.good_eggs || 0,
+            badEggs: summary.bad_eggs || 0,
+            goodPercentage: summary.good_percentage || 0,
+          };
+          setDonutStats(stats);
+          setDonutData(prev => ({
+            ...prev,
+            datasets: [{
+              ...prev.datasets[0],
+              data: [stats.goodEggs, stats.badEggs]
+            }]
+          }));
+        }
+      } else {
+        const weeklyRes = await getWeeklyEggSummary();
+        if (weeklyRes.success) {
+          const summary = weeklyRes.data.summary;
+          const stats = {
+            totalEggs: summary.total_eggs || 0,
+            goodEggs: summary.good_eggs || 0,
+            badEggs: summary.bad_eggs || 0,
+            goodPercentage: summary.good_percentage || 0,
+          };
+          setDonutStats(stats);
+          setDonutData(prev => ({
+            ...prev,
+            datasets: [{
+              ...prev.datasets[0],
+              data: [stats.goodEggs, stats.badEggs]
+            }]
+          }));
+        }
+      }
+    } catch (error) {
+      console.error('Error loading donut data:', error);
+    }
+  };
 
   // Load dashboard data
   const loadDashboardData = async () => {
@@ -89,17 +217,26 @@ const Dashboard = () => {
           goodEggs: summary.good_eggs || 0,
           badEggs: summary.bad_eggs || 0,
           goodPercentage: summary.good_percentage || 0,
-          trend: 0 // We'll calculate this later with historical data
+          trend: 0
         });
 
-        // Update donut chart
-        setDonutData(prev => ({
-          ...prev,
-          datasets: [{
-            ...prev.datasets[0],
-            data: [summary.good_eggs || 0, summary.bad_eggs || 0]
-          }]
-        }));
+        // Also set donut data if in harian mode
+        if (donutMode === 'harian') {
+          const stats = {
+            totalEggs: summary.total_eggs || 0,
+            goodEggs: summary.good_eggs || 0,
+            badEggs: summary.bad_eggs || 0,
+            goodPercentage: summary.good_percentage || 0,
+          };
+          setDonutStats(stats);
+          setDonutData(prev => ({
+            ...prev,
+            datasets: [{
+              ...prev.datasets[0],
+              data: [summary.good_eggs || 0, summary.bad_eggs || 0]
+            }]
+          }));
+        }
       }
 
       // Load recent eggs
@@ -108,8 +245,16 @@ const Dashboard = () => {
         setRecentEggs(recentResponse.data.recent_eggs || []);
       }
 
-      // Load weekly statistics for chart
+      // Load weekly statistics for line chart
       await loadWeeklyStatistics();
+
+      // Load sensor data
+      await loadSensorData();
+
+      // Load donut in weekly mode if needed
+      if (donutMode === 'mingguan') {
+        await loadDonutData('mingguan');
+      }
 
     } catch (error) {
       console.error('Error loading dashboard data:', error);
@@ -122,7 +267,6 @@ const Dashboard = () => {
   // Load weekly statistics
   const loadWeeklyStatistics = async () => {
     try {
-      const last7Days = [];
       const labels = [];
       const goodEggsData = [];
       const badEggsData = [];
@@ -185,7 +329,6 @@ const Dashboard = () => {
       await loadDashboardData();
       setLastRefresh(new Date());
       
-      // Show success notification (optional)
       console.log('Data refreshed successfully');
       
     } catch (error) {
@@ -199,6 +342,18 @@ const Dashboard = () => {
   // Fungsi untuk navigasi ke Data Kualitas Telur
   const handleViewAllData = () => {
     navigate('/data-kualitas-telur');
+  };
+
+  // Handle donut mode change
+  const handleDonutModeChange = async (mode) => {
+    setDonutMode(mode);
+    await loadDonutData(mode);
+  };
+
+  // Handle sensor period change
+  const handleSensorPeriodChange = async (period) => {
+    setSensorPeriod(period);
+    await loadSensorData(period);
   };
 
   // Load data on component mount
@@ -344,6 +499,174 @@ const Dashboard = () => {
         </div>
       </div>
 
+      {/* ============================================ */}
+      {/* Pemantauan IoT Sensor Chart (NEW) */}
+      {/* ============================================ */}
+      <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700 mb-8">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
+          <div>
+            <p className="text-blue-600 dark:text-gray-400 text-sm">Pemantauan IoT</p>
+            <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
+              Suhu, Kelembapan & Gas Amonia
+            </h3>
+          </div>
+          <div className="flex gap-2">
+            {[
+              { key: '24h', label: '24 Jam' },
+              { key: '7d', label: '7 Hari' },
+              { key: '30d', label: '30 Hari' },
+            ].map(({ key, label }) => (
+              <button
+                key={key}
+                onClick={() => handleSensorPeriodChange(key)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  sensorPeriod === key
+                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Sensor value cards */}
+        {latestSensor && (
+          <div className="grid grid-cols-3 gap-4 mb-4">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Suhu</span>
+              </div>
+              <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
+                {latestSensor.temperature}°C
+              </p>
+            </div>
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Kelembapan</span>
+              </div>
+              <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
+                {latestSensor.humidity}%
+              </p>
+            </div>
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Amonia</span>
+              </div>
+              <p className="text-xl font-bold text-green-600 dark:text-green-400">
+                {latestSensor.ammonia} ppm
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Sensor chart */}
+        <div className="h-72">
+          {sensorLoading ? (
+            <div className="flex justify-center items-center h-full">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+            </div>
+          ) : sensorChartData.labels.length > 0 ? (
+            <Line 
+              data={sensorChartData}
+              options={{
+                maintainAspectRatio: false,
+                interaction: {
+                  mode: 'index',
+                  intersect: false,
+                },
+                plugins: {
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                      color: isDarkMode ? '#9ca3af' : '#6b7280',
+                      usePointStyle: true,
+                      padding: 20,
+                    }
+                  },
+                  tooltip: {
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    titleColor: isDarkMode ? '#f3f4f6' : '#111827',
+                    bodyColor: isDarkMode ? '#d1d5db' : '#374151',
+                    borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                    borderWidth: 1,
+                    padding: 12,
+                    callbacks: {
+                      label: function(context) {
+                        let label = context.dataset.label || '';
+                        let value = context.parsed.y;
+                        if (label.includes('Suhu')) return `${label}: ${value}°C`;
+                        if (label.includes('Kelembapan')) return `${label}: ${value}%`;
+                        if (label.includes('Amonia')) return `${label}: ${value} ppm`;
+                        return `${label}: ${value}`;
+                      }
+                    }
+                  }
+                },
+                scales: {
+                  y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    title: {
+                      display: true,
+                      text: 'Suhu (°C) / Kelembapan (%)',
+                      color: isDarkMode ? '#9ca3af' : '#6b7280',
+                      font: { size: 11 }
+                    },
+                    grid: {
+                      color: isDarkMode ? '#374151' : '#e5e7eb'
+                    },
+                    ticks: {
+                      color: isDarkMode ? '#9ca3af' : '#6b7280'
+                    }
+                  },
+                  y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    title: {
+                      display: true,
+                      text: 'Amonia (ppm)',
+                      color: isDarkMode ? '#9ca3af' : '#6b7280',
+                      font: { size: 11 }
+                    },
+                    grid: {
+                      drawOnChartArea: false,
+                    },
+                    ticks: {
+                      color: isDarkMode ? '#9ca3af' : '#6b7280'
+                    }
+                  },
+                  x: {
+                    grid: {
+                      color: isDarkMode ? '#374151' : '#e5e7eb'
+                    },
+                    ticks: {
+                      color: isDarkMode ? '#9ca3af' : '#6b7280',
+                      maxRotation: 45,
+                      font: { size: 10 }
+                    }
+                  }
+                }
+              }}
+            />
+          ) : (
+            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500">
+              <div className="text-center">
+                <i className="fas fa-thermometer-half text-4xl mb-2"></i>
+                <p>Belum ada data sensor</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Charts and Recent Data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Weekly Chart */}
@@ -393,16 +716,40 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Donut Chart */}
+        {/* Donut Chart — Harian / Mingguan Toggle */}
         <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="text-blue-600 dark:text-gray-400 text-sm">Statistik Telur</p>
-              <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">Statistik Telur Harian ({formatDateForDisplay(activeDate)})</h3>
+              <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
+                {donutMode === 'harian' 
+                  ? `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
+                  : 'Statistik Telur 7 Hari Terakhir'
+                }
+              </h3>
             </div>
-            <button className="bg-purple-600 dark:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-purple-700 dark:hover:bg-purple-800 transition-all shadow-sm">
-              Harian
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleDonutModeChange('harian')}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  donutMode === 'harian'
+                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                }`}
+              >
+                Harian
+              </button>
+              <button
+                onClick={() => handleDonutModeChange('mingguan')}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                  donutMode === 'mingguan'
+                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                }`}
+              >
+                Mingguan
+              </button>
+            </div>
           </div>
           
           <div className="h-64 flex justify-center items-center">
@@ -419,7 +766,7 @@ const Dashboard = () => {
                       label: function(context) {
                         const label = context.label || '';
                         const value = context.raw || 0;
-                        const total = dashboardStats.totalEggs;
+                        const total = donutStats.totalEggs;
                         const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
                         return `${label}: ${value} (${percentage}%)`;
                       }
@@ -435,13 +782,13 @@ const Dashboard = () => {
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
               <span className="text-sm text-blue-700 dark:text-gray-300">
-                Telur Bagus: {dashboardStats.goodEggs} ({formatPercentage(dashboardStats.goodPercentage, 0)}%)
+                Telur Bagus: {donutStats.goodEggs} ({formatPercentage(donutStats.goodPercentage, 0)}%)
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
               <span className="text-sm text-blue-700 dark:text-gray-300">
-                Telur Jelek: {dashboardStats.badEggs} ({formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)}%)
+                Telur Jelek: {donutStats.badEggs} ({formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 0)}%)
               </span>
             </div>
           </div>
@@ -514,4 +861,4 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard; 
+export default Dashboard;
