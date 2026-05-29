@@ -84,8 +84,8 @@ const ManajemenAkun = () => {
   }, []);
 
   const roleOptions = [
-    { value: 'superadmin', label: 'Super Admin', color: 'purple' },
-    { value: 'admin', label: 'Admin', color: 'blue' }
+    { value: 'superadmin', label: 'Super Admin', color: 'amber' },
+    { value: 'admin', label: 'Admin', color: 'orange' }
   ];
 
   const getRoleColor = (role) => {
@@ -287,10 +287,10 @@ const ManajemenAkun = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-purple-600 to-indigo-700 dark:from-purple-700 dark:to-indigo-800 rounded-2xl mb-8 shadow-lg">
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg">
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Manajemen Akun</h1>
-          <p className="text-purple-100">Kelola akun pengguna sistem Eggspire</p>
+          <p className="text-amber-100">Kelola akun pengguna sistem GardaOva</p>
         </div>
       </div>
 
@@ -305,7 +305,7 @@ const ManajemenAkun = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-purple-100 dark:bg-purple-900 text-purple-600 dark:text-purple-300">
+            <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300">
               <i className="fas fa-users text-xl"></i>
             </div>
             <div className="ml-4">
@@ -331,7 +331,7 @@ const ManajemenAkun = () => {
 
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
           <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300">
+            <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300">
               <i className="fas fa-user-shield text-xl"></i>
             </div>
             <div className="ml-4">
@@ -351,7 +351,7 @@ const ManajemenAkun = () => {
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Daftar Akun</h2>
             <button
               onClick={() => handleOpenModal('create')}
-              className="bg-gradient-to-r from-purple-500 to-indigo-600 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+              className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
             >
               <i className="fas fa-plus"></i>
               Tambah Akun
@@ -362,7 +362,7 @@ const ManajemenAkun = () => {
         <div className="overflow-x-auto">
           {loading ? (
             <div className="flex justify-center items-center py-12">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-600"></div>
             </div>
           ) : (
             <table className="w-full">
@@ -391,7 +391,7 @@ const ManajemenAkun = () => {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 flex items-center justify-center text-white font-medium">
+                          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center text-white font-medium">
                             {userData.name.charAt(0).toUpperCase()}
                           </div>
                         </div>
@@ -430,7 +430,7 @@ const ManajemenAkun = () => {
                         {canEditUser(userData) && (
                           <button
                             onClick={() => handleOpenModal('edit', userData)}
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                            className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20"
                           >
                             <i className="fas fa-edit"></i>
                           </button>
@@ -495,7 +495,7 @@ const ManajemenAkun = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan nama lengkap"
                     />
@@ -511,7 +511,7 @@ const ManajemenAkun = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan email"
                     />
@@ -526,7 +526,7 @@ const ManajemenAkun = () => {
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                     >
                       {roleOptions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -545,7 +545,7 @@ const ManajemenAkun = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan password"
                     />
@@ -562,7 +562,7 @@ const ManajemenAkun = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 ${errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                           } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                         placeholder="Konfirmasi password"
                       />
@@ -579,7 +579,7 @@ const ManajemenAkun = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       placeholder="Masukkan nomor telepon"
                     />
                   </div>
@@ -593,7 +593,7 @@ const ManajemenAkun = () => {
                       value={formData.bio}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       placeholder="Masukkan bio singkat"
                     />
                   </div>
@@ -622,7 +622,7 @@ const ManajemenAkun = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="px-4 py-2 bg-gradient-to-r from-purple-500 to-indigo-600 text-white rounded-lg hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
                 >
                   {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
                   {modalType === 'create' ? 'Tambah' : 'Simpan'}

@@ -41,30 +41,11 @@ const Layout = ({ children }) => {
 
             {/* Page title for mobile */}
             <div className="lg:hidden">
-              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">Eggspire</h1>
+              <h1 className="text-lg font-semibold text-gray-900 dark:text-white">GardaOva</h1>
             </div>
 
             {/* Right side controls */}
-            <div className="flex items-center gap-3">
-              {/* User info (hidden on mobile) */}
-              <div className="hidden md:flex items-center gap-3 mr-4">
-                <div className="text-right">
-                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>
-                </div>
-                <div 
-                  onClick={goToSettings} 
-                  className="w-8 h-8 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium text-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-                  title="Pengaturan Profil"
-                >
-                  {user?.avatar_url ? (
-                    <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    user?.name?.charAt(0)?.toUpperCase() || 'U'
-                  )}
-                </div>
-              </div>
-
+            <div className="flex items-center gap-3 ml-auto">
               {/* Theme toggle */}
               <button
                 onClick={toggleTheme}
@@ -77,6 +58,25 @@ const Layout = ({ children }) => {
                   <i className="fas fa-moon text-gray-600 text-lg"></i>
                 )}
               </button>
+
+              {/* User info (hidden on mobile) */}
+              <div className="hidden md:flex items-center gap-3 ml-2">
+                <div 
+                  onClick={goToSettings} 
+                  className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium text-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                  title="Pengaturan Profil"
+                >
+                  {user?.avatar_url ? (
+                    <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    user?.name?.charAt(0)?.toUpperCase() || 'U'
+                  )}
+                </div>
+                <div className="text-left">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

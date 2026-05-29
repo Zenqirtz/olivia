@@ -376,7 +376,7 @@ const Dashboard = () => {
     return (
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           <span className="ml-3 text-gray-600 dark:text-gray-300">Memuat dashboard...</span>
         </div>
       </div>
@@ -388,7 +388,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h1>
-          <p className="text-sm text-blue-600 dark:text-gray-400 mt-1">
+          <p className="text-sm text-amber-600 dark:text-gray-400 mt-1">
             Terakhir diperbarui: {lastRefresh.toLocaleTimeString('id-ID')}
           </p>
         </div>
@@ -396,7 +396,7 @@ const Dashboard = () => {
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className={`flex items-center gap-2 border border-blue-200 dark:border-gray-600 rounded-lg px-4 py-2 text-blue-700 dark:text-gray-300 hover:bg-blue-50 dark:hover:bg-gray-700 transition-all ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
+            className={`flex items-center gap-2 border border-amber-200 dark:border-gray-600 rounded-lg px-4 py-2 text-amber-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 transition-all ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
               }`}
           >
             <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
@@ -404,7 +404,7 @@ const Dashboard = () => {
           </button>
           <button
             onClick={handleViewAllData}
-            className="flex items-center gap-2 bg-blue-600 dark:bg-blue-700 text-white rounded-lg px-4 py-2 hover:bg-blue-700 dark:hover:bg-blue-800 transition-all shadow-sm"
+            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm"
           >
             <i className="fas fa-list"></i>
             <span>Lihat Data</span>
@@ -434,11 +434,11 @@ const Dashboard = () => {
       {/* Stat Cards */}
       <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
         }`}>
-        <div className="bg-blue-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-blue-100 dark:bg-blue-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
+        <div className="bg-amber-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
-            <p className="text-blue-600 dark:text-gray-400 mb-1">Jumlah Telur Hari ini</p>
-            <h2 className="text-3xl font-bold text-blue-800 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
+            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Hari ini</p>
+            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
             <p className={`text-sm flex items-center gap-1 mt-1 ${dashboardStats.trend >= 0
                 ? 'text-green-500 dark:text-green-400'
                 : 'text-red-500 dark:text-red-400'
@@ -448,20 +448,20 @@ const Dashboard = () => {
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-blue-500 dark:bg-blue-800 text-white dark:text-blue-300">
+            <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
               <i className="fas fa-chart-line"></i>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
-            <p className="text-blue-600 dark:text-gray-400 mb-1">Jumlah Telur Bagus</p>
-            <h2 className="text-3xl font-bold text-blue-800 dark:text-gray-100">{formatPercentage(dashboardStats.goodPercentage)}%</h2>
+            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Bagus</p>
+            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.goodEggs}</h2>
             <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1 mt-1">
               <i className="fas fa-arrow-up text-xs"></i>
-              <span>{dashboardStats.goodEggs} telur bagus</span>
+              <span>{formatPercentage(dashboardStats.goodPercentage)}%</span>
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">
@@ -471,11 +471,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 dark:bg-red-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
-            <p className="text-blue-600 dark:text-gray-400 mb-1">Jumlah Telur Jelek</p>
-            <h2 className="text-3xl font-bold text-blue-800 dark:text-gray-100">{dashboardStats.badEggs}</h2>
+            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Jelek</p>
+            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.badEggs}</h2>
             <p className="text-red-500 dark:text-red-400 text-sm flex items-center gap-1 mt-1">
               <i className="fas fa-arrow-up text-xs"></i>
               <span>{formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)}%</span>
@@ -489,18 +489,18 @@ const Dashboard = () => {
         </div>
 
         {/* Card keempat - Status Sistem */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-blue-100 dark:border-gray-700">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-purple-50 dark:bg-purple-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
-            <p className="text-blue-600 dark:text-gray-400 mb-1">Status Sistem</p>
-            <h2 className="text-3xl font-bold text-blue-800 dark:text-gray-100">Online</h2>
+            <p className="text-amber-600 dark:text-gray-400 mb-1">Status Sistem</p>
+            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">Online</h2>
             <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1 mt-1">
               <i className="fas fa-circle text-xs"></i>
               <span>Semua sistem berjalan</span>
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-purple-500 dark:bg-purple-800 text-white dark:text-purple-300">
+            <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
               <i className="fas fa-server"></i>
             </div>
           </div>
@@ -510,11 +510,11 @@ const Dashboard = () => {
       {/* ============================================ */}
       {/* Pemantauan IoT Sensor Chart (NEW) */}
       {/* ============================================ */}
-      <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700 mb-8">
+      <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700 mb-8">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
           <div>
-            <p className="text-blue-600 dark:text-gray-400 text-sm">Pemantauan Sensor</p>
-            <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
+            <p className="text-amber-600 dark:text-gray-400 text-sm">Pemantauan Sensor</p>
+            <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">
               Suhu, Kelembapan & Gas Amonia
             </h3>
           </div>
@@ -528,7 +528,7 @@ const Dashboard = () => {
                 key={key}
                 onClick={() => handleSensorPeriodChange(key)}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sensorPeriod === key
-                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
               >
@@ -575,7 +575,7 @@ const Dashboard = () => {
         <div className="h-72">
           {sensorLoading ? (
             <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
             </div>
           ) : sensorChartData.labels.length > 0 ? (
             <Line
@@ -677,13 +677,13 @@ const Dashboard = () => {
       {/* Charts and Recent Data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Weekly Chart */}
-        <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="text-blue-600 dark:text-gray-400 text-sm">Grafik Mingguan</p>
-              <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">Produksi Telur 7 Hari Terakhir</h3>
+              <p className="text-amber-600 dark:text-gray-400 text-sm">Grafik Mingguan</p>
+              <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">Produksi Telur 7 Hari Terakhir</h3>
             </div>
-            <button className="bg-purple-600 dark:bg-purple-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-purple-700 dark:hover:bg-purple-800 transition-all shadow-sm">
+            <button className="bg-amber-600 dark:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm">
               Mingguan
             </button>
           </div>
@@ -724,11 +724,11 @@ const Dashboard = () => {
         </div>
 
         {/* Donut Chart — Harian / Mingguan Toggle */}
-        <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="text-blue-600 dark:text-gray-400 text-sm">Statistik Telur</p>
-              <h3 className="font-semibold text-lg text-blue-800 dark:text-gray-100">
+              <p className="text-amber-600 dark:text-gray-400 text-sm">Statistik Telur</p>
+              <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">
                 {donutMode === 'harian'
                   ? `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
                   : 'Statistik Telur 7 Hari Terakhir'
@@ -739,7 +739,7 @@ const Dashboard = () => {
               <button
                 onClick={() => handleDonutModeChange('harian')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'harian'
-                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
               >
@@ -748,7 +748,7 @@ const Dashboard = () => {
               <button
                 onClick={() => handleDonutModeChange('mingguan')}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'mingguan'
-                    ? 'bg-purple-600 dark:bg-purple-700 text-white shadow-sm'
+                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
               >
@@ -786,13 +786,13 @@ const Dashboard = () => {
           <div className="flex justify-center gap-6 mt-4">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-sm text-blue-700 dark:text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Telur Bagus: {donutStats.goodEggs} ({formatPercentage(donutStats.goodPercentage, 0)}%)
               </span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-sm text-blue-700 dark:text-gray-300">
+              <span className="text-sm text-gray-700 dark:text-gray-300">
                 Telur Jelek: {donutStats.badEggs} ({formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 0)}%)
               </span>
             </div>
@@ -802,12 +802,12 @@ const Dashboard = () => {
 
       {/* Recent Eggs */}
       <div className="grid grid-cols-1 gap-8 mb-8">
-        <div className="bg-blue-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-blue-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
           <div className="flex justify-between items-center mb-5">
-            <h2 className="text-lg font-semibold text-blue-800 dark:text-gray-100">Daftar Telur Terbaru</h2>
+            <h2 className="text-lg font-semibold text-amber-800 dark:text-gray-100">Daftar Telur Terbaru</h2>
             <button
               onClick={handleViewAllData}
-              className="text-blue-600 dark:text-blue-400 text-sm hover:text-blue-700 dark:hover:text-blue-300 transition-all flex items-center gap-1"
+              className="text-amber-600 dark:text-amber-400 text-sm hover:text-amber-700 dark:hover:text-amber-300 transition-all flex items-center gap-1"
             >
               <span>Lihat Semua Data</span>
               <i className="fas fa-chevron-right text-xs"></i>
@@ -817,7 +817,7 @@ const Dashboard = () => {
           <div className="overflow-x-auto">
             <table className="min-w-full">
               <thead>
-                <tr className="text-blue-600 dark:text-gray-400 border-b border-blue-200 dark:border-gray-700">
+                <tr className="text-amber-600 dark:text-gray-400 border-b border-amber-200 dark:border-gray-700">
                   <th className="py-3 px-4 text-left font-medium">KODE</th>
                   <th className="py-3 px-4 text-left font-medium">KUALITAS</th>
                   <th className="py-3 px-4 text-left font-medium">TANGGAL</th>
@@ -826,8 +826,8 @@ const Dashboard = () => {
               <tbody>
                 {recentEggs.length > 0 ? (
                   recentEggs.map((egg, index) => (
-                    <tr key={egg.scan_id || index} className="border-b border-blue-100 dark:border-gray-700 hover:bg-blue-100 dark:hover:bg-gray-700 transition-all">
-                      <td className="py-3 px-4 text-blue-800 dark:text-gray-200">{egg.egg_code}</td>
+                    <tr key={egg.scan_id || index} className="border-b border-amber-100 dark:border-gray-700 hover:bg-amber-100 dark:hover:bg-gray-700 transition-all">
+                      <td className="py-3 px-4 text-amber-800 dark:text-gray-200">{egg.egg_code}</td>
                       <td className="py-3 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
                             ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300'
@@ -836,7 +836,7 @@ const Dashboard = () => {
                           {getQualityText(egg.quality)}
                         </span>
                       </td>
-                      <td className="py-3 px-4 text-blue-600 dark:text-gray-300">{formatDateForDisplay(egg.scanned_at)}</td>
+                      <td className="py-3 px-4 text-amber-600 dark:text-gray-300">{formatDateForDisplay(egg.scanned_at)}</td>
                     </tr>
                   ))
                 ) : (
@@ -853,7 +853,7 @@ const Dashboard = () => {
           <div className="mt-5">
             <button
               onClick={handleViewAllData}
-              className="text-blue-600 dark:text-blue-400 flex items-center gap-1 hover:text-blue-700 dark:hover:text-blue-300 transition-all"
+              className="text-amber-600 dark:text-amber-400 flex items-center gap-1 hover:text-amber-700 dark:hover:text-amber-300 transition-all"
             >
               <span>Lihat semua data telur</span>
               <i className="fas fa-arrow-right ml-1 text-xs"></i>

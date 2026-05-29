@@ -624,7 +624,7 @@ const generatePDFReport = async (data, reportType, period, date) => {
       doc.pipe(writeStream);
 
       // Add header with title and logo
-      doc.fontSize(20).text('Eggspire IoT Monitoring', { align: 'center' });
+      doc.fontSize(20).text('GardaOva IoT Monitoring', { align: 'center' });
       doc.fontSize(16).text(`Laporan ${getReportTypeDisplayName(reportType)}`, { align: 'center' });
       doc.moveDown();
       doc.fontSize(12).text(`Periode: ${formatPeriodForDisplay(period, date)}`, { align: 'left' });
@@ -804,7 +804,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
     // Add title and metadata
     worksheet.mergeCells('A1:D1');
     const titleCell = worksheet.getCell('A1');
-    titleCell.value = 'Eggspire IoT Monitoring';
+    titleCell.value = 'GardaOva IoT Monitoring';
     titleCell.font = { size: 16, bold: true };
     titleCell.alignment = { horizontal: 'center' };
     
@@ -935,7 +935,7 @@ const generateCSVReport = async (data, reportType, period, date) => {
     fs.mkdirSync(dir, { recursive: true });
   }
 
-    let csvContent = `"Eggspire IoT Monitoring"\n`;
+    let csvContent = `"GardaOva IoT Monitoring"\n`;
     csvContent += `"Laporan: ${getReportTypeDisplayName(reportType)}"\n`;
     csvContent += `"Periode: ${formatPeriodForDisplay(period, date)}"\n`;
     csvContent += `"Tanggal Generate: ${new Date().toLocaleDateString('id-ID')}"\n\n`;

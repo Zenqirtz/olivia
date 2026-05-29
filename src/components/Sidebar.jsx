@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import newLogo from '../assets/logo smarternak new.png';
+import newLogo from '../assets/logo.png';
 import smarternakLogo from '../assets/smarternak.png';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -77,7 +77,7 @@ const Sidebar = ({ isOpen, onClose }) => {
         } lg:translate-x-0 lg:static lg:z-auto border-r border-gray-200 dark:border-gray-700`}>
 
         {/* Header with Logo */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800">
+        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900">
           <div className="flex items-center justify-between">
             <div className="flex-1 flex justify-center">
               <div className="w-48 h-12">
@@ -90,7 +90,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             </div>
             <button
               onClick={onClose}
-              className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-blue-700 dark:hover:bg-indigo-800 transition-colors"
+              className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-amber-800 dark:hover:bg-amber-900 transition-colors"
             >
               <i className="fas fa-times text-lg"></i>
             </button>
@@ -102,7 +102,7 @@ const Sidebar = ({ isOpen, onClose }) => {
           <div className="flex items-center">
             <div
               onClick={goToSettings}
-              className="w-10 h-10 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              className="w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               title="Edit Profile"
             >
               {user?.avatar_url ? (
@@ -132,15 +132,15 @@ const Sidebar = ({ isOpen, onClose }) => {
                     to={item.path}
                     onClick={onClose}
                     className={`flex items-center px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                        ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 border-r-2 border-blue-600 dark:border-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-400'
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-r-2 border-amber-600 dark:border-amber-400'
+                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-amber-600 dark:hover:text-amber-400'
                       }`}
                   >
-                    <i className={`${item.icon} w-5 text-center mr-3 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-400'
+                    <i className={`${item.icon} w-5 text-center mr-3 ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
                       }`}></i>
                     <span className="font-medium">{item.name}</span>
                     {item.superAdminOnly && (
-                      <span className="ml-auto text-xs bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300 px-2 py-1 rounded-full">
+                      <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full">
                         Super
                       </span>
                     )}
@@ -170,7 +170,7 @@ const Sidebar = ({ isOpen, onClose }) => {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-sm w-full border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="bg-blue-50 dark:bg-blue-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-amber-50 dark:bg-amber-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Konfirmasi Logout</h3>
             </div>
             <div className="p-6">

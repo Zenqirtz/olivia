@@ -207,7 +207,7 @@ const DataKualitasTelur = () => {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
           <span className="ml-3 text-gray-600 dark:text-gray-300">Memuat data telur...</span>
         </div>
       </div>
@@ -217,19 +217,19 @@ const DataKualitasTelur = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 rounded-2xl shadow-xl mb-8 overflow-hidden">
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl shadow-xl mb-8 overflow-hidden">
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Data Kualitas Telur</h1>
-          <p className="text-blue-100">Monitoring dan analisis kualitas produksi telur</p>
+          <p className="text-amber-100">Monitoring dan analisis kualitas produksi telur</p>
 
           <div className="flex flex-wrap gap-4 mt-6 items-center">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <i className="far fa-calendar-alt text-blue-300"></i>
+                <i className="far fa-calendar-alt text-amber-300"></i>
               </div>
               <input
                 type="date"
-                className="bg-white/20 border border-blue-300/30 text-white placeholder-blue-200 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-2.5 backdrop-blur-sm"
+                className="bg-white/20 border border-amber-300/30 text-white placeholder-blue-200 text-sm rounded-xl focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-2.5 backdrop-blur-sm"
                 value={selectedDate}
                 onChange={handleDateChange}
               />
@@ -237,14 +237,14 @@ const DataKualitasTelur = () => {
 
             <div className="flex gap-3 ml-auto">
               <button
-                className="flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-blue-300/30 rounded-xl px-4 py-2.5 text-white hover:bg-white/30 transition-all"
+                className="flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-amber-300/30 rounded-xl px-4 py-2.5 text-white hover:bg-white/30 transition-all"
                 onClick={() => setFilterVisible(!filterVisible)}
               >
                 <i className="fas fa-filter"></i>
                 <span>Filter</span>
               </button>
               <button
-                className="flex items-center gap-2 bg-white text-indigo-600 rounded-xl px-4 py-2.5 hover:bg-blue-50 transition-all shadow-sm font-medium"
+                className="flex items-center gap-2 bg-white text-amber-700 rounded-xl px-4 py-2.5 hover:bg-amber-50 transition-all shadow-sm font-medium"
                 onClick={handleExportData}
               >
                 <i className="fas fa-download"></i>
@@ -297,7 +297,7 @@ const DataKualitasTelur = () => {
                 </div>
                 <input
                   type="date"
-                  className="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 p-3"
+                  className="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-3"
                   value={selectedDate}
                   onChange={handleDateChange}
                 />
@@ -314,7 +314,7 @@ const DataKualitasTelur = () => {
                     value="all"
                     checked={filters.quality === 'all'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
+                    className="w-5 h-5 text-amber-600 rounded-md focus:ring-amber-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Semua</span>
                 </label>
@@ -325,7 +325,7 @@ const DataKualitasTelur = () => {
                     value="good"
                     checked={filters.quality === 'good'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
+                    className="w-5 h-5 text-amber-600 rounded-md focus:ring-amber-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Bagus</span>
                 </label>
@@ -336,7 +336,7 @@ const DataKualitasTelur = () => {
                     value="bad"
                     checked={filters.quality === 'bad'}
                     onChange={(e) => handleQualityFilterChange(e.target.value)}
-                    className="w-5 h-5 text-blue-600 rounded-md focus:ring-blue-500"
+                    className="w-5 h-5 text-amber-600 rounded-md focus:ring-amber-500"
                   />
                   <span className="text-sm text-gray-900 dark:text-gray-100">Jelek</span>
                 </label>
@@ -353,7 +353,7 @@ const DataKualitasTelur = () => {
             </button>
             <button
               onClick={handleApplyFilter}
-              className="px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-xl hover:opacity-90 shadow-md font-medium transition-all"
+              className="px-6 py-3 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-xl hover:opacity-90 shadow-md font-medium transition-all"
             >
               Terapkan Filter
             </button>
@@ -364,7 +364,7 @@ const DataKualitasTelur = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md hover:shadow-lg transition-all relative overflow-hidden group border border-gray-100 dark:border-gray-700">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-blue-50 dark:bg-blue-900 rounded-bl-full -mt-8 -mr-8 opacity-70 z-0 group-hover:bg-blue-100 dark:group-hover:bg-blue-800 transition-all"></div>
+          <div className="absolute top-0 right-0 w-40 h-40 bg-amber-50 dark:bg-amber-900 rounded-bl-full -mt-8 -mr-8 opacity-70 z-0 group-hover:bg-amber-100 dark:group-hover:bg-amber-800 transition-all"></div>
           <div className="relative z-10">
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Total Telur</p>
             <h2 className="text-4xl font-bold text-gray-800 dark:text-gray-100 mb-1">{statistics.total_eggs}</h2>
@@ -373,7 +373,7 @@ const DataKualitasTelur = () => {
             </p>
           </div>
           <div className="absolute top-6 right-6 z-10">
-            <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-800 text-blue-500 dark:text-blue-300 group-hover:bg-blue-200 dark:group-hover:bg-blue-700 group-hover:text-blue-600 dark:group-hover:text-blue-200 transition-all">
+            <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-800 text-amber-500 dark:text-amber-300 group-hover:bg-amber-200 dark:group-hover:bg-amber-700 group-hover:text-amber-600 dark:group-hover:text-amber-200 transition-all">
               <i className="fas fa-egg text-lg"></i>
             </div>
           </div>
@@ -426,15 +426,15 @@ const DataKualitasTelur = () => {
       <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Daftar Telur</h2>
-          <div className="flex items-center gap-2 bg-blue-50 dark:bg-blue-900 px-3 py-1.5 rounded-lg">
-            <i className="fas fa-egg text-blue-500 dark:text-blue-300"></i>
-            <span className="text-sm font-medium text-blue-700 dark:text-blue-300">Total: {statistics.total_eggs} telur</span>
+          <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900 px-3 py-1.5 rounded-lg">
+            <i className="fas fa-egg text-amber-600 dark:text-amber-300"></i>
+            <span className="text-sm font-medium text-amber-700 dark:text-amber-300">Total: {statistics.total_eggs} telur</span>
           </div>
         </div>
 
         {loading ? (
           <div className="flex justify-center items-center h-32">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
             <span className="ml-3 text-gray-600 dark:text-gray-300">Memuat data...</span>
           </div>
         ) : eggData.length === 0 ? (
@@ -458,7 +458,7 @@ const DataKualitasTelur = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {eggData.map((egg, index) => (
-                    <tr key={egg.scan_id || index} className="hover:bg-blue-50/50 dark:hover:bg-gray-700 transition-colors">
+                    <tr key={egg.scan_id || index} className="hover:bg-amber-50/50 dark:hover:bg-gray-700 transition-colors">
                       <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">{egg.egg_code}</td>
                       <td className="py-4 px-6">
                         <span className={getQualityBadgeClass(egg.quality)}>
@@ -479,7 +479,7 @@ const DataKualitasTelur = () => {
                       </td>
                       <td className="py-4 px-6 text-right">
                         <button
-                          className="text-blue-500 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 bg-blue-50 dark:bg-blue-900 p-2 rounded-lg hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors"
+                          className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 bg-amber-50 dark:bg-amber-900 p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-800 transition-colors"
                           onClick={() => handleViewImage(egg)}
                           title="Lihat foto telur"
                         >
@@ -514,7 +514,7 @@ const DataKualitasTelur = () => {
                       <button
                         key={pageNum}
                         className={`px-4 py-2 rounded-lg font-medium transition-all ${pageNum === pagination.current_page
-                            ? 'bg-gradient-to-r from-blue-500 to-indigo-600 text-white'
+                            ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white'
                             : 'border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                           }`}
                         onClick={() => handlePageChange(pageNum)}

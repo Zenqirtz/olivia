@@ -21,7 +21,7 @@ const sensorRoutes = require('./routes/sensors');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-console.log(`Starting Eggspire Backend API on port ${process.env.PORT}...`);
+console.log(`Starting GardaOva Backend API on port ${process.env.PORT}...`);
 
 // Security middleware
 app.use(helmet());
@@ -80,7 +80,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.get('/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Eggspire Backend API is running',
+    message: 'GardaOva Backend API is running',
     timestamp: new Date().toISOString(),
     version: '1.0.0'
   });

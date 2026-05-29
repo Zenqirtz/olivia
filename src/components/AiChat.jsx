@@ -14,10 +14,10 @@ const AiChat = () => {
   const textareaRef = useRef(null);
 
   const quickQuestions = [
-    '🥚 Apa itu telur bagus?',
-    '📊 Cara baca dashboard?',
-    '🔧 Cara pakai ESP32?',
-    '📋 Cara unduh laporan?',
+    '⚠️ Bagaimana dampak amonia pada mutu telur?',
+    '📈 Analisis data sensor saat ini',
+    '🛠️ Rekomendasi mitigasi amonia tinggi',
+    '🔬 Logika pemodelan toksisitas GardaOva',
   ];
 
   const scrollToBottom = useCallback(() => {
@@ -128,7 +128,7 @@ const AiChat = () => {
         id="ai-chat-fab"
         className={`ai-chat-fab ${isOpen ? 'active' : ''}`}
         onClick={toggleChat}
-        title={isOpen ? 'Tutup Chat' : 'Eggspire AI Assistant'}
+        title={isOpen ? 'Tutup Chat' : 'GardaOva AI Engine'}
       >
         {isOpen ? (
           <i className="fas fa-times"></i>
@@ -144,10 +144,10 @@ const AiChat = () => {
           <div className="ai-chat-header">
             <div className="ai-chat-header-avatar">🤖</div>
             <div className="ai-chat-header-info">
-              <div className="ai-chat-header-title">Eggspire AI Assistant</div>
+              <div className="ai-chat-header-title">GardaOva AI Engine</div>
               <div className="ai-chat-header-status">
                 <span className="ai-chat-header-status-dot"></span>
-                Online • Siap membantu
+                Online • Decision Support System
               </div>
             </div>
             <div className="ai-chat-header-actions">
@@ -174,11 +174,9 @@ const AiChat = () => {
               <>
                 <div className="ai-chat-welcome">
                   <div className="ai-chat-welcome-icon">🥚</div>
-                  <h3>Halo! Saya Eggspire AI 👋</h3>
+                  <h3>Selamat datang di GardaOva AI Engine 👋</h3>
                   <p>
-                    Asisten cerdas untuk monitoring kualitas telur. Tanyakan apa
-                    saja seputar peternakan, kualitas telur, atau penggunaan
-                    sistem Eggspire!
+                    Sistem cerdas analisis toksisitas amonia ruang kandang. Saya siap memberikan penalaran data sensor serta rekomendasi intervensi mitigasi taktis untuk menjaga mutu telur Anda.
                   </p>
                 </div>
                 <div className="ai-chat-quick-actions">
@@ -213,7 +211,7 @@ const AiChat = () => {
               <div className="ai-chat-typing">
                 <div className="ai-chat-msg-avatar" style={{
                   width: 30, height: 30, borderRadius: '50%',
-                  background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                  background: 'linear-gradient(135deg, #b45309, #d97706)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: 14, flexShrink: 0
                 }}>
@@ -236,7 +234,7 @@ const AiChat = () => {
               <textarea
                 ref={textareaRef}
                 className="ai-chat-input"
-                placeholder="Ketik pesan..."
+                placeholder="Ketik pesan untuk mitigasi..."
                 value={inputValue}
                 onChange={handleTextareaInput}
                 onKeyDown={handleKeyDown}

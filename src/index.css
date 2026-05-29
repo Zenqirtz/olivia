@@ -16,11 +16,11 @@ body {
 
 @layer components {
   .sidebar-item {
-    @apply flex items-center gap-3 w-full py-3 px-4 hover:bg-blue-700 dark:hover:bg-gray-700 text-white transition-all;
+    @apply flex items-center gap-3 w-full py-3 px-4 hover:bg-amber-700 dark:hover:bg-gray-700 text-white transition-all;
   }
 
   .sidebar-item.active {
-    @apply bg-blue-700 dark:bg-gray-700;
+    @apply bg-amber-700 dark:bg-gray-700;
   }
 
   .card {
@@ -36,7 +36,7 @@ body {
   }
 
   .date-button.active {
-    @apply bg-blue-50 dark:bg-blue-900 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300;
+    @apply bg-amber-50 dark:bg-amber-900 border-amber-200 dark:border-amber-700 text-amber-700 dark:text-amber-300;
   }
 
   .badge-bagus {
@@ -52,7 +52,7 @@ body {
   }
 
   .btn-primary {
-    @apply bg-blue-600 dark:bg-blue-700 text-white hover:bg-blue-700 dark:hover:bg-blue-800 shadow-sm;
+    @apply bg-amber-600 dark:bg-amber-700 text-white hover:bg-amber-700 dark:hover:bg-amber-800 shadow-sm;
   }
 
   .btn-secondary {

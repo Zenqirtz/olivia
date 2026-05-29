@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
-import newLogo from '../assets/logo smarternak new.png';
+import newLogo from '../assets/logo.png';
 import smarternakLogo from '../assets/smarternak.png';
 
 const Login = () => {
@@ -76,10 +76,10 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-600/20 to-indigo-600/20 dark:from-blue-900/20 dark:to-indigo-900/20 transform -skew-y-6 -translate-y-24 z-0"></div>
-      <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-blue-600/20 to-indigo-600/20 dark:from-blue-900/20 dark:to-indigo-900/20 transform skew-y-6 translate-y-24 z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform -skew-y-6 -translate-y-24 z-0"></div>
+      <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform skew-y-6 translate-y-24 z-0"></div>
 
       <div className="max-w-md w-full z-10">
         {/* Theme Toggle Button */}
@@ -99,7 +99,7 @@ const Login = () => {
 
         {/* Logo Only */}
         <div className="text-center mb-8">
-          <div className="mx-auto bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
+          <div className="mx-auto bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
             <div className="flex justify-center">
               <div className="w-64 h-16">
                 <img
@@ -136,16 +136,16 @@ const Login = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-envelope text-blue-500 dark:text-blue-400"></i>
+                  <i className="fas fa-envelope text-amber-600 dark:text-amber-400"></i>
                 </div>
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.email
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${errors.email
+                    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
                   placeholder="Masukkan email Anda"
                 />
@@ -162,23 +162,23 @@ const Login = () => {
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <i className="fas fa-lock text-blue-500 dark:text-blue-400"></i>
+                  <i className="fas fa-lock text-amber-600 dark:text-amber-400"></i>
                 </div>
                 <input
                   type={showPassword ? 'text' : 'password'}
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors ${errors.password
-                      ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
-                      : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${errors.password
+                    ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
+                    : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
                   placeholder="Masukkan password Anda"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300"
                 >
                   <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
@@ -192,7 +192,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-br from-blue-600 to-indigo-700 dark:from-blue-700 dark:to-indigo-800 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+              className="w-full bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 text-white py-3 px-4 rounded-lg font-medium hover:from-amber-800 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
