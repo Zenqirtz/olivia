@@ -210,9 +210,9 @@ const UnduhLaporan = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header Section with Gradient Background */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg">
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg animate-fade-in-up">
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Unduh Laporan</h1>
           <p className="text-amber-100">Unduh berbagai jenis laporan untuk analisis dan dokumentasi.</p>
@@ -221,7 +221,7 @@ const UnduhLaporan = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl mb-6">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl mb-6 animate-fade-in-up">
           <div className="flex items-center">
             <i className="fas fa-exclamation-triangle mr-2"></i>
             <span>{error}</span>
@@ -237,7 +237,7 @@ const UnduhLaporan = () => {
 
       {/* Success Message */}
       {successMessage && (
-        <div className="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl mb-6">
+        <div className="bg-green-100 dark:bg-green-900 border border-green-400 dark:border-green-700 text-green-700 dark:text-green-300 px-4 py-3 rounded-xl mb-6 animate-fade-in-up">
           <div className="flex items-center">
             <i className="fas fa-check-circle mr-2"></i>
             <span>{successMessage}</span>
@@ -252,7 +252,7 @@ const UnduhLaporan = () => {
       )}
 
       {/* Date Range Selector */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-75 card-hover-amber">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Pilih Periode Laporan</h2>
 
         {/* Period Selection */}
@@ -263,7 +263,7 @@ const UnduhLaporan = () => {
               <button
                 key={option.id}
                 onClick={() => setSelectedPeriod(option.id)}
-                className={`p-4 rounded-xl border-2 transition-all text-left ${selectedPeriod === option.id
+                className={`p-4 rounded-xl border-2 transition-all text-left btn-press ripple-effect ${selectedPeriod === option.id
                     ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300'
                     : 'border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:border-amber-300 dark:hover:border-amber-500'
                   }`}
@@ -373,15 +373,15 @@ const UnduhLaporan = () => {
           <div
             key={report.id}
             onClick={() => setSelectedReportType(report.id)}
-            className={`p-6 rounded-2xl shadow-md border transition-all cursor-pointer ${selectedReportType === report.id
+            className={`p-6 rounded-2xl shadow-md border transition-all cursor-pointer card-hover-amber ${selectedReportType === report.id
                 ? 'border-amber-500 dark:border-amber-400 bg-amber-50 dark:bg-amber-900/30 transform scale-[1.02]'
                 : 'border-gray-100 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-amber-200 dark:hover:border-amber-600 hover:bg-amber-50/30 dark:hover:bg-amber-900/10'
-              }`}
+              } animate-fade-in-up delay-100`}
           >
             <div className="flex items-start">
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center mr-4 ${selectedReportType === report.id ? 'bg-amber-600 text-white' : 'bg-amber-100 dark:bg-amber-800 text-amber-500 dark:text-amber-300'
                 }`}>
-                <i className={`fas fa-${report.icon} text-xl`}></i>
+                <i className={`fas fa-${report.icon} text-xl ${selectedReportType === report.id ? 'animate-float' : ''}`}></i>
               </div>
               <div>
                 <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{report.title}</h3>
@@ -396,7 +396,7 @@ const UnduhLaporan = () => {
                         handleGenerateReport(format);
                       }}
                       disabled={isGenerating || (selectedPeriod === 'custom' && !selectedDate) || (selectedPeriod === 'date_range' && (!startDate || !endDate)) || selectedReportType !== report.id}
-                      className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-all
+                      className={`px-4 py-1.5 rounded-lg text-sm font-medium flex items-center gap-1.5 transition-all btn-press ripple-effect
                         ${isGenerating || selectedReportType !== report.id ? 'bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 cursor-not-allowed' :
                           format === 'pdf' ? 'bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 hover:bg-red-200 dark:hover:bg-red-800' :
                             format === 'excel' ? 'bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 hover:bg-green-200 dark:hover:bg-green-800' :
@@ -424,13 +424,13 @@ const UnduhLaporan = () => {
       </div>
 
       {/* Recent Downloads */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-150 card-hover-amber">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Unduhan Terakhir</h2>
           <button
             onClick={handleForceRefresh}
             disabled={loading}
-            className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white p-2 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white p-2 rounded-lg transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed btn-press ripple-effect"
             title="Refresh Riwayat"
           >
             {loading ? (
@@ -448,7 +448,7 @@ const UnduhLaporan = () => {
           </div>
         ) : reportHistory.length === 0 ? (
           <div className="text-center py-12">
-            <i className="fas fa-download text-4xl text-gray-300 dark:text-gray-600 mb-4"></i>
+            <i className="fas fa-download text-4xl text-gray-300 dark:text-gray-600 mb-4 animate-float"></i>
             <p className="text-gray-500 dark:text-gray-400 text-lg">Belum ada riwayat unduhan</p>
             <p className="text-gray-400 dark:text-gray-500 text-sm mt-2">Unduh laporan pertama Anda untuk melihat riwayat di sini</p>
           </div>
@@ -468,7 +468,7 @@ const UnduhLaporan = () => {
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
                 {reportHistory.map((report, index) => (
-                  <tr key={report.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                  <tr key={report.id || index} className="hover:bg-amber-50/20 dark:hover:bg-gray-700/30 table-row-animated">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                       {report.report_name ?
                         report.report_name.split(' - ')[0] || getReportTypeDisplayName(report.report_type) :

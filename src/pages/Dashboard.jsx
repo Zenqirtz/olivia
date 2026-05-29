@@ -374,20 +374,43 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto">
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-          <span className="ml-3 text-gray-600 dark:text-gray-300">Memuat dashboard...</span>
+      <div className="max-w-7xl mx-auto page-enter">
+        {/* Skeleton Header */}
+        <div className="flex justify-between items-center mb-8 animate-fade-in-up">
+          <div>
+            <div className="skeleton h-8 w-40 mb-2"></div>
+            <div className="skeleton h-4 w-56"></div>
+          </div>
+          <div className="flex gap-3">
+            <div className="skeleton h-10 w-28 rounded-lg"></div>
+            <div className="skeleton h-10 w-28 rounded-lg"></div>
+          </div>
+        </div>
+        {/* Skeleton Stat Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 animate-fade-in-up" style={{ animationDelay: `${i * 75}ms` }}>
+              <div className="skeleton h-4 w-32 mb-3"></div>
+              <div className="skeleton h-9 w-16 mb-2"></div>
+              <div className="skeleton h-3 w-24"></div>
+            </div>
+          ))}
+        </div>
+        {/* Skeleton Chart */}
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 mb-8 animate-fade-in-up delay-300">
+          <div className="skeleton h-5 w-48 mb-2"></div>
+          <div className="skeleton h-4 w-64 mb-6"></div>
+          <div className="skeleton h-72 w-full rounded-lg"></div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
+    <div className="max-w-7xl mx-auto page-enter">
+      <div className="flex justify-between items-center mb-8 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Dashboard</h1>
+          <h1 className="text-2xl font-bold gradient-text">Dashboard</h1>
           <p className="text-sm text-amber-600 dark:text-gray-400 mt-1">
             Terakhir diperbarui: {lastRefresh.toLocaleTimeString('id-ID')}
           </p>
@@ -396,7 +419,7 @@ const Dashboard = () => {
           <button
             onClick={handleRefresh}
             disabled={isRefreshing}
-            className={`flex items-center gap-2 border border-amber-200 dark:border-gray-600 rounded-lg px-4 py-2 text-amber-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 transition-all ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
+            className={`flex items-center gap-2 border border-amber-200 dark:border-gray-600 rounded-lg px-4 py-2 text-amber-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 transition-all btn-press ripple-effect ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
               }`}
           >
             <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
@@ -404,7 +427,7 @@ const Dashboard = () => {
           </button>
           <button
             onClick={handleViewAllData}
-            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm"
+            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect"
           >
             <i className="fas fa-list"></i>
             <span>Lihat Data</span>
@@ -414,7 +437,7 @@ const Dashboard = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl mb-6">
+        <div className="bg-red-100 dark:bg-red-900 border border-red-400 dark:border-red-700 text-red-700 dark:text-red-300 px-4 py-3 rounded-xl mb-6 animate-fade-in-up">
           <div className="flex items-center">
             <i className="fas fa-exclamation-triangle mr-2"></i>
             <span>{error}</span>
@@ -434,7 +457,7 @@ const Dashboard = () => {
       {/* Stat Cards */}
       <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
         }`}>
-        <div className="bg-amber-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-amber transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-75">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
             <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Hari ini</p>
@@ -449,12 +472,12 @@ const Dashboard = () => {
           </div>
           <div className="absolute top-4 right-4 z-10">
             <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
-              <i className="fas fa-chart-line"></i>
+              <i className="fas fa-chart-line animate-float"></i>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-green transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-100">
           <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
             <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Bagus</p>
@@ -466,12 +489,12 @@ const Dashboard = () => {
           </div>
           <div className="absolute top-4 right-4 z-10">
             <div className="p-2 rounded-full bg-green-500 dark:bg-green-800 text-white dark:text-green-300">
-              <i className="fas fa-check-circle"></i>
+              <i className="fas fa-check-circle animate-float"></i>
             </div>
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-red transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-150">
           <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 dark:bg-red-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
             <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Jelek</p>
@@ -483,25 +506,25 @@ const Dashboard = () => {
           </div>
           <div className="absolute top-4 right-4 z-10">
             <div className="p-2 rounded-full bg-red-500 dark:bg-red-800 text-white dark:text-red-300">
-              <i className="fas fa-exclamation-circle"></i>
+              <i className="fas fa-exclamation-circle animate-float"></i>
             </div>
           </div>
         </div>
 
         {/* Card keempat - Status Sistem */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm hover:shadow-md transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-amber transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-200">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
           <div className="relative z-10">
             <p className="text-amber-600 dark:text-gray-400 mb-1">Status Sistem</p>
             <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">Online</h2>
-            <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1 mt-1">
-              <i className="fas fa-circle text-xs"></i>
+            <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1.5 mt-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-green-500 active-dot inline-block mr-1"></span>
               <span>Semua sistem berjalan</span>
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">
             <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
-              <i className="fas fa-server"></i>
+              <i className="fas fa-server animate-float"></i>
             </div>
           </div>
         </div>
@@ -510,7 +533,7 @@ const Dashboard = () => {
       {/* ============================================ */}
       {/* Pemantauan IoT Sensor Chart (NEW) */}
       {/* ============================================ */}
-      <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700 mb-8">
+      <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber transition-all border border-amber-100 dark:border-gray-700 mb-8 animate-fade-in-up delay-250">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
           <div>
             <p className="text-amber-600 dark:text-gray-400 text-sm">Pemantauan Sensor</p>
@@ -527,7 +550,7 @@ const Dashboard = () => {
               <button
                 key={key}
                 onClick={() => handleSensorPeriodChange(key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${sensorPeriod === key
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all btn-press ripple-effect ${sensorPeriod === key
                     ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
@@ -541,27 +564,27 @@ const Dashboard = () => {
         {/* Sensor value cards */}
         {latestSensor && (
           <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800 card-hover-amber transition-all">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                <div className="w-3 h-3 rounded-full bg-orange-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Suhu</span>
               </div>
               <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
                 {latestSensor.temperature}°C
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800 card-hover-blue transition-all">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <div className="w-3 h-3 rounded-full bg-blue-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Kelembapan</span>
               </div>
               <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
                 {latestSensor.humidity}%
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800 card-hover-green transition-all">
               <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Amonia</span>
               </div>
               <p className="text-xl font-bold text-green-600 dark:text-green-400">
@@ -677,13 +700,13 @@ const Dashboard = () => {
       {/* Charts and Recent Data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
         {/* Weekly Chart */}
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-300">
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="text-amber-600 dark:text-gray-400 text-sm">Grafik Mingguan</p>
               <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">Produksi Telur 7 Hari Terakhir</h3>
             </div>
-            <button className="bg-amber-600 dark:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm">
+            <button className="bg-amber-600 dark:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect">
               Mingguan
             </button>
           </div>
@@ -724,7 +747,7 @@ const Dashboard = () => {
         </div>
 
         {/* Donut Chart — Harian / Mingguan Toggle */}
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-350">
           <div className="flex justify-between items-center mb-4">
             <div>
               <p className="text-amber-600 dark:text-gray-400 text-sm">Statistik Telur</p>
@@ -738,22 +761,14 @@ const Dashboard = () => {
             <div className="flex gap-2">
               <button
                 onClick={() => handleDonutModeChange('harian')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'harian'
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all btn-press ripple-effect ${donutMode === 'harian'
                     ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
                     : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
                   }`}
               >
                 Harian
               </button>
-              <button
-                onClick={() => handleDonutModeChange('mingguan')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${donutMode === 'mingguan'
-                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
-                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
-                  }`}
-              >
-                Mingguan
-              </button>
+              {/* Tombol 'Mingguan' dihapus sesuai permintaan */}
             </div>
           </div>
 
@@ -802,12 +817,12 @@ const Dashboard = () => {
 
       {/* Recent Eggs */}
       <div className="grid grid-cols-1 gap-8 mb-8">
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm hover:shadow-md transition-all border border-amber-100 dark:border-gray-700">
+        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-400">
           <div className="flex justify-between items-center mb-5">
             <h2 className="text-lg font-semibold text-amber-800 dark:text-gray-100">Daftar Telur Terbaru</h2>
             <button
               onClick={handleViewAllData}
-              className="text-amber-600 dark:text-amber-400 text-sm hover:text-amber-700 dark:hover:text-amber-300 transition-all flex items-center gap-1"
+              className="text-amber-600 dark:text-amber-400 text-sm hover:text-amber-700 dark:hover:text-amber-300 transition-all flex items-center gap-1 btn-press px-2 py-1 rounded"
             >
               <span>Lihat Semua Data</span>
               <i className="fas fa-chevron-right text-xs"></i>
@@ -826,7 +841,7 @@ const Dashboard = () => {
               <tbody>
                 {recentEggs.length > 0 ? (
                   recentEggs.map((egg, index) => (
-                    <tr key={egg.scan_id || index} className="border-b border-amber-100 dark:border-gray-700 hover:bg-amber-100 dark:hover:bg-gray-700 transition-all">
+                    <tr key={egg.scan_id || index} className="border-b border-amber-100 dark:border-gray-700 hover:bg-amber-100/50 dark:hover:bg-gray-700/50 table-row-animated">
                       <td className="py-3 px-4 text-amber-800 dark:text-gray-200">{egg.egg_code}</td>
                       <td className="py-3 px-4">
                         <span className={`px-3 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
@@ -853,7 +868,7 @@ const Dashboard = () => {
           <div className="mt-5">
             <button
               onClick={handleViewAllData}
-              className="text-amber-600 dark:text-amber-400 flex items-center gap-1 hover:text-amber-700 dark:hover:text-amber-300 transition-all"
+              className="text-amber-600 dark:text-amber-400 flex items-center gap-1 hover:text-amber-700 dark:hover:text-amber-300 transition-all btn-press px-2 py-1 rounded"
             >
               <span>Lihat semua data telur</span>
               <i className="fas fa-arrow-right ml-1 text-xs"></i>

@@ -196,7 +196,12 @@ const getRecentEggs = async (req, res) => {
 // Get daily egg summary for dashboard
 const getDailyEggSummary = async (req, res) => {
   try {
-    const { date = new Date().toISOString().split('T')[0] } = req.query;
+    const { date } = req.query;
+    let targetDate = date;
+    if (!targetDate) {
+      const d = new Date();
+      targetDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
 
     const summaryQuery = `
       SELECT 
@@ -217,8 +222,8 @@ const getDailyEggSummary = async (req, res) => {
     `;
 
     const [summaryResult, yesterdayResult] = await Promise.all([
-      executeQuery(summaryQuery, [date]),
-      executeQuery(yesterdayQuery, [date])
+      executeQuery(summaryQuery, [targetDate]),
+      executeQuery(yesterdayQuery, [targetDate])
     ]);
 
     const summary = summaryResult.data[0] || {
@@ -251,7 +256,7 @@ const getDailyEggSummary = async (req, res) => {
     res.json({
       success: true,
       data: {
-        date: date,
+        date: targetDate,
         summary: summary
       }
     });

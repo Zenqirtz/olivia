@@ -3,7 +3,8 @@ const { executeQuery } = require('../config/database');
 // Get dashboard summary data
 const getDashboardSummary = async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const localDate = new Date();
+    const today = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
 
     // Get today's egg statistics
     const eggStatsQuery = `
@@ -14,7 +15,7 @@ const getDashboardSummary = async (req, res) => {
         SUM(CASE WHEN quality = 'uncertain' THEN 1 ELSE 0 END) as uncertain_eggs,
         AVG(ai_confidence) as avg_ai_confidence,
         MAX(scanned_at) as last_scan_time
-      FROM egg_ai_scans 
+      FROM egg_scans 
       WHERE DATE(scanned_at) = ?
     `;
 
@@ -139,7 +140,7 @@ const getWeeklyStats = async (req, res) => {
         SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
         SUM(CASE WHEN quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
         AVG(ai_confidence) as avg_confidence
-      FROM egg_ai_scans 
+      FROM egg_scans 
       WHERE scanned_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)
       GROUP BY DATE(scanned_at)
       ORDER BY scan_date ASC
@@ -152,7 +153,7 @@ const getWeeklyStats = async (req, res) => {
     for (let i = 6; i >= 0; i--) {
       const date = new Date();
       date.setDate(date.getDate() - i);
-      const dateStr = date.toISOString().split('T')[0];
+      const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
       
       const dayData = weeklyResult.data.find(row => row.scan_date === dateStr);
       last7Days.push({
@@ -185,7 +186,7 @@ const getRecentEggs = async (req, res) => {
     const { limit = 10 } = req.query;
 
     const limitNum = parseInt(limit);
-    const recentEggsQuery = `SELECT eas.scan_id, eas.egg_code, eas.quality, eas.ai_confidence, eas.quality_score, eas.scanned_at, eas.weight, eas.length, eas.width, eas.height FROM egg_ai_scans eas ORDER BY eas.scanned_at DESC LIMIT ${limitNum}`;
+    const recentEggsQuery = `SELECT eas.scan_id, eas.egg_code, eas.quality, eas.ai_confidence, eas.quality_score, eas.scanned_at, eas.weight, eas.length, eas.width, eas.height FROM egg_scans eas ORDER BY eas.scanned_at DESC LIMIT ${limitNum}`;
 
     const recentEggsResult = await executeQuery(recentEggsQuery, []);
 
