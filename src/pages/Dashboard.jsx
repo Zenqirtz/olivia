@@ -557,8 +557,8 @@ const Dashboard = () => {
 
         {/* Sensor value cards */}
         {latestSensor && (
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800 card-hover-amber transition-all">
+          <div className="grid grid-cols-3 gap-4 mb-4 animate-fade-in-up">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800 card-hover-amber transition-all duration-300">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-3 h-3 rounded-full bg-orange-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Suhu</span>
@@ -567,7 +567,7 @@ const Dashboard = () => {
                 {latestSensor.temperature}°C
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800 card-hover-blue transition-all">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800 card-hover-blue transition-all duration-300">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-3 h-3 rounded-full bg-blue-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Kelembapan</span>
@@ -576,7 +576,7 @@ const Dashboard = () => {
                 {latestSensor.humidity}%
               </p>
             </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800 card-hover-green transition-all">
+            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800 card-hover-green transition-all duration-300">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-3 h-3 rounded-full bg-green-500 active-dot"></div>
                 <span className="text-xs text-gray-500 dark:text-gray-400">Amonia</span>
@@ -595,96 +595,98 @@ const Dashboard = () => {
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
             </div>
           ) : sensorChartData.labels.length > 0 ? (
-            <Line
-              data={sensorChartData}
-              options={{
-                maintainAspectRatio: false,
-                interaction: {
-                  mode: 'index',
-                  intersect: false,
-                },
-                plugins: {
-                  legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280',
-                      usePointStyle: true,
-                      padding: 20,
+            <div className="h-full chart-container">
+              <Line
+                data={sensorChartData}
+                options={{
+                  maintainAspectRatio: false,
+                  interaction: {
+                    mode: 'index',
+                    intersect: false,
+                  },
+                  plugins: {
+                    legend: {
+                      display: true,
+                      position: 'bottom',
+                      labels: {
+                        color: isDarkMode ? '#9ca3af' : '#6b7280',
+                        usePointStyle: true,
+                        padding: 20,
+                      }
+                    },
+                    tooltip: {
+                      backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                      titleColor: isDarkMode ? '#f3f4f6' : '#111827',
+                      bodyColor: isDarkMode ? '#d1d5db' : '#374151',
+                      borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                      borderWidth: 1,
+                      padding: 12,
+                      callbacks: {
+                        label: function (context) {
+                          let label = context.dataset.label || '';
+                          let value = context.parsed.y;
+                          if (label.includes('Suhu')) return `${label}: ${value}°C`;
+                          if (label.includes('Kelembapan')) return `${label}: ${value}%`;
+                          if (label.includes('Amonia')) return `${label}: ${value} ppm`;
+                          return `${label}: ${value}`;
+                        }
+                      }
                     }
                   },
-                  tooltip: {
-                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-                    titleColor: isDarkMode ? '#f3f4f6' : '#111827',
-                    bodyColor: isDarkMode ? '#d1d5db' : '#374151',
-                    borderColor: isDarkMode ? '#374151' : '#e5e7eb',
-                    borderWidth: 1,
-                    padding: 12,
-                    callbacks: {
-                      label: function (context) {
-                        let label = context.dataset.label || '';
-                        let value = context.parsed.y;
-                        if (label.includes('Suhu')) return `${label}: ${value}°C`;
-                        if (label.includes('Kelembapan')) return `${label}: ${value}%`;
-                        if (label.includes('Amonia')) return `${label}: ${value} ppm`;
-                        return `${label}: ${value}`;
+                  scales: {
+                    y: {
+                      type: 'linear',
+                      display: true,
+                      position: 'left',
+                      title: {
+                        display: true,
+                        text: 'Suhu (°C) / Kelembapan (%)',
+                        color: isDarkMode ? '#9ca3af' : '#6b7280',
+                        font: { size: 11 }
+                      },
+                      grid: {
+                        color: isDarkMode ? '#374151' : '#e5e7eb'
+                      },
+                      ticks: {
+                        color: isDarkMode ? '#9ca3af' : '#6b7280'
+                      }
+                    },
+                    y1: {
+                      type: 'linear',
+                      display: true,
+                      position: 'right',
+                      title: {
+                        display: true,
+                        text: 'Amonia (ppm)',
+                        color: isDarkMode ? '#9ca3af' : '#6b7280',
+                        font: { size: 11 }
+                      },
+                      grid: {
+                        drawOnChartArea: false,
+                      },
+                      ticks: {
+                        color: isDarkMode ? '#9ca3af' : '#6b7280'
+                      }
+                    },
+                    x: {
+                      grid: {
+                        color: isDarkMode ? '#374151' : '#e5e7eb'
+                      },
+                      ticks: {
+                        color: isDarkMode ? '#9ca3af' : '#6b7280',
+                        maxRotation: 45,
+                        font: { size: 10 },
+                        maxTicksLimit: 20,
+                        autoSkip: true,
+                        autoSkipPadding: 8,
                       }
                     }
                   }
-                },
-                scales: {
-                  y: {
-                    type: 'linear',
-                    display: true,
-                    position: 'left',
-                    title: {
-                      display: true,
-                      text: 'Suhu (°C) / Kelembapan (%)',
-                      color: isDarkMode ? '#9ca3af' : '#6b7280',
-                      font: { size: 11 }
-                    },
-                    grid: {
-                      color: isDarkMode ? '#374151' : '#e5e7eb'
-                    },
-                    ticks: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280'
-                    }
-                  },
-                  y1: {
-                    type: 'linear',
-                    display: true,
-                    position: 'right',
-                    title: {
-                      display: true,
-                      text: 'Amonia (ppm)',
-                      color: isDarkMode ? '#9ca3af' : '#6b7280',
-                      font: { size: 11 }
-                    },
-                    grid: {
-                      drawOnChartArea: false,
-                    },
-                    ticks: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280'
-                    }
-                  },
-                  x: {
-                    grid: {
-                      color: isDarkMode ? '#374151' : '#e5e7eb'
-                    },
-                    ticks: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280',
-                      maxRotation: 45,
-                      font: { size: 10 },
-                      maxTicksLimit: 20,
-                      autoSkip: true,
-                      autoSkipPadding: 8,
-                    }
-                  }
-                }
-              }}
-            />
+                }}
+              />
+            </div>
           ) : (
-            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500">
+            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500 animate-fadeIn">
               <div className="text-center">
                 <i className="fas fa-thermometer-half text-4xl mb-2"></i>
                 <p>Belum ada data sensor</p>

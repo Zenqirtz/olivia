@@ -466,7 +466,7 @@ const UnduhLaporan = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Aksi</th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 tbody-stagger">
                 {reportHistory.map((report, index) => (
                   <tr key={report.id || index} className="hover:bg-amber-50/20 dark:hover:bg-gray-700/30 table-row-animated">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
@@ -516,7 +516,7 @@ const UnduhLaporan = () => {
                         </button>
 
                         {openDropdownId === (report.id || report.report_id || index) && (
-                          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-600">
+                          <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg z-10 border border-gray-200 dark:border-gray-600 animate-fade-in-scale">
                             <div className="py-1">
                               <button
                                 onClick={() => handleViewDetails(report)}

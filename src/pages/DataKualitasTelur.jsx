@@ -277,7 +277,7 @@ const DataKualitasTelur = () => {
 
       {/* Filter Panel */}
       {filterVisible && (
-        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg mb-8 border border-gray-100 dark:border-gray-700 relative animate-fadeIn">
+        <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg mb-8 border border-gray-100 dark:border-gray-700 relative animate-fade-in-scale">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Filter Data</h3>
             <button
@@ -456,7 +456,7 @@ const DataKualitasTelur = () => {
                     <th className="py-4 px-6 text-right font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Aksi</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 tbody-stagger">
                   {eggData.map((egg, index) => (
                     <tr key={egg.scan_id || index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-amber-50/30 dark:hover:bg-gray-700/30 table-row-animated">
                       <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">{egg.egg_code}</td>

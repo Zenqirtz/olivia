@@ -266,7 +266,7 @@ const Pengaturan = () => {
   };
 
   const renderProfileTab = () => (
-    <div className="space-y-6">
+    <div key="profile" className="space-y-6 tab-content-enter">
       {/* Status Message - Only show success/error messages within the tab content */}
       {message.text && (
         <div className={`${message.type === 'success'
@@ -371,7 +371,7 @@ const Pengaturan = () => {
               value={profileData.name}
               onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
               disabled={!isEditing || isSaving}
-              className={`w-full border rounded-lg px-4 py-2 ${isEditing
+              className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
                   ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
@@ -395,7 +395,7 @@ const Pengaturan = () => {
               value={profileData.phone}
               onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
               disabled={!isEditing || isSaving}
-              className={`w-full border rounded-lg px-4 py-2 ${isEditing
+              className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
                   ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
@@ -420,7 +420,7 @@ const Pengaturan = () => {
             onChange={(e) => setProfileData(prev => ({ ...prev, bio: e.target.value }))}
             disabled={!isEditing || isSaving}
             rows={3}
-            className={`w-full border rounded-lg px-4 py-2 ${isEditing
+            className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
                 ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
                 : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
               } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
@@ -432,7 +432,7 @@ const Pengaturan = () => {
 
   const renderAccountTab = () => {
     return (
-      <div className="space-y-6">
+      <div key="account" className="space-y-6 tab-content-enter">
         {/* Change Password */}
         <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Ubah Password</h3>
@@ -448,7 +448,7 @@ const Pengaturan = () => {
                   name="currentPassword"
                   value={passwordData.currentPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${passwordErrors.currentPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.currentPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -479,7 +479,7 @@ const Pengaturan = () => {
                   name="newPassword"
                   value={passwordData.newPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${passwordErrors.newPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.newPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -518,7 +518,7 @@ const Pengaturan = () => {
                   name="confirmPassword"
                   value={passwordData.confirmPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 ${passwordErrors.confirmPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.confirmPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -617,9 +617,9 @@ const Pengaturan = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg">
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg animate-fade-in-up">
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Pengaturan</h1>
           <p className="text-amber-100">Kelola profil, akun, dan preferensi sistem Anda.</p>
@@ -628,8 +628,8 @@ const Pengaturan = () => {
 
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Sidebar Navigation */}
-        <div className="lg:w-1/4">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-4">
+        <div className="lg:w-1/4 animate-fade-in-up delay-75">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-4 card-hover-amber">
             <nav className="space-y-2">
               {tabs.map((tab) => (
                 <button
@@ -637,7 +637,7 @@ const Pengaturan = () => {
                   onClick={() => {
                     setActiveTab(tab.id);
                   }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeTab === tab.id
+                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all btn-press ripple-effect ${activeTab === tab.id
                       ? 'bg-amber-50 dark:bg-amber-900 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
@@ -651,7 +651,7 @@ const Pengaturan = () => {
         </div>
 
         {/* Main Content */}
-        <div className="lg:w-3/4">
+        <div className="lg:w-3/4 animate-fade-in-up delay-150">
           {activeTab === 'profile' && renderProfileTab()}
           {activeTab === 'account' && renderAccountTab()}
         </div>

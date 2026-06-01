@@ -285,9 +285,9 @@ const ManajemenAkun = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg">
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg animate-fade-in-up">
         <div className="px-8 py-10 text-white">
           <h1 className="text-3xl font-bold mb-2">Manajemen Akun</h1>
           <p className="text-amber-100">Kelola akun pengguna sistem GardaOva</p>
@@ -296,17 +296,17 @@ const ManajemenAkun = () => {
 
       {/* Error Message */}
       {errors.general && (
-        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400">
+        <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-400 animate-fadeIn">
           {errors.general}
         </div>
       )}
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 card-hover-amber animate-fade-in-up delay-75">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300">
-              <i className="fas fa-users text-xl"></i>
+              <i className="fas fa-users text-xl animate-float"></i>
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Total Akun</p>
@@ -315,10 +315,10 @@ const ManajemenAkun = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 card-hover-green animate-fade-in-up delay-100">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300">
-              <i className="fas fa-user-check text-xl"></i>
+              <i className="fas fa-user-check text-xl animate-float"></i>
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Akun Aktif</p>
@@ -329,10 +329,10 @@ const ManajemenAkun = () => {
           </div>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 card-hover-amber animate-fade-in-up delay-150">
           <div className="flex items-center">
             <div className="p-3 rounded-full bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300">
-              <i className="fas fa-user-shield text-xl"></i>
+              <i className="fas fa-user-shield text-xl animate-float"></i>
             </div>
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Super Admin</p>
@@ -345,15 +345,15 @@ const ManajemenAkun = () => {
       </div>
 
       {/* Users Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-200 card-hover-amber">
         <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Daftar Akun</h2>
             <button
               onClick={() => handleOpenModal('create')}
-              className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center gap-2"
+              className="bg-gradient-to-r from-amber-600 to-amber-700 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-all flex items-center gap-2 btn-press ripple-effect"
             >
-              <i className="fas fa-plus"></i>
+              <i className="fas fa-plus animate-float"></i>
               Tambah Akun
             </button>
           </div>
@@ -385,9 +385,9 @@ const ManajemenAkun = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 tbody-stagger">
                 {users.map((userData) => (
-                  <tr key={userData.user_id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                  <tr key={userData.user_id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-amber-50/30 dark:hover:bg-gray-700/30 table-row-animated">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
@@ -455,8 +455,8 @@ const ManajemenAkun = () => {
 
       {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 modal-backdrop-animate">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl max-w-md w-full max-h-[90vh] overflow-y-auto modal-content-animate">
             <div className="px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {modalType === 'create' && 'Tambah Akun Baru'}
@@ -495,11 +495,11 @@ const ManajemenAkun = () => {
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 input-glow ${errors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan nama lengkap"
                     />
-                    {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name}</p>}
+                    {errors.name && <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.name}</p>}
                   </div>
 
                   <div>
@@ -511,11 +511,11 @@ const ManajemenAkun = () => {
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 input-glow ${errors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan email"
                     />
-                    {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>}
+                    {errors.email && <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.email}</p>}
                   </div>
 
                   <div>
@@ -526,7 +526,7 @@ const ManajemenAkun = () => {
                       name="role"
                       value={formData.role}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white input-glow"
                     >
                       {roleOptions.map(option => (
                         <option key={option.value} value={option.value}>
@@ -545,11 +545,11 @@ const ManajemenAkun = () => {
                       name="password"
                       value={formData.password}
                       onChange={handleInputChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                      className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 input-glow ${errors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                         } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                       placeholder="Masukkan password"
                     />
-                    {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>}
+                    {errors.password && <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.password}</p>}
                   </div>
 
                   {(modalType === 'create' || formData.password) && (
@@ -562,11 +562,11 @@ const ManajemenAkun = () => {
                         name="confirmPassword"
                         value={formData.confirmPassword}
                         onChange={handleInputChange}
-                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 ${errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
+                        className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 input-glow ${errors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-600'
                           } bg-white dark:bg-gray-700 text-gray-900 dark:text-white`}
                         placeholder="Konfirmasi password"
                       />
-                      {errors.confirmPassword && <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>}
+                      {errors.confirmPassword && <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.confirmPassword}</p>}
                     </div>
                   )}
 
@@ -579,7 +579,7 @@ const ManajemenAkun = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white input-glow"
                       placeholder="Masukkan nomor telepon"
                     />
                   </div>
@@ -593,7 +593,7 @@ const ManajemenAkun = () => {
                       value={formData.bio}
                       onChange={handleInputChange}
                       rows={3}
-                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                      className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white input-glow"
                       placeholder="Masukkan bio singkat"
                     />
                   </div>

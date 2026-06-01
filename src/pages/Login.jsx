@@ -81,24 +81,24 @@ const Login = () => {
       <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform -skew-y-6 -translate-y-24 z-0"></div>
       <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform skew-y-6 translate-y-24 z-0"></div>
 
-      <div className="max-w-md w-full z-10">
+      <div className="max-w-md w-full z-10 animate-fade-in-scale">
         {/* Theme Toggle Button */}
-        <div className="flex justify-end mb-6">
+        <div className="flex justify-end mb-6 animate-fade-in-scale delay-75">
           <button
             onClick={toggleTheme}
-            className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200"
+            className="p-3 rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-200 btn-press ripple-effect"
             title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
           >
             {isDarkMode ? (
-              <i className="fas fa-sun text-yellow-500 text-xl"></i>
+              <i className="fas fa-sun text-yellow-500 text-xl animate-float"></i>
             ) : (
-              <i className="fas fa-moon text-gray-600 text-xl"></i>
+              <i className="fas fa-moon text-gray-600 text-xl animate-float"></i>
             )}
           </button>
         </div>
 
         {/* Logo Only */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 animate-fade-in-up delay-100">
           <div className="mx-auto bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
             <div className="flex justify-center">
               <div className="w-64 h-16">
@@ -113,14 +113,14 @@ const Login = () => {
         </div>
 
         {/* Login Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 border border-gray-100 dark:border-gray-700 backdrop-blur-sm hover:shadow-2xl transition-all duration-300 animate-fade-in-up delay-150">
           <div className="mb-7 text-center">
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">Masuk ke Akun</h2>
             <p className="text-gray-600 dark:text-gray-400">Silakan masuk untuk melanjutkan</p>
           </div>
 
           {errors.general && (
-            <div className="mb-5 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+            <div className="mb-5 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg animate-fadeIn">
               <div className="flex items-center">
                 <i className="fas fa-exclamation-circle text-red-500 mr-2"></i>
                 <span className="text-red-700 dark:text-red-400 text-sm">{errors.general}</span>
@@ -143,7 +143,7 @@ const Login = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${errors.email
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all input-glow ${errors.email
                     ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -151,7 +151,7 @@ const Login = () => {
                 />
               </div>
               {errors.email && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.email}</p>
               )}
             </div>
 
@@ -169,7 +169,7 @@ const Login = () => {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-colors ${errors.password
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all input-glow ${errors.password
                     ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                     : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400`}
@@ -178,13 +178,13 @@ const Login = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-amber-500 dark:text-amber-400 hover:text-amber-600 dark:hover:text-amber-300 transition-colors"
                 >
                   <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
                 </button>
               </div>
               {errors.password && (
-                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.password}</p>
               )}
             </div>
 
@@ -192,7 +192,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 text-white py-3 px-4 rounded-lg font-medium hover:from-amber-800 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+              className="w-full bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 text-white py-3 px-4 rounded-lg font-medium hover:from-amber-800 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl btn-press ripple-effect"
             >
               {loading ? (
                 <div className="flex items-center justify-center">
@@ -210,7 +210,7 @@ const Login = () => {
         </div>
 
         {/* Footer */}
-        <div className="text-center mt-8">
+        <div className="text-center mt-8 animate-fade-in-up delay-200">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             © 2024 Smarternak. All rights reserved.
           </p>
