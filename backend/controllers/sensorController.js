@@ -25,8 +25,8 @@ const getSensorReadings = async (req, res) => {
       case '24h':
       default:
         intervalClause = 'INTERVAL 24 HOUR';
-        // Every reading for 24h view
-        groupBy = `reading_id`;
+        // Group by 5-minute intervals for 24h view (max ~288 data points)
+        groupBy = `DATE(recorded_at), FLOOR(HOUR(recorded_at) * 12 + MINUTE(recorded_at) / 5)`;
         dateFormat = `DATE_FORMAT(MIN(recorded_at), '%H:%i')`;
         break;
     }

@@ -119,7 +119,8 @@ const Dashboard = () => {
               fill: true,
               tension: 0.4,
               borderWidth: 2,
-              pointRadius: period === '24h' ? 3 : 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
               yAxisID: 'y',
             },
             {
@@ -130,7 +131,8 @@ const Dashboard = () => {
               fill: true,
               tension: 0.4,
               borderWidth: 2,
-              pointRadius: period === '24h' ? 3 : 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
               yAxisID: 'y',
             },
             {
@@ -141,7 +143,8 @@ const Dashboard = () => {
               fill: true,
               tension: 0.4,
               borderWidth: 2,
-              pointRadius: period === '24h' ? 3 : 2,
+              pointRadius: 0,
+              pointHoverRadius: 5,
               yAxisID: 'y1',
             }
           ]
@@ -671,7 +674,10 @@ const Dashboard = () => {
                     ticks: {
                       color: isDarkMode ? '#9ca3af' : '#6b7280',
                       maxRotation: 45,
-                      font: { size: 10 }
+                      font: { size: 10 },
+                      maxTicksLimit: 20,
+                      autoSkip: true,
+                      autoSkipPadding: 8,
                     }
                   }
                 }
