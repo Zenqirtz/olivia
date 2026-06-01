@@ -17,7 +17,9 @@ const AiChat = () => {
     '⚠️ Bagaimana dampak amonia pada mutu telur?',
     '📈 Analisis data sensor saat ini',
     '🛠️ Rekomendasi mitigasi amonia tinggi',
-    '🔬 Logika pemodelan toksisitas GardaOva',
+    '🔑 Berapa kredensial login default Admin dan Superadmin?',
+    '📂 Bagaimana cara unduh laporan kualitas telur?',
+    '👤 Di mana letak menu pengaturan profil?',
   ];
 
   const scrollToBottom = useCallback(() => {
@@ -88,7 +90,7 @@ const AiChat = () => {
       const errorMessage = {
         id: Date.now() + 1,
         type: 'ai',
-        text: '⚠️ Maaf, terjadi kesalahan. Silakan coba lagi.',
+        text: `⚠️ Maaf, terjadi kesalahan: ${error.message || 'Silakan coba lagi.'}`,
         time: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);

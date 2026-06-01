@@ -68,6 +68,10 @@ class ApiClient {
           errorMessage = detailedErrors || errorMessage;
         }
         
+        if (data.error) {
+          errorMessage = `${errorMessage} (Detail: ${data.error})`;
+        }
+        
         throw new Error(errorMessage);
       }
 

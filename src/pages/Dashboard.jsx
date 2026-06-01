@@ -417,15 +417,6 @@ const Dashboard = () => {
         </div>
         <div className="flex gap-3">
           <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className={`flex items-center gap-2 border border-amber-200 dark:border-gray-600 rounded-lg px-4 py-2 text-amber-700 dark:text-gray-300 hover:bg-amber-50 dark:hover:bg-gray-700 transition-all btn-press ripple-effect ${isRefreshing ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
-          >
-            <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
-            <span>{isRefreshing ? 'Memperbarui...' : 'Refresh'}</span>
-          </button>
-          <button
             onClick={handleViewAllData}
             className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect"
           >
@@ -484,7 +475,7 @@ const Dashboard = () => {
             <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.goodEggs}</h2>
             <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1 mt-1">
               <i className="fas fa-arrow-up text-xs"></i>
-              <span>{formatPercentage(dashboardStats.goodPercentage)}%</span>
+              <span>{formatPercentage(dashboardStats.goodPercentage, 2)}%</span>
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">
@@ -501,7 +492,7 @@ const Dashboard = () => {
             <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.badEggs}</h2>
             <p className="text-red-500 dark:text-red-400 text-sm flex items-center gap-1 mt-1">
               <i className="fas fa-arrow-up text-xs"></i>
-              <span>{formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)}%</span>
+              <span>{formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 2)}%</span>
             </p>
           </div>
           <div className="absolute top-4 right-4 z-10">

@@ -1,0 +1,86 @@
+flowchart TD
+    %% ==========================================
+    %% 1. DEFINISI NODE - TEKS RINGKAS (SINGLE LINE)
+    %% Mencegah Word-Wrap & Teks Terpotong di Semua Browser
+    %% ==========================================
+    Start(["START Sistem"])
+    
+    DHT22["DHT22 (Suhu & RH)"]
+    MQ137["MQ137 (Amonia)"]
+    
+    EnvData["Data Lingkungan"]
+    
+    Cam["ESP32-CAM Kamera"]
+    ML["Klasifikasi AI"]
+    
+    Pred{"Prediksi"}
+    
+    HasilB["Hasil Bagus"]
+    HasilJ["Hasil Jelek"]
+    
+    TCP["Kirim via TCP"]
+    ESP["ESP32 Kontroler"]
+    
+    LCD["Display LCD"]
+    
+    Dec{"Keputusan"}
+    
+    ServoJ["Servo Wadah Jelek"]
+    ServoB["Servo Wadah Bagus"]
+    
+    USJ["HC-SR04 Jelek"]
+    USB["HC-SR04 Bagus"]
+    
+    Server["HTTP POST Server"]
+
+    %% ==========================================
+    %% 2. ALUR HUBUNGAN & KONEKSI (FLOW)
+    %% ==========================================
+    Start --> DHT22
+    Start --> MQ137
+    Start --> Cam
+    
+    DHT22 --> EnvData
+    MQ137 --> EnvData
+    
+    EnvData -->|Pengaruh Kualitas| Cam
+    EnvData ----> Server
+    
+    Cam --> ML
+    ML --> Pred
+    
+    Pred -->|Bagus| HasilB
+    Pred -->|Jelek| HasilJ
+    
+    HasilB --> TCP
+    HasilJ --> TCP
+    
+    TCP --> ESP
+    
+    ESP --> LCD
+    ESP --> Dec
+    
+    Dec -->|Jelek| ServoJ
+    Dec -->|Bagus| ServoB
+    
+    ServoJ --> USJ
+    ServoB --> USB
+    
+    USJ --> Server
+    USB --> Server
+
+    %% ==========================================
+    %% 3. TAMPILAN ESTETIKA PREMIUM (FONT COMPACT 11PX)
+    %% Menjamin teks pas sempurna di dalam kotak
+    %% ==========================================
+    classDef startStyle fill:#e6fcf5,stroke:#0ca678,stroke-width:2px,color:#097969,font-weight:bold,font-size:11px;
+    classDef sensorStyle fill:#e8f7ff,stroke:#1971c2,stroke-width:2px,color:#0b5394,font-weight:bold,font-size:11px;
+    classDef processStyle fill:#f3f0ff,stroke:#6f2dbd,stroke-width:2px,color:#4c0677,font-weight:bold,font-size:11px;
+    classDef decisionStyle fill:#fff9db,stroke:#f59f00,stroke-width:2px,color:#664d03,font-weight:bold,font-size:11px;
+    classDef serverStyle fill:#ebfbee,stroke:#2b8a3e,stroke-width:2px,color:#1e5c2d,font-weight:bold,font-size:11px;
+
+    class Start startStyle;
+    class DHT22,MQ137,EnvData sensorStyle;
+    class Cam,ML,HasilB,HasilJ,TCP,ESP,LCD,ServoJ,ServoB,USJ,USB processStyle;
+    class Pred,Dec decisionStyle;
+    class Server serverStyle;
