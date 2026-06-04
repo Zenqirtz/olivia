@@ -525,7 +525,14 @@ const getReportData = async (reportType, period, date) => {
           scan_id as egg_id,
           egg_code,
           quality,
-          scanned_at as created_at
+          scanned_at as created_at,
+          (
+            SELECT s.ammonia 
+            FROM sensor_readings s 
+            WHERE s.recorded_at BETWEEN DATE_SUB(egg_scans.scanned_at, INTERVAL 1 HOUR) AND DATE_ADD(egg_scans.scanned_at, INTERVAL 1 HOUR)
+            ORDER BY ABS(TIMESTAMPDIFF(SECOND, s.recorded_at, egg_scans.scanned_at)) ASC 
+            LIMIT 1
+          ) as ammonia
         FROM egg_scans
         ${dateFilter ? `WHERE ${dateFilter}` : ''}
         ORDER BY scanned_at DESC
@@ -540,7 +547,12 @@ const getReportData = async (reportType, period, date) => {
           SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
           SUM(CASE WHEN quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
           MIN(scanned_at) as first_scan,
-          MAX(scanned_at) as last_scan
+          MAX(scanned_at) as last_scan,
+          (
+            SELECT ROUND(AVG(s.ammonia), 1)
+            FROM sensor_readings s
+            WHERE DATE(s.recorded_at) = DATE(scanned_at)
+          ) as avg_ammonia
         FROM egg_scans
         ${dateFilter ? `WHERE ${dateFilter}` : ''}
         GROUP BY DATE(scanned_at)
@@ -605,7 +617,7 @@ const generatePDFReport = async (data, reportType, period, date) => {
   }
 
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument();
+      const doc = new PDFDocument({ bufferPages: true });
       const writeStream = fs.createWriteStream(filePath);
 
       // Handle stream errors
@@ -644,8 +656,8 @@ const generatePDFReport = async (data, reportType, period, date) => {
       if (reportType === 'kualitas-telur') {
         // Table headers
         const tableTop = doc.y + 20;
-        const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Tanggal Scan'];
-        const columnWidths = [40, 150, 120, 180];
+        const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
+        const columnWidths = [30, 130, 80, 90, 160];
         
         // Draw table headers
         doc.font('Helvetica-Bold');
@@ -677,9 +689,14 @@ const generatePDFReport = async (data, reportType, period, date) => {
           doc.text(item.quality, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
           xPosition += columnWidths[2];
           
+          // Amonia
+          const ammoniaVal = item.ammonia !== null && item.ammonia !== undefined ? `${item.ammonia} ppm` : '-';
+          doc.text(ammoniaVal, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
+          xPosition += columnWidths[3];
+          
           // Tanggal Scan
           const scanDate = new Date(item.created_at).toLocaleString('id-ID');
-          doc.text(scanDate, xPosition, yPosition, { width: columnWidths[3], align: 'left' });
+          doc.text(scanDate, xPosition, yPosition, { width: columnWidths[4], align: 'left' });
           
           // Move to next row
           yPosition += 20;
@@ -701,8 +718,8 @@ const generatePDFReport = async (data, reportType, period, date) => {
       } else if (reportType === 'statistik-produksi') {
         // Table headers
         const tableTop = doc.y + 20;
-        const tableHeaders = ['Tanggal', 'Total', 'Kualitas Baik', 'Kualitas Buruk', 'Rentang Waktu'];
-        const columnWidths = [120, 80, 100, 100, 130];
+        const tableHeaders = ['Tanggal', 'Total', 'Kualitas Baik', 'Kualitas Buruk', 'Amonia Rerata', 'Rentang Waktu'];
+        const columnWidths = [100, 50, 80, 80, 90, 90];
         
         // Draw table headers
         doc.font('Helvetica-Bold');
@@ -744,6 +761,11 @@ const generatePDFReport = async (data, reportType, period, date) => {
           doc.text(`${item.bad_eggs} (${badPercentage})`, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
           xPosition += columnWidths[3];
           
+          // Amonia Rerata
+          const avgAmmoniaVal = item.avg_ammonia !== null && item.avg_ammonia !== undefined ? `${item.avg_ammonia} ppm` : '-';
+          doc.text(avgAmmoniaVal, xPosition, yPosition, { width: columnWidths[4], align: 'center' });
+          xPosition += columnWidths[4];
+          
           // Rentang Waktu
           let timeRange = '-';
           if (item.first_scan && item.last_scan) {
@@ -751,10 +773,10 @@ const generatePDFReport = async (data, reportType, period, date) => {
             const lastTime = new Date(item.last_scan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
             timeRange = `${firstTime} - ${lastTime}`;
           }
-          doc.text(timeRange, xPosition, yPosition, { width: columnWidths[4], align: 'center' });
+          doc.text(timeRange, xPosition, yPosition, { width: columnWidths[5], align: 'center' });
           
           // Move to next row
-      yPosition += 20;
+          yPosition += 20;
           
           // Add a new page if needed
           if (yPosition > doc.page.height - 50) {
@@ -831,7 +853,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
     // Add report data based on report type
     if (reportType === 'kualitas-telur') {
       // Add headers
-      const headers = ['No', 'Kode Telur', 'Kualitas', 'Tanggal Scan'];
+      const headers = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
       const headerRow = worksheet.addRow(headers);
     
       // Style header row
@@ -856,6 +878,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
           index + 1,
           item.egg_code,
           item.quality,
+          item.ammonia !== null && item.ammonia !== undefined ? item.ammonia : '-',
           new Date(item.created_at).toLocaleString('id-ID')
         ]);
       });
@@ -867,7 +890,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
       
     } else if (reportType === 'statistik-produksi') {
       // Add headers
-      const headers = ['Tanggal', 'Total Telur', 'Telur Kualitas Baik', '% Baik', 'Telur Kualitas Buruk', '% Buruk', 'Scan Pertama', 'Scan Terakhir'];
+      const headers = ['Tanggal', 'Total Telur', 'Telur Kualitas Baik', '% Baik', 'Telur Kualitas Buruk', '% Buruk', 'Amonia Rerata (ppm)', 'Scan Pertama', 'Scan Terakhir'];
       const headerRow = worksheet.addRow(headers);
       
       // Style header row
@@ -898,6 +921,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
           goodPercentage,
           item.bad_eggs,
           badPercentage,
+          item.avg_ammonia !== null && item.avg_ammonia !== undefined ? item.avg_ammonia : '-',
           item.first_scan ? new Date(item.first_scan).toLocaleString('id-ID') : '-',
           item.last_scan ? new Date(item.last_scan).toLocaleString('id-ID') : '-'
         ]);
@@ -946,19 +970,20 @@ const generateCSVReport = async (data, reportType, period, date) => {
     // Add data based on report type
     if (reportType === 'kualitas-telur') {
       // Headers
-      csvContent += '"No","Kode Telur","Kualitas","Tanggal Scan"\n';
+      csvContent += '"No","Kode Telur","Kualitas","Amonia (ppm)","Tanggal Scan"\n';
       
       // Data rows
       reportData.forEach((item, index) => {
         csvContent += `${index + 1},`;
         csvContent += `"${item.egg_code}",`;
         csvContent += `"${item.quality}",`;
+        csvContent += `"${item.ammonia !== null && item.ammonia !== undefined ? item.ammonia : '-'}",`;
         csvContent += `"${new Date(item.created_at).toLocaleString('id-ID')}"\n`;
       });
       
     } else if (reportType === 'statistik-produksi') {
       // Headers
-      csvContent += '"Tanggal","Total Telur","Telur Kualitas Baik","% Baik","Telur Kualitas Buruk","% Buruk","Scan Pertama","Scan Terakhir"\n';
+      csvContent += '"Tanggal","Total Telur","Telur Kualitas Baik","% Baik","Telur Kualitas Buruk","% Buruk","Amonia Rerata (ppm)","Scan Pertama","Scan Terakhir"\n';
       
       // Data rows
       reportData.forEach((item) => {
@@ -971,6 +996,7 @@ const generateCSVReport = async (data, reportType, period, date) => {
         csvContent += `"${goodPercentage}",`;
         csvContent += `${item.bad_eggs},`;
         csvContent += `"${badPercentage}",`;
+        csvContent += `"${item.avg_ammonia !== null && item.avg_ammonia !== undefined ? item.avg_ammonia : '-'}",`;
         csvContent += `"${item.first_scan ? new Date(item.first_scan).toLocaleString('id-ID') : '-'}",`;
         csvContent += `"${item.last_scan ? new Date(item.last_scan).toLocaleString('id-ID') : '-'}"\n`;
       });

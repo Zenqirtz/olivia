@@ -1,15 +1,62 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import Sidebar from './Sidebar';
 import AiChat from './AiChat';
+import sensorService from '../services/sensorService';
 
 const Layout = ({ children }) => {
   const { isDarkMode, toggleTheme } = useTheme();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [latestSensor, setLatestSensor] = useState(null);
+  const [hasNotified, setHasNotified] = useState(false);
+
+  useEffect(() => {
+    const fetchLatestSensor = async () => {
+      try {
+        const response = await sensorService.getLatestSensorReading();
+        if (response.success && response.data.latest) {
+          setLatestSensor(response.data.latest);
+        }
+      } catch (error) {
+        console.error('Error fetching latest sensor reading for notification:', error);
+      }
+    };
+
+    fetchLatestSensor();
+    const interval = setInterval(fetchLatestSensor, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (latestSensor && latestSensor.ammonia > 20) {
+      if (!hasNotified) {
+        if ('Notification' in window) {
+          if (Notification.permission === 'granted') {
+            new Notification('⚠️ Peringatan Kadar Amonia Tinggi!', {
+              body: `Kadar amonia kandang saat ini mencapai ${latestSensor.ammonia} ppm (melebihi batas aman 20 ppm).`,
+            });
+            setHasNotified(true);
+          } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then(permission => {
+              if (permission === 'granted') {
+                new Notification('⚠️ Peringatan Kadar Amonia Tinggi!', {
+                  body: `Kadar amonia kandang saat ini mencapai ${latestSensor.ammonia} ppm (melebihi batas aman 20 ppm).`,
+                });
+                setHasNotified(true);
+              }
+            });
+          }
+        }
+      }
+    } else {
+      setHasNotified(false);
+    }
+  }, [latestSensor, hasNotified]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -83,6 +130,14 @@ const Layout = ({ children }) => {
         
         {/* Main content */}
         <div className="flex-1 overflow-auto">
+          {latestSensor && latestSensor.ammonia > 20 && (
+            <div className="bg-red-100 dark:bg-red-900 border-b border-red-200 dark:border-red-800 text-red-800 dark:text-red-200 px-4 py-3 flex items-center gap-3 animate-pulse">
+              <i className="fas fa-exclamation-triangle text-lg text-red-600 dark:text-red-400 animate-bounce"></i>
+              <div>
+                <span className="font-bold text-red-700 dark:text-red-300">Peringatan Kritis:</span> Kadar amonia tinggi terdeteksi di kandang (<span className="font-extrabold text-red-700 dark:text-red-300">{latestSensor.ammonia} ppm</span>). Batas aman adalah 20 ppm. Harap segera periksa ventilasi atau lakukan tindakan mitigasi!
+              </div>
+            </div>
+          )}
           <div className="p-4 md:p-6">
             {children}
           </div>
