@@ -542,20 +542,21 @@ const getReportData = async (reportType, period, date) => {
     case 'statistik-produksi':
       query = `
         SELECT 
-          DATE(scanned_at) as date,
+          DATE(egg_scans.scanned_at) as date,
           COUNT(*) as total_eggs,
-          SUM(CASE WHEN quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
-          SUM(CASE WHEN quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
-          MIN(scanned_at) as first_scan,
-          MAX(scanned_at) as last_scan,
-          (
-            SELECT ROUND(AVG(s.ammonia), 1)
-            FROM sensor_readings s
-            WHERE DATE(s.recorded_at) = DATE(scanned_at)
-          ) as avg_ammonia
+          SUM(CASE WHEN egg_scans.quality = 'good' THEN 1 ELSE 0 END) as good_eggs,
+          SUM(CASE WHEN egg_scans.quality = 'bad' THEN 1 ELSE 0 END) as bad_eggs,
+          MIN(egg_scans.scanned_at) as first_scan,
+          MAX(egg_scans.scanned_at) as last_scan,
+          ROUND(MIN(s.avg_ammonia), 1) as avg_ammonia
         FROM egg_scans
+        LEFT JOIN (
+          SELECT DATE(recorded_at) as read_date, AVG(ammonia) as avg_ammonia
+          FROM sensor_readings
+          GROUP BY DATE(recorded_at)
+        ) s ON s.read_date = DATE(egg_scans.scanned_at)
         ${dateFilter ? `WHERE ${dateFilter}` : ''}
-        GROUP BY DATE(scanned_at)
+        GROUP BY DATE(egg_scans.scanned_at)
         ORDER BY date DESC
       `;
       break;
@@ -617,7 +618,10 @@ const generatePDFReport = async (data, reportType, period, date) => {
   }
 
     return new Promise((resolve, reject) => {
-      const doc = new PDFDocument({ bufferPages: true });
+      const doc = new PDFDocument({ 
+        bufferPages: true,
+        margins: { top: 40, bottom: 20, left: 40, right: 40 }
+      });
       const writeStream = fs.createWriteStream(filePath);
 
       // Handle stream errors
@@ -637,15 +641,15 @@ const generatePDFReport = async (data, reportType, period, date) => {
 
       // Add header with title and logo
       doc.fontSize(20).text('GardaOva IoT Monitoring', { align: 'center' });
-      doc.fontSize(16).text(`Laporan ${getReportTypeDisplayName(reportType)}`, { align: 'center' });
+      doc.fontSize(16).text(getReportTypeDisplayName(reportType), { align: 'center' });
       doc.moveDown();
       doc.fontSize(12).text(`Periode: ${formatPeriodForDisplay(period, date)}`, { align: 'left' });
       doc.text(`Tanggal Generate: ${new Date().toLocaleDateString('id-ID')}`, { align: 'left' });
       doc.moveDown();
 
       // Draw a line separator
-      doc.moveTo(50, doc.y)
-         .lineTo(doc.page.width - 50, doc.y)
+      doc.moveTo(40, doc.y)
+         .lineTo(doc.page.width - 40, doc.y)
          .stroke();
       doc.moveDown();
 
@@ -657,25 +661,34 @@ const generatePDFReport = async (data, reportType, period, date) => {
         // Table headers
         const tableTop = doc.y + 20;
         const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
-        const columnWidths = [30, 130, 80, 90, 160];
+        const columnWidths = [25, 170, 70, 90, 160];
         
-        // Draw table headers
-        doc.font('Helvetica-Bold');
-        let xPosition = 50;
-        tableHeaders.forEach((header, i) => {
-          doc.text(header, xPosition, tableTop, { width: columnWidths[i], align: 'center' });
-          xPosition += columnWidths[i];
-        });
+        const drawTableHeaders = (yPos) => {
+          doc.fontSize(10).font('Helvetica-Bold');
+          let xPosition = 40;
+          tableHeaders.forEach((header, i) => {
+            doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 1 || i === 4 ? 'left' : 'center' });
+            xPosition += columnWidths[i];
+          });
+        };
+
+        drawTableHeaders(tableTop);
         
         // Draw table rows
-        doc.font('Helvetica');
+        doc.fontSize(9).font('Helvetica');
         let yPosition = tableTop + 25;
         
         // Only show first 30 rows to avoid very large files
         const displayData = reportData.slice(0, 30);
         
+        const qualityMap = {
+          'good': 'Bagus',
+          'bad': 'Jelek',
+          'uncertain': 'Ragu-ragu'
+        };
+
         displayData.forEach((item, index) => {
-          xPosition = 50;
+          xPosition = 40;
           
           // No
           doc.text(index + 1, xPosition, yPosition, { width: columnWidths[0], align: 'center' });
@@ -686,7 +699,8 @@ const generatePDFReport = async (data, reportType, period, date) => {
           xPosition += columnWidths[1];
           
           // Kualitas
-          doc.text(item.quality, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
+          const qualityText = qualityMap[item.quality] || item.quality;
+          doc.text(qualityText, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
           xPosition += columnWidths[2];
           
           // Amonia
@@ -702,9 +716,12 @@ const generatePDFReport = async (data, reportType, period, date) => {
           yPosition += 20;
           
           // Add a new page if needed
-          if (yPosition > doc.page.height - 50) {
+          if (yPosition > doc.page.height - 60) {
             doc.addPage();
-            yPosition = 50;
+            yPosition = 40;
+            drawTableHeaders(yPosition);
+            yPosition += 25;
+            doc.fontSize(9).font('Helvetica');
           }
         });
         
@@ -719,22 +736,25 @@ const generatePDFReport = async (data, reportType, period, date) => {
         // Table headers
         const tableTop = doc.y + 20;
         const tableHeaders = ['Tanggal', 'Total', 'Kualitas Baik', 'Kualitas Buruk', 'Amonia Rerata', 'Rentang Waktu'];
-        const columnWidths = [100, 50, 80, 80, 90, 90];
+        const columnWidths = [110, 50, 90, 90, 95, 80];
         
-        // Draw table headers
-        doc.font('Helvetica-Bold');
-        let xPosition = 50;
-        tableHeaders.forEach((header, i) => {
-          doc.text(header, xPosition, tableTop, { width: columnWidths[i], align: 'center' });
-          xPosition += columnWidths[i];
-        });
+        const drawTableHeaders = (yPos) => {
+          doc.fontSize(10).font('Helvetica-Bold');
+          let xPosition = 40;
+          tableHeaders.forEach((header, i) => {
+            doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 0 ? 'left' : 'center' });
+            xPosition += columnWidths[i];
+          });
+        };
+
+        drawTableHeaders(tableTop);
         
         // Draw table rows
-        doc.font('Helvetica');
+        doc.fontSize(9).font('Helvetica');
         let yPosition = tableTop + 25;
         
         reportData.forEach((item) => {
-          xPosition = 50;
+          xPosition = 40;
           
           // Format date
           const date = new Date(item.date).toLocaleDateString('id-ID', {
@@ -779,9 +799,12 @@ const generatePDFReport = async (data, reportType, period, date) => {
           yPosition += 20;
           
           // Add a new page if needed
-          if (yPosition > doc.page.height - 50) {
+          if (yPosition > doc.page.height - 60) {
             doc.addPage();
-            yPosition = 50;
+            yPosition = 40;
+            drawTableHeaders(yPosition);
+            yPosition += 25;
+            doc.fontSize(9).font('Helvetica');
           }
         });
       }
@@ -792,11 +815,11 @@ const generatePDFReport = async (data, reportType, period, date) => {
         doc.switchToPage(i);
         doc.fontSize(8).text(
           `Halaman ${i + 1} dari ${totalPages}`,
-          50,
-          doc.page.height - 50,
+          40,
+          doc.page.height - 30,
           { align: 'center' }
         );
-  }
+      }
 
       // Finalize the PDF
       doc.end();

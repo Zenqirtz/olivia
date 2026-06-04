@@ -1,4 +1,61 @@
 const { executeQuery } = require('../config/database');
+const https = require('https');
+
+// No rate limiting — send Telegram alert on every reading above 20 ppm
+
+const sendTelegramNotification = (ammoniaValue) => {
+  return new Promise((resolve, reject) => {
+    const token = process.env.TELEGRAM_BOT_TOKEN || '8907343340:AAGcEKEujL36M6NoEp9UAYsfdc4q-qnKOSU';
+    const chatId = process.env.TELEGRAM_CHAT_ID || '-5003036425';
+    const message = `⚠️ *PERINGATAN KRITIS AMONIA* ⚠️\n\nKadar gas amonia di dalam kandang terdeteksi sebesar *${ammoniaValue} ppm* (melebihi batas aman *20 ppm*).\n\nMohon segera periksa kondisi ventilasi udara, kipas angin, atau lakukan penanganan sekam kandang!`;
+
+    const payload = JSON.stringify({
+      chat_id: chatId,
+      text: message,
+      parse_mode: 'Markdown'
+    });
+
+    const options = {
+      hostname: 'api.telegram.org',
+      port: 443,
+      path: `/bot${token}/sendMessage`,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(payload)
+      }
+    };
+
+    const req = https.request(options, (res) => {
+      let data = '';
+      res.on('data', (chunk) => {
+        data += chunk;
+      });
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          if (parsed.ok) {
+            console.log('Telegram alert sent successfully');
+            resolve(parsed);
+          } else {
+            console.error('Telegram API error:', parsed);
+            reject(new Error(parsed.description || 'Unknown error'));
+          }
+        } catch (e) {
+          reject(e);
+        }
+      });
+    });
+
+    req.on('error', (error) => {
+      console.error('Telegram request error:', error);
+      reject(error);
+    });
+
+    req.write(payload);
+    req.end();
+  });
+};
 
 // Get sensor readings for chart
 const getSensorReadings = async (req, res) => {
@@ -135,6 +192,15 @@ const addSensorReading = async (req, res) => {
         success: false,
         message: 'Gagal menyimpan data sensor ke database',
         error: result.error
+      });
+    }
+
+    // Trigger Telegram notification immediately on every reading above 20 ppm
+    const parsedAmmonia = parseFloat(ammonia);
+    if (!isNaN(parsedAmmonia) && parsedAmmonia > 20) {
+      console.log(`⚠️ Ammonia ${parsedAmmonia} ppm > 20 ppm — sending Telegram alert...`);
+      sendTelegramNotification(parsedAmmonia).catch(err => {
+        console.error('Background Telegram notification alert failed:', err);
       });
     }
 

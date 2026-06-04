@@ -62,9 +62,12 @@ try:
         humidity_noise = random.uniform(-1.0, 1.0)
         humidity = round(humidity_base + humidity_wave + humidity_noise, 2)
         
-        # Amonia berkisar antara 5 - 25 ppm (random walk)
-        ammonia_change = random.uniform(-0.8, 0.8)
-        ammonia_state += ammonia_change
+        # Amonia berkisar antara 5 - 25 ppm (random walk) dengan sesekali lonjakan di atas 20 ppm untuk pengujian
+        if random.random() < 0.10:
+            ammonia_state = random.uniform(20.5, 24.5)
+        else:
+            ammonia_change = random.uniform(-0.8, 0.8)
+            ammonia_state += ammonia_change
         ammonia_state = max(5.0, min(25.0, ammonia_state))
         ammonia = round(ammonia_state, 2)
 
