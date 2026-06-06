@@ -127,6 +127,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forgotPassword = async (email) => {
+    try {
+      const response = await authService.forgotPassword(email);
+      return response;
+    } catch (error) {
+      console.error('Forgot password context error:', error);
+      return { success: false, message: 'Terjadi kesalahan saat mengirim email reset' };
+    }
+  };
+
+  const resetPassword = async (token, newPassword, confirmPassword) => {
+    try {
+      const response = await authService.resetPassword(token, newPassword, confirmPassword);
+      return response;
+    } catch (error) {
+      console.error('Reset password context error:', error);
+      return { success: false, message: 'Terjadi kesalahan saat mereset password' };
+    }
+  };
+
   const hasPermission = (requiredRole) => {
     if (!user) return false;
     
@@ -157,6 +177,8 @@ export const AuthProvider = ({ children }) => {
     register,
     updateProfile,
     changePassword,
+    forgotPassword,
+    resetPassword,
     hasPermission,
     isSuperAdmin,
     isAdmin

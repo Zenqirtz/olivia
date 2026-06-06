@@ -24,6 +24,8 @@ router.get('/test', (req, res) => {
 
 // Public routes (no authentication required)
 router.post('/login', validateLogin, authController.login);
+router.post('/forgot-password', authController.forgotPassword);
+router.post('/reset-password', authController.resetPassword);
 
 // Protected routes (authentication required)
 router.use(verifyToken); // All routes below require authentication

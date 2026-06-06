@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useTheme } from '../contexts/ThemeContext';
 import newLogo from '../assets/logo.png';
 import smarternakLogo from '../assets/smarternak.png';
@@ -186,6 +186,14 @@ const Login = () => {
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600 dark:text-red-400 animate-fadeIn">{errors.password}</p>
               )}
+              <div className="flex justify-end mt-2">
+                <Link
+                  to="/forgot-password"
+                  className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 hover:underline transition-colors"
+                >
+                  Lupa Password?
+                </Link>
+              </div>
             </div>
 
             {/* Submit Button */}

@@ -104,6 +104,44 @@ class AuthService {
     }
   }
 
+  // Forgot password
+  async forgotPassword(email) {
+    try {
+      const response = await apiClient.post('/auth/forgot-password', { email }, { includeAuth: false });
+      return {
+        success: true,
+        message: response.message || 'Link reset password berhasil dikirim ke email Anda.'
+      };
+    } catch (error) {
+      console.error('Forgot password error:', error);
+      return {
+        success: false,
+        message: error.message || 'Gagal mengirim email reset password'
+      };
+    }
+  }
+
+  // Reset password
+  async resetPassword(token, newPassword, confirmPassword) {
+    try {
+      const response = await apiClient.post('/auth/reset-password', {
+        token,
+        newPassword,
+        confirmPassword
+      }, { includeAuth: false });
+      return {
+        success: true,
+        message: response.message || 'Password berhasil direset'
+      };
+    } catch (error) {
+      console.error('Reset password error:', error);
+      return {
+        success: false,
+        message: error.message || 'Gagal mereset password'
+      };
+    }
+  }
+
   // Verify token
   async verifyToken() {
     try {
