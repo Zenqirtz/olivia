@@ -342,15 +342,13 @@ const forgotPassword = async (req, res) => {
 
     // Buat token acak yang aman
     const token = crypto.randomBytes(32).toString('hex');
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000); // 1 jam dari sekarang
-    const expiresAtStr = expiresAt.toISOString().slice(0, 19).replace('T', ' ');
 
     // Simpan token ke database
     const insertTokenQuery = `
       INSERT INTO password_reset_tokens (email, token, expires_at)
-      VALUES (?, ?, ?)
+      VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 1 HOUR))
     `;
-    const insertResult = await executeQuery(insertTokenQuery, [email, token, expiresAtStr]);
+    const insertResult = await executeQuery(insertTokenQuery, [email, token]);
 
     if (!insertResult.success) {
       return res.status(500).json({ success: false, message: 'Gagal memproses permintaan' });
