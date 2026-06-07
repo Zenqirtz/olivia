@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Olivia IoT - Test API Sensor</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 16px;
+      padding: 32px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #38bdf8;
+      margin-bottom: 4px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 28px;
+    }
+    .field {
+      margin-bottom: 16px;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      padding: 10px 14px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    input:focus { border-color: #38bdf8; }
+    .btn-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-post {
+      background: #0ea5e9;
+      color: white;
+    }
+    .btn-post:hover { background: #0284c7; }
+    .btn-get {
+      background: #334155;
+      color: #e2e8f0;
+    }
+    .btn-get:hover { background: #475569; }
+    .response-box {
+      margin-top: 24px;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 16px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      min-height: 80px;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+    .status-ok   { color: #34d399; }
+    .status-err  { color: #f87171; }
+    .status-wait { color: #fbbf24; }
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+    .badge-ok  { background: #064e3b; color: #34d399; }
+    .badge-err { background: #450a0a; color: #f87171; }
+    .divider {
+      border: none;
+      border-top: 1px solid #334155;
+      margin: 20px 0;
+    }
+    .section-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌡️ Olivia IoT — Test API</h1>
+    <p class="subtitle">Simulasi pengiriman data sensor ESP32 ke backend</p>
+
+    <div class="section-title">Endpoint</div>
+    <div class="field">
+      <label>Server URL</label>
+      <input type="text" id="serverUrl" value="http://localhost:5000/api/sensors/readings"/>
+    </div>
+
+    <hr class="divider"/>
+
+    <div class="section-title">Data Sensor (Simulasi ESP32)</div>
+    <div class="field">
+      <label>Device ID</label>
+      <input type="number" id="device_id" value="1"/>
+    </div>
+    <div class="field">
+      <label>🌡️ Suhu (°C)</label>
+      <input type="number" id="temperature" value="28.5" step="0.1"/>
+    </div>
+    <div class="field">
+      <label>💧 Kelembapan (%)</label>
+      <input type="number" id="humidity" value="65.0" step="0.1"/>
+    </div>
+    <div class="field">
+      <label>☁️ Amonia (PPM)</label>
+      <input type="number" id="ammonia" value="12.4" step="0.1"/>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn-post" onclick="kirimData()">▶ POST — Kirim Data Sensor</button>
+      <button class="btn-get" onclick="ambilTerbaru()">↗ GET — Cek Data Terbaru</button>
+    </div>
+
+    <div class="response-box" id="result">
+      <span class="status-wait">// Hasil response API akan muncul di sini...</span>
+    </div>
+  </div>
+
+  <script>
+    async function kirimData() {
+      const url = document.getElementById('serverUrl').value;
+      const payload = {
+        device_id:   parseInt(document.getElementById('device_id').value),
+        temperature: parseFloat(document.getElementById('temperature').value),
+        humidity:    parseFloat(document.getElementById('humidity').value),
+        ammonia:     parseFloat(document.getElementById('ammonia').value),
+      };
+
+      const box = document.getElementById('result');
+      box.innerHTML = '<span class="status-wait">⏳ Mengirim data...</span>';
+
+      try {
+        const res = await fetch(url, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        const isOk = res.status === 200 || res.status === 201;
+
+        box.innerHTML =
+          `<span class="${isOk ? 'status-ok' : 'status-err'}">` +
+          `HTTP ${res.status} ${res.statusText}` +
+          `<span class="badge ${isOk ? 'badge-ok' : 'badge-err'}">${isOk ? '✓ BERHASIL' : '✗ GAGAL'}</span>` +
+          `</span>\n\n` +
+          `Payload yang dikirim:\n${JSON.stringify(payload, null, 2)}\n\n` +
+          `Response:\n${JSON.stringify(data, null, 2)}`;
+      } catch (err) {
+        box.innerHTML =
+          `<span class="status-err">✗ GAGAL — ${err.message}\n\n` +
+          `Kemungkinan penyebab:\n` +
+          `• MySQL/Laragon belum aktif\n` +
+          `• Backend Express belum jalan di port 5000\n` +
+          `• URL server salah</span>`;
+      }
+    }
+
+    async function ambilTerbaru() {
+      const baseUrl = document.getElementById('serverUrl').value.replace('/readings', '/latest');
+      const box = document.getElementById('result');
+      box.innerHTML = '<span class="status-wait">⏳ Mengambil data terbaru...</span>';
+
+      try {
+        const res = await fetch(baseUrl);
+        const data = await res.json();
+        const isOk = res.ok;
+
+        box.innerHTML =
+          `<span class="${isOk ? 'status-ok' : 'status-err'}">` +
+          `HTTP ${res.status} ${res.statusText}` +
+          `<span class="badge ${isOk ? 'badge-ok' : 'badge-err'}">${isOk ? '✓ OK' : '✗ GAGAL'}</span>` +
+          `</span>\n\n` +
+          `Data Sensor Terbaru:\n${JSON.stringify(data, null, 2)}`;
+      } catch (err) {
+        box.innerHTML = `<span class="status-err">✗ GAGAL — ${err.message}</span>`;
+      }
+    }
+  </script>
+</body>
+</html>
