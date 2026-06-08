@@ -28,16 +28,16 @@
 #define MQ135_PIN 34
 
 // ---- KONFIGURASI WI-FI ----
-const char* ssid     = "KOST PUTRA 3 DECO";
-const char* password = "Kotamalang3";
+const char* ssid     = "POCO X7";
+const char* password = "pradana09";
 
 // ====================================================================
 // !!  GANTI IP INI dengan IP PC/Laptop tempat backend Express berjalan
 //     Cara cek: buka CMD lalu ketik: ipconfig
 //     Cari bagian "IPv4 Address" pada adapter WiFi Anda
-//     Contoh hasil: 192.168.1.10 => isi jadi "192.168.1.10"
+//     Contoh hasil: 192.168.1.10 => isi jadi "192.168.1.10"444444444444
 // ====================================================================
-const char* serverIP   = "10.10.10.23";   // << GANTI dengan IP PC Anda
+const char* serverIP   = "10.17.40.169";   // << GANTI dengan IP PC Anda
 const int   serverPort = 5000;            // Port backend Express (default)
 const int   DEVICE_ID  = 1;              // ID perangkat ESP32 ini
 
@@ -241,11 +241,16 @@ void setup() {
 // LOOP UTAMA
 // ==========================================================================
 void loop() {
-  // Auto-reconnect WiFi jika putus
+  // Auto-reconnect WiFi jika putus (uji coba ulang setiap 15 detik agar tidak bentrok)
+  static unsigned long lastReconnectAttempt = 0;
   if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("[Wi-Fi] Koneksi terputus. Mencoba ulang...");
-    WiFi.begin(ssid, password);
-    delay(2000);
+    unsigned long now = millis();
+    if (now - lastReconnectAttempt > 15000 || lastReconnectAttempt == 0) {
+      Serial.println("[Wi-Fi] Koneksi terputus. Mencoba ulang...");
+      WiFi.disconnect();
+      WiFi.begin(ssid, password);
+      lastReconnectAttempt = now;
+    }
   }
 
   // Baca sensor DHT22

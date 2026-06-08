@@ -505,6 +505,55 @@ const getReportData = async (reportType, period, date) => {
       break;
   }
 
+  // Fetch sensor data for the same period
+  let sensorDateFilter = '';
+  let sensorParams = [];
+  switch (period) {
+    case 'today':
+      sensorDateFilter = 'DATE(recorded_at) = CURDATE()';
+      break;
+    case 'last7days':
+      sensorDateFilter = 'recorded_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)';
+      break;
+    case 'last30days':
+      sensorDateFilter = 'recorded_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)';
+      break;
+    case 'custom':
+      if (date) {
+        sensorDateFilter = 'DATE(recorded_at) = ?';
+        sensorParams.push(date);
+      }
+      break;
+    case 'date_range':
+      if (date && typeof date === 'object' && date.startDate && date.endDate) {
+        sensorDateFilter = 'DATE(recorded_at) BETWEEN ? AND ?';
+        sensorParams.push(date.startDate, date.endDate);
+      }
+      break;
+  }
+
+  let sensorData = [];
+  try {
+    const sensorQuery = `
+      SELECT 
+        reading_id,
+        device_id,
+        temperature,
+        humidity,
+        ammonia,
+        recorded_at
+      FROM sensor_readings
+      ${sensorDateFilter ? `WHERE ${sensorDateFilter}` : ''}
+      ORDER BY recorded_at DESC
+    `;
+    const sensorResult = await executeQuery(sensorQuery, sensorParams);
+    if (sensorResult.success) {
+      sensorData = sensorResult.data;
+    }
+  } catch (error) {
+    console.error('Error fetching sensor readings for report:', error);
+  }
+
   // First, get the actual columns from the table
   try {
     const columnsQuery = `SHOW COLUMNS FROM egg_scans`;
@@ -569,7 +618,8 @@ const getReportData = async (reportType, period, date) => {
           { timestamp: new Date(), action: 'Scan Complete', user: 'Scanner-001', details: 'Egg batch scanned successfully' }
         ],
         period: period,
-        date: date
+        date: date,
+        hasData: true
       };
       
     default:
@@ -580,13 +630,18 @@ const getReportData = async (reportType, period, date) => {
   const result = await executeQuery(query, params);
   console.log('Query result:', result);
   
+  const hasEggData = result.success && result.data.length > 0;
+  const hasSensorData = sensorData && sensorData.length > 0;
+  const hasAnyData = hasEggData || hasSensorData;
+
   // If no data found for the specified period, return proper no-data response
-  if (!result.success || result.data.length === 0) {
-    console.log(`No data found for period: ${period}, date: ${date}`);
+  if (!hasAnyData) {
+    console.log(`No egg or sensor data found for period: ${period}, date: ${date}`);
     
     // Return proper structure indicating no data
     return {
       data: [],
+      sensorData: [],
       message: getNoDataMessage(period, date),
       period: period,
       date: date,
@@ -596,7 +651,8 @@ const getReportData = async (reportType, period, date) => {
   }
   
   return {
-    data: result.data,
+    data: result.success ? result.data : [],
+    sensorData: sensorData,
     period: period,
     date: date,
     isEmpty: false,
@@ -654,159 +710,236 @@ const generatePDFReport = async (data, reportType, period, date) => {
       doc.moveDown();
 
       // At this point, we know we have data (checked in main function)
-      const reportData = data.data;
+      const reportData = data.data || [];
 
       // Add report content based on report type
       if (reportType === 'kualitas-telur') {
-        // Table headers
-        const tableTop = doc.y + 20;
-        const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
-        const columnWidths = [25, 170, 70, 90, 160];
-        
-        const drawTableHeaders = (yPos) => {
-          doc.fontSize(10).font('Helvetica-Bold');
-          let xPosition = 40;
-          tableHeaders.forEach((header, i) => {
-            doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 1 || i === 4 ? 'left' : 'center' });
-            xPosition += columnWidths[i];
-          });
-        };
-
-        drawTableHeaders(tableTop);
-        
-        // Draw table rows
-        doc.fontSize(9).font('Helvetica');
-        let yPosition = tableTop + 25;
-        
-        // Only show first 30 rows to avoid very large files
-        const displayData = reportData.slice(0, 30);
-        
-        const qualityMap = {
-          'good': 'Bagus',
-          'bad': 'Jelek',
-          'uncertain': 'Ragu-ragu'
-        };
-
-        displayData.forEach((item, index) => {
-          xPosition = 40;
-          
-          // No
-          doc.text(index + 1, xPosition, yPosition, { width: columnWidths[0], align: 'center' });
-          xPosition += columnWidths[0];
-          
-          // Kode Telur
-          doc.text(item.egg_code, xPosition, yPosition, { width: columnWidths[1], align: 'left' });
-          xPosition += columnWidths[1];
-          
-          // Kualitas
-          const qualityText = qualityMap[item.quality] || item.quality;
-          doc.text(qualityText, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
-          xPosition += columnWidths[2];
-          
-          // Amonia
-          const ammoniaVal = item.ammonia !== null && item.ammonia !== undefined ? `${item.ammonia} ppm` : '-';
-          doc.text(ammoniaVal, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
-          xPosition += columnWidths[3];
-          
-          // Tanggal Scan
-          const scanDate = new Date(item.created_at).toLocaleString('id-ID');
-          doc.text(scanDate, xPosition, yPosition, { width: columnWidths[4], align: 'left' });
-          
-          // Move to next row
-          yPosition += 20;
-          
-          // Add a new page if needed
-          if (yPosition > doc.page.height - 60) {
-            doc.addPage();
-            yPosition = 40;
-            drawTableHeaders(yPosition);
-            yPosition += 25;
-            doc.fontSize(9).font('Helvetica');
-          }
-        });
-        
-        // Add summary if there are more rows
-        if (reportData.length > 30) {
+        if (reportData.length === 0) {
+          doc.fontSize(11).font('Helvetica-Oblique').text('Tidak ada data pemindaian telur untuk periode ini.', { align: 'left' });
           doc.moveDown(2);
-          doc.font('Helvetica-Oblique');
-          doc.text(`* Hanya menampilkan ${displayData.length} dari total ${reportData.length} data.`, { align: 'center' });
+        } else {
+          // Table headers
+          const tableTop = doc.y + 20;
+          const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
+          const columnWidths = [25, 170, 70, 90, 160];
+          
+          const drawTableHeaders = (yPos) => {
+            doc.fontSize(10).font('Helvetica-Bold');
+            let xPosition = 40;
+            tableHeaders.forEach((header, i) => {
+              doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 1 || i === 4 ? 'left' : 'center' });
+              xPosition += columnWidths[i];
+            });
+          };
+
+          drawTableHeaders(tableTop);
+          
+          // Draw table rows
+          doc.fontSize(9).font('Helvetica');
+          let yPosition = tableTop + 25;
+          
+          // Only show first 30 rows to avoid very large files
+          const displayData = reportData.slice(0, 30);
+          
+          const qualityMap = {
+            'good': 'Bagus',
+            'bad': 'Jelek',
+            'uncertain': 'Ragu-ragu'
+          };
+
+          displayData.forEach((item, index) => {
+            xPosition = 40;
+            
+            // No
+            doc.text(index + 1, xPosition, yPosition, { width: columnWidths[0], align: 'center' });
+            xPosition += columnWidths[0];
+            
+            // Kode Telur
+            doc.text(item.egg_code, xPosition, yPosition, { width: columnWidths[1], align: 'left' });
+            xPosition += columnWidths[1];
+            
+            // Kualitas
+            const qualityText = qualityMap[item.quality] || item.quality;
+            doc.text(qualityText, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
+            xPosition += columnWidths[2];
+            
+            // Amonia
+            const ammoniaVal = item.ammonia !== null && item.ammonia !== undefined ? `${item.ammonia} ppm` : '-';
+            doc.text(ammoniaVal, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
+            xPosition += columnWidths[3];
+            
+            // Tanggal Scan
+            const scanDate = new Date(item.created_at).toLocaleString('id-ID');
+            doc.text(scanDate, xPosition, yPosition, { width: columnWidths[4], align: 'left' });
+            
+            // Move to next row
+            yPosition += 20;
+            
+            // Add a new page if needed
+            if (yPosition > doc.page.height - 60) {
+              doc.addPage();
+              yPosition = 40;
+              drawTableHeaders(yPosition);
+              yPosition += 25;
+              doc.fontSize(9).font('Helvetica');
+            }
+          });
+          
+          // Add summary if there are more rows
+          if (reportData.length > 30) {
+            doc.moveDown(2);
+            doc.font('Helvetica-Oblique');
+            doc.text(`* Hanya menampilkan ${displayData.length} dari total ${reportData.length} data.`, { align: 'center' });
+          }
         }
         
       } else if (reportType === 'statistik-produksi') {
-        // Table headers
-        const tableTop = doc.y + 20;
-        const tableHeaders = ['Tanggal', 'Total', 'Kualitas Baik', 'Kualitas Buruk', 'Amonia Rerata', 'Rentang Waktu'];
-        const columnWidths = [110, 50, 90, 90, 95, 80];
+        if (reportData.length === 0) {
+          doc.fontSize(11).font('Helvetica-Oblique').text('Tidak ada data statistik produksi untuk periode ini.', { align: 'left' });
+          doc.moveDown(2);
+        } else {
+          // Table headers
+          const tableTop = doc.y + 20;
+          const tableHeaders = ['Tanggal', 'Total', 'Kualitas Baik', 'Kualitas Buruk', 'Amonia Rerata', 'Rentang Waktu'];
+          const columnWidths = [110, 50, 90, 90, 95, 80];
+          
+          const drawTableHeaders = (yPos) => {
+            doc.fontSize(10).font('Helvetica-Bold');
+            let xPosition = 40;
+            tableHeaders.forEach((header, i) => {
+              doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 0 ? 'left' : 'center' });
+              xPosition += columnWidths[i];
+            });
+          };
+
+          drawTableHeaders(tableTop);
+          
+          // Draw table rows
+          doc.fontSize(9).font('Helvetica');
+          let yPosition = tableTop + 25;
+          
+          reportData.forEach((item) => {
+            xPosition = 40;
+            
+            // Format date
+            const date = new Date(item.date).toLocaleDateString('id-ID', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+            
+            // Tanggal
+            doc.text(date, xPosition, yPosition, { width: columnWidths[0], align: 'left' });
+            xPosition += columnWidths[0];
+            
+            // Total
+            doc.text(item.total_eggs.toString(), xPosition, yPosition, { width: columnWidths[1], align: 'center' });
+            xPosition += columnWidths[1];
+            
+            // Kualitas Baik
+            const goodPercentage = item.total_eggs > 0 ? (item.good_eggs / item.total_eggs * 100).toFixed(1) + '%' : '0%';
+            doc.text(`${item.good_eggs} (${goodPercentage})`, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
+            xPosition += columnWidths[2];
+            
+            // Kualitas Buruk
+            const badPercentage = item.total_eggs > 0 ? (item.bad_eggs / item.total_eggs * 100).toFixed(1) + '%' : '0%';
+            doc.text(`${item.bad_eggs} (${badPercentage})`, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
+            xPosition += columnWidths[3];
+            
+            // Amonia Rerata
+            const avgAmmoniaVal = item.avg_ammonia !== null && item.avg_ammonia !== undefined ? `${item.avg_ammonia} ppm` : '-';
+            doc.text(avgAmmoniaVal, xPosition, yPosition, { width: columnWidths[4], align: 'center' });
+            xPosition += columnWidths[4];
+            
+            // Rentang Waktu
+            let timeRange = '-';
+            if (item.first_scan && item.last_scan) {
+              const firstTime = new Date(item.first_scan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+              const lastTime = new Date(item.last_scan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+              timeRange = `${firstTime} - ${lastTime}`;
+            }
+            doc.text(timeRange, xPosition, yPosition, { width: columnWidths[5], align: 'center' });
+            
+            // Move to next row
+            yPosition += 20;
+            
+            // Add a new page if needed
+            if (yPosition > doc.page.height - 60) {
+              doc.addPage();
+              yPosition = 40;
+              drawTableHeaders(yPosition);
+              yPosition += 25;
+              doc.fontSize(9).font('Helvetica');
+            }
+          });
+        }
+      }
+
+      // Add Sensor Data Section
+      if (data.sensorData && data.sensorData.length > 0) {
+        if (reportData.length > 0) {
+          doc.addPage();
+        } else {
+          doc.moveDown(2);
+        }
         
-        const drawTableHeaders = (yPos) => {
+        doc.fontSize(14).font('Helvetica-Bold').text('Data Sensor Lingkungan', { align: 'left' });
+        doc.moveDown();
+
+        const sensorHeaders = ['No', 'Suhu (°C)', 'Kelembapan (%)', 'Amonia (ppm)', 'Waktu Perekaman'];
+        const sensorWidths = [30, 90, 110, 110, 160];
+        
+        let yPosition = doc.y;
+        
+        const drawSensorHeaders = (yPos) => {
           doc.fontSize(10).font('Helvetica-Bold');
           let xPosition = 40;
-          tableHeaders.forEach((header, i) => {
-            doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 0 ? 'left' : 'center' });
-            xPosition += columnWidths[i];
+          sensorHeaders.forEach((header, i) => {
+            doc.text(header, xPosition, yPos, { width: sensorWidths[i], align: i === 4 ? 'left' : 'center' });
+            xPosition += sensorWidths[i];
           });
         };
 
-        drawTableHeaders(tableTop);
-        
-        // Draw table rows
+        drawSensorHeaders(yPosition);
+        yPosition += 25;
         doc.fontSize(9).font('Helvetica');
-        let yPosition = tableTop + 25;
-        
-        reportData.forEach((item) => {
-          xPosition = 40;
+
+        // Only show first 50 rows of sensor data to keep size reasonable
+        const displaySensor = data.sensorData.slice(0, 50);
+
+        displaySensor.forEach((item, index) => {
+          let xPosition = 40;
+          doc.text(index + 1, xPosition, yPosition, { width: sensorWidths[0], align: 'center' });
+          xPosition += sensorWidths[0];
           
-          // Format date
-          const date = new Date(item.date).toLocaleDateString('id-ID', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-          });
+          doc.text(`${item.temperature} °C`, xPosition, yPosition, { width: sensorWidths[1], align: 'center' });
+          xPosition += sensorWidths[1];
           
-          // Tanggal
-          doc.text(date, xPosition, yPosition, { width: columnWidths[0], align: 'left' });
-          xPosition += columnWidths[0];
+          doc.text(`${item.humidity} %`, xPosition, yPosition, { width: sensorWidths[2], align: 'center' });
+          xPosition += sensorWidths[2];
           
-          // Total
-          doc.text(item.total_eggs.toString(), xPosition, yPosition, { width: columnWidths[1], align: 'center' });
-          xPosition += columnWidths[1];
+          doc.text(`${item.ammonia} ppm`, xPosition, yPosition, { width: sensorWidths[3], align: 'center' });
+          xPosition += sensorWidths[3];
           
-          // Kualitas Baik
-          const goodPercentage = item.total_eggs > 0 ? (item.good_eggs / item.total_eggs * 100).toFixed(1) + '%' : '0%';
-          doc.text(`${item.good_eggs} (${goodPercentage})`, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
-          xPosition += columnWidths[2];
-          
-          // Kualitas Buruk
-          const badPercentage = item.total_eggs > 0 ? (item.bad_eggs / item.total_eggs * 100).toFixed(1) + '%' : '0%';
-          doc.text(`${item.bad_eggs} (${badPercentage})`, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
-          xPosition += columnWidths[3];
-          
-          // Amonia Rerata
-          const avgAmmoniaVal = item.avg_ammonia !== null && item.avg_ammonia !== undefined ? `${item.avg_ammonia} ppm` : '-';
-          doc.text(avgAmmoniaVal, xPosition, yPosition, { width: columnWidths[4], align: 'center' });
-          xPosition += columnWidths[4];
-          
-          // Rentang Waktu
-          let timeRange = '-';
-          if (item.first_scan && item.last_scan) {
-            const firstTime = new Date(item.first_scan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            const lastTime = new Date(item.last_scan).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
-            timeRange = `${firstTime} - ${lastTime}`;
-          }
-          doc.text(timeRange, xPosition, yPosition, { width: columnWidths[5], align: 'center' });
-          
-          // Move to next row
+          const recordedAt = new Date(item.recorded_at).toLocaleString('id-ID');
+          doc.text(recordedAt, xPosition, yPosition, { width: sensorWidths[4], align: 'left' });
+
           yPosition += 20;
-          
-          // Add a new page if needed
+
           if (yPosition > doc.page.height - 60) {
             doc.addPage();
             yPosition = 40;
-            drawTableHeaders(yPosition);
+            drawSensorHeaders(yPosition);
             yPosition += 25;
             doc.fontSize(9).font('Helvetica');
           }
         });
+
+        if (data.sensorData.length > 50) {
+          doc.moveDown(2);
+          doc.font('Helvetica-Oblique');
+          doc.text(`* Hanya menampilkan ${displaySensor.length} dari total ${data.sensorData.length} data sensor.`, { align: 'center' });
+        }
       }
       
       // Add footer with page number
@@ -871,7 +1004,7 @@ const generateExcelReport = async (data, reportType, period, date) => {
   worksheet.addRow([]);
 
     // At this point, we know we have data (checked in main function)
-    const reportData = data.data;
+    const reportData = data.data || [];
 
     // Add report data based on report type
     if (reportType === 'kualitas-telur') {
@@ -958,9 +1091,59 @@ const generateExcelReport = async (data, reportType, period, date) => {
       worksheet.columns.forEach(column => {
         column.width = 20;
       });
-  }
+    }
 
-  await workbook.xlsx.writeFile(filePath);
+    // Add Sensor Data sheet if exists
+    if (data.sensorData && data.sensorData.length > 0) {
+      const sensorSheet = workbook.addWorksheet('Data Sensor');
+      
+      // Add title and metadata
+      sensorSheet.mergeCells('A1:E1');
+      const sTitleCell = sensorSheet.getCell('A1');
+      sTitleCell.value = 'GardaOva IoT Monitoring - Data Sensor Lingkungan';
+      sTitleCell.font = { size: 16, bold: true };
+      sTitleCell.alignment = { horizontal: 'center' };
+      
+      sensorSheet.getCell('A2').value = `Periode: ${formatPeriodForDisplay(period, date)}`;
+      sensorSheet.getCell('A3').value = `Tanggal Generate: ${new Date().toLocaleDateString('id-ID')}`;
+      sensorSheet.addRow([]);
+      
+      // Add headers
+      const sensorHeaders = ['No', 'Suhu (°C)', 'Kelembapan (%)', 'Amonia (ppm)', 'Waktu Perekaman'];
+      const sHeaderRow = sensorSheet.addRow(sensorHeaders);
+      
+      sHeaderRow.eachCell((cell) => {
+        cell.font = { bold: true };
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFE0E0E0' }
+        };
+        cell.border = {
+          top: { style: 'thin' },
+          left: { style: 'thin' },
+          bottom: { style: 'thin' },
+          right: { style: 'thin' }
+        };
+      });
+      
+      // Add data rows
+      data.sensorData.forEach((item, index) => {
+        sensorSheet.addRow([
+          index + 1,
+          parseFloat(item.temperature),
+          parseFloat(item.humidity),
+          parseFloat(item.ammonia),
+          new Date(item.recorded_at).toLocaleString('id-ID')
+        ]);
+      });
+      
+      sensorSheet.columns.forEach(column => {
+        column.width = 20;
+      });
+    }
+
+    await workbook.xlsx.writeFile(filePath);
     console.log(`Excel file created successfully at: ${filePath}`);
   return { filePath, fileName };
   } catch (error) {
@@ -988,7 +1171,7 @@ const generateCSVReport = async (data, reportType, period, date) => {
     csvContent += `"Tanggal Generate: ${new Date().toLocaleDateString('id-ID')}"\n\n`;
 
     // At this point, we know we have data (checked in main function)
-    const reportData = data.data;
+    const reportData = data.data || [];
 
     // Add data based on report type
     if (reportType === 'kualitas-telur') {
@@ -1023,9 +1206,24 @@ const generateCSVReport = async (data, reportType, period, date) => {
         csvContent += `"${item.first_scan ? new Date(item.first_scan).toLocaleString('id-ID') : '-'}",`;
         csvContent += `"${item.last_scan ? new Date(item.last_scan).toLocaleString('id-ID') : '-'}"\n`;
       });
-  }
+    }
 
-  fs.writeFileSync(filePath, csvContent, 'utf8');
+    // Add Sensor Data if exists
+    if (data.sensorData && data.sensorData.length > 0) {
+      csvContent += `\n\n`;
+      csvContent += `"Data Sensor Lingkungan"\n`;
+      csvContent += '"No","Suhu (°C)","Kelembapan (%)","Amonia (ppm)","Waktu Perekaman"\n';
+      
+      data.sensorData.forEach((item, index) => {
+        csvContent += `${index + 1},`;
+        csvContent += `"${item.temperature}",`;
+        csvContent += `"${item.humidity}",`;
+        csvContent += `"${item.ammonia}",`;
+        csvContent += `"${new Date(item.recorded_at).toLocaleString('id-ID')}"\n`;
+      });
+    }
+
+    fs.writeFileSync(filePath, csvContent, 'utf8');
     console.log(`CSV file created successfully at: ${filePath}`);
   return { filePath, fileName };
   } catch (error) {
