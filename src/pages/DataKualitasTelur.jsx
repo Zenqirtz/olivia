@@ -215,14 +215,14 @@ const DataKualitasTelur = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-8 page-enter">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8 page-enter">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in-up">
-        <div className="px-8 py-10 text-white">
-          <h1 className="text-3xl font-bold mb-2">Data Kualitas Telur</h1>
-          <p className="text-amber-100">Monitoring dan analisis kualitas produksi telur</p>
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl shadow-xl mb-6 md:mb-8 overflow-hidden animate-fade-in-up">
+        <div className="px-4 md:px-8 py-6 md:py-10 text-white">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Data Kualitas Telur</h1>
+          <p className="text-amber-100 text-sm md:text-base">Monitoring dan analisis kualitas produksi telur</p>
 
-          <div className="flex flex-wrap gap-4 mt-6 items-center">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 mt-4 md:mt-6 items-start sm:items-center">
             <div className="relative">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                 <i className="far fa-calendar-alt text-amber-300"></i>
@@ -235,7 +235,7 @@ const DataKualitasTelur = () => {
               />
             </div>
 
-            <div className="flex gap-3 ml-auto">
+            <div className="flex gap-2 sm:gap-3 sm:ml-auto">
               <button
                 className="flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-amber-300/30 rounded-xl px-4 py-2.5 text-white hover:bg-white/30 transition-all btn-press ripple-effect"
                 onClick={() => setFilterVisible(!filterVisible)}
@@ -423,7 +423,7 @@ const DataKualitasTelur = () => {
       </div>
 
       {/* Data Table */}
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-md mb-8 border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-200 card-hover-amber">
+      <div className="bg-white dark:bg-gray-800 p-4 md:p-8 rounded-2xl shadow-md mb-6 md:mb-8 border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-200 card-hover-amber">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Daftar Telur</h2>
           <div className="flex items-center gap-2 bg-amber-50 dark:bg-amber-900 px-3 py-1.5 rounded-lg">
@@ -449,35 +449,35 @@ const DataKualitasTelur = () => {
               <table className="w-full bg-white dark:bg-gray-800">
                 <thead>
                   <tr className="bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-                    <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Kode</th>
-                    <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Kualitas</th>
-                    <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
-                    <th className="py-4 px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Waktu</th>
-                    <th className="py-4 px-6 text-right font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Aksi</th>
+                    <th className="py-3 px-3 md:px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Kode</th>
+                    <th className="py-3 px-3 md:px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Kualitas</th>
+                    <th className="hidden sm:table-cell py-3 px-3 md:px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Tanggal</th>
+                    <th className="hidden md:table-cell py-3 px-3 md:px-6 text-left font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Waktu</th>
+                    <th className="py-3 px-3 md:px-6 text-right font-semibold text-gray-600 dark:text-gray-300 uppercase text-xs tracking-wider">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-700 tbody-stagger">
                   {eggData.map((egg, index) => (
                     <tr key={egg.scan_id || index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-amber-50/30 dark:hover:bg-gray-700/30 table-row-animated">
-                      <td className="py-4 px-6 font-medium text-gray-900 dark:text-gray-100">{egg.egg_code}</td>
-                      <td className="py-4 px-6">
+                      <td className="py-3 px-3 md:px-6 font-medium text-gray-900 dark:text-gray-100 text-sm">{egg.egg_code}</td>
+                      <td className="py-3 px-3 md:px-6">
                         <span className={getQualityBadgeClass(egg.quality)}>
                           {getQualityText(egg.quality)}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-gray-600 dark:text-gray-300">
+                      <td className="hidden sm:table-cell py-3 px-3 md:px-6 text-gray-600 dark:text-gray-300 text-sm">
                         <div className="flex items-center gap-2">
                           <i className="far fa-calendar-alt text-gray-400 dark:text-gray-500"></i>
                           {formatDateForDisplay(egg.scanned_at)}
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-gray-600 dark:text-gray-300">
+                      <td className="hidden md:table-cell py-3 px-3 md:px-6 text-gray-600 dark:text-gray-300 text-sm">
                         <div className="flex items-center gap-2">
                           <i className="far fa-clock text-gray-400 dark:text-gray-500"></i>
                           {formatTimeForDisplay(egg.scanned_at)}
                         </div>
                       </td>
-                      <td className="py-4 px-6 text-right">
+                      <td className="py-3 px-3 md:px-6 text-right">
                         <button
                           className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 bg-amber-50 dark:bg-amber-900 p-2 rounded-lg hover:bg-amber-100 dark:hover:bg-amber-800 transition-colors btn-press ripple-effect"
                           onClick={() => handleViewImage(egg)}

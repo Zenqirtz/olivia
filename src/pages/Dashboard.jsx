@@ -383,7 +383,7 @@ const Dashboard = () => {
     return (
       <div className="max-w-7xl mx-auto page-enter">
         {/* Skeleton Header */}
-        <div className="flex justify-between items-center mb-8 animate-fade-in-up">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-3 animate-fade-in-up">
           <div>
             <div className="skeleton h-8 w-40 mb-2"></div>
             <div className="skeleton h-4 w-56"></div>
@@ -394,7 +394,7 @@ const Dashboard = () => {
           </div>
         </div>
         {/* Skeleton Stat Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
           {[0, 1, 2, 3].map((i) => (
             <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 animate-fade-in-up" style={{ animationDelay: `${i * 75}ms` }}>
               <div className="skeleton h-4 w-32 mb-3"></div>
@@ -415,9 +415,9 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto page-enter">
-      <div className="flex justify-between items-center mb-8 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-3 animate-fade-in-up">
         <div>
-          <h1 className="text-2xl font-bold gradient-text">Dashboard</h1>
+          <h1 className="text-xl md:text-2xl font-bold gradient-text">Dashboard</h1>
           <p className="text-sm text-amber-600 dark:text-gray-400 mt-1">
             Terakhir diperbarui: {lastRefresh.toLocaleTimeString('id-ID')}
           </p>
@@ -425,7 +425,7 @@ const Dashboard = () => {
         <div className="flex gap-3">
           <button
             onClick={handleViewAllData}
-            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect"
+            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-3 md:px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect text-sm md:text-base"
           >
             <i className="fas fa-list"></i>
             <span>Lihat Data</span>
@@ -453,7 +453,7 @@ const Dashboard = () => {
       )}
 
       {/* Stat Cards */}
-      <div className={`grid grid-cols-1 md:grid-cols-4 gap-6 mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
+      <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
         }`}>
         <div className="bg-amber-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-amber transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-75">
           <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
@@ -561,7 +561,7 @@ const Dashboard = () => {
 
         {/* Sensor value cards */}
         {latestSensor && (
-          <div className="grid grid-cols-3 gap-4 mb-4 animate-fade-in-up">
+          <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 animate-fade-in-up">
             <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800 card-hover-amber transition-all duration-300">
               <div className="flex items-center gap-2 mb-1">
                 <div className="w-3 h-3 rounded-full bg-orange-500 active-dot"></div>
@@ -593,7 +593,7 @@ const Dashboard = () => {
         )}
 
         {/* Sensor chart */}
-        <div className="h-72">
+        <div className="h-56 md:h-72">
           {sensorLoading ? (
             <div className="flex justify-center items-center h-full">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
@@ -701,7 +701,7 @@ const Dashboard = () => {
       </div>
 
       {/* Charts and Recent Data */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
         {/* Weekly Chart */}
         <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-300">
           <div className="flex justify-between items-center mb-4">
@@ -714,7 +714,7 @@ const Dashboard = () => {
             </button>
           </div>
 
-          <div className="h-64">
+          <div className="h-52 md:h-64">
             <Line
               data={weeklyData}
               options={{
@@ -775,7 +775,7 @@ const Dashboard = () => {
             </div>
           </div>
 
-          <div className="h-64 flex justify-center items-center">
+          <div className="h-52 md:h-64 flex justify-center items-center">
             <Doughnut
               data={donutData}
               options={{
