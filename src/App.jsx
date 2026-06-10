@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import DataKualitasTelur from './pages/DataKualitasTelur';
+import DataKelembapanSuhuAmonia from './pages/DataKelembapanSuhuAmonia';
 import UnduhLaporan from './pages/UnduhLaporan';
 import ManajemenAkun from './pages/ManajemenAkun';
 import Pengaturan from './pages/Pengaturan';
@@ -34,6 +35,14 @@ const AuthenticatedApp = () => {
         <ProtectedRoute>
           <Layout>
             <DataKualitasTelur />
+          </Layout>
+        </ProtectedRoute>
+      } />
+
+      <Route path="/data-kelembapan-suhu-amonia" element={
+        <ProtectedRoute>
+          <Layout>
+            <DataKelembapanSuhuAmonia />
           </Layout>
         </ProtectedRoute>
       } />

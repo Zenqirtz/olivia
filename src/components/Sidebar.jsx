@@ -24,6 +24,12 @@ const Sidebar = ({ isOpen, onClose }) => {
       requiredRole: null
     },
     {
+      path: '/data-kelembapan-suhu-amonia',
+      name: 'Data Kelembapan, Suhu, dan Amonia',
+      icon: 'fas fa-thermometer-half',
+      requiredRole: null
+    },
+    {
       path: '/unduh-laporan',
       name: 'Unduh Laporan',
       icon: 'fas fa-download',

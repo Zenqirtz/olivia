@@ -217,8 +217,86 @@ const addSensorReading = async (req, res) => {
   }
 };
 
+// Get sensor logs with filtering and pagination
+const getSensorLogs = async (req, res) => {
+  try {
+    const {
+      page = 1,
+      limit = 10,
+      date,
+      sort_by = 'recorded_at',
+      sort_order = 'DESC'
+    } = req.query;
+
+    const pageNum = parseInt(page);
+    const limitNum = parseInt(limit);
+    const offset = (pageNum - 1) * limitNum;
+
+    let whereConditions = [];
+    let queryParams = [];
+
+    // Filter by date (YYYY-MM-DD format)
+    if (date) {
+      whereConditions.push('DATE(recorded_at) = ?');
+      queryParams.push(date);
+    }
+
+    const whereClause = whereConditions.length > 0 ? 'WHERE ' + whereConditions.join(' AND ') : '';
+
+    // Get total count for pagination
+    const countQuery = `
+      SELECT COUNT(*) as total
+      FROM sensor_readings
+      ${whereClause}
+    `;
+
+    const countResult = await executeQuery(countQuery, queryParams);
+    const totalRecords = countResult.data && countResult.data.length > 0 ? countResult.data[0].total : 0;
+
+    // Get sensor logs - using string interpolation for limit and offset
+    const logsQuery = `
+      SELECT 
+        reading_id,
+        device_id,
+        ROUND(temperature, 1) as temperature,
+        ROUND(humidity, 1) as humidity,
+        ROUND(ammonia, 1) as ammonia,
+        recorded_at
+      FROM sensor_readings
+      ${whereClause}
+      ORDER BY ${sort_by} ${sort_order}
+      LIMIT ${limitNum} OFFSET ${offset}
+    `;
+
+    const logsResult = await executeQuery(logsQuery, queryParams);
+    const totalPages = Math.ceil(totalRecords / limitNum);
+
+    res.json({
+      success: true,
+      data: {
+        logs: logsResult.data || [],
+        pagination: {
+          current_page: pageNum,
+          total_pages: totalPages,
+          total_records: totalRecords,
+          per_page: limitNum,
+          has_next: pageNum < totalPages,
+          has_prev: pageNum > 1
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Get sensor logs error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Gagal mengambil riwayat data sensor'
+    });
+  }
+};
+
 module.exports = {
   getSensorReadings,
   getLatestSensorReading,
-  addSensorReading
+  addSensorReading,
+  getSensorLogs
 };

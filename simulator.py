@@ -109,11 +109,11 @@ def run_sensor_monitoring():
 
             # Amonia berkisar antara 5 - 25 ppm (random walk)
             if random.random() < 0.10:
-                ammonia_state = random.uniform(20.5, 24.5)
+                ammonia_state = random.uniform(10.5, 24.5)
             else:
                 ammonia_change = random.uniform(-0.8, 0.8)
                 ammonia_state += ammonia_change
-            ammonia_state = max(5.0, min(25.0, ammonia_state))
+            ammonia_state = max(5.0, min(23.0, ammonia_state))
             ammonia = round(ammonia_state, 2)
 
             # Payload sensor (murni data lingkungan kandang)
