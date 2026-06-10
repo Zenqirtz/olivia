@@ -619,31 +619,31 @@ const Pengaturan = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg animate-fade-in-up">
-        <div className="px-8 py-10 text-white">
-          <h1 className="text-3xl font-bold mb-2">Pengaturan</h1>
-          <p className="text-amber-100">Kelola profil, akun, dan preferensi sistem Anda.</p>
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
+        <div className="px-4 md:px-8 py-6 md:py-10 text-white">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Pengaturan</h1>
+          <p className="text-amber-100 text-sm md:text-base">Kelola profil, akun, dan preferensi sistem Anda.</p>
         </div>
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Sidebar Navigation */}
+      <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
+        {/* Tab Navigation — horizontal scroll di mobile */}
         <div className="lg:w-1/4 animate-fade-in-up delay-75">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-4 card-hover-amber">
-            <nav className="space-y-2">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-2 md:p-4 card-hover-amber">
+            <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0">
               {tabs.map((tab) => (
                 <button
                   key={tab.id}
                   onClick={() => {
                     setActiveTab(tab.id);
                   }}
-                  className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-all btn-press ripple-effect ${activeTab === tab.id
+                  className={`flex-shrink-0 flex items-center space-x-2 px-3 md:px-4 py-2.5 md:py-3 rounded-lg text-left transition-all btn-press ripple-effect whitespace-nowrap ${activeTab === tab.id
                       ? 'bg-amber-50 dark:bg-amber-900 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                 >
-                  <i className={`fas fa-${tab.icon} text-lg`}></i>
-                  <span className="font-medium">{tab.label}</span>
+                  <i className={`fas fa-${tab.icon} text-base md:text-lg`}></i>
+                  <span className="font-medium text-sm md:text-base">{tab.label}</span>
                 </button>
               ))}
             </nav>

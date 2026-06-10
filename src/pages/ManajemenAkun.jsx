@@ -287,10 +287,10 @@ const ManajemenAkun = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-8 shadow-lg animate-fade-in-up">
-        <div className="px-8 py-10 text-white">
-          <h1 className="text-3xl font-bold mb-2">Manajemen Akun</h1>
-          <p className="text-amber-100">Kelola akun pengguna sistem GardaOva</p>
+      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
+        <div className="px-4 md:px-8 py-6 md:py-10 text-white">
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Manajemen Akun</h1>
+          <p className="text-amber-100 text-sm md:text-base">Kelola akun pengguna sistem GardaOva</p>
         </div>
       </div>
 
@@ -368,19 +368,19 @@ const ManajemenAkun = () => {
             <table className="w-full">
               <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Pengguna
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Role
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="hidden sm:table-cell px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Dibuat
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                  <th className="px-3 md:px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Aksi
                   </th>
                 </tr>
@@ -388,29 +388,29 @@ const ManajemenAkun = () => {
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700 tbody-stagger">
                 {users.map((userData) => (
                   <tr key={userData.user_id} className="border-b border-gray-100 dark:border-gray-700 hover:bg-amber-50/30 dark:hover:bg-gray-700/30 table-row-animated">
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        <div className="flex-shrink-0 h-10 w-10">
-                          <div className="h-10 w-10 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center text-white font-medium">
+                        <div className="flex-shrink-0 h-8 w-8 md:h-10 md:w-10">
+                          <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center text-white font-medium text-sm">
                             {userData.name.charAt(0).toUpperCase()}
                           </div>
                         </div>
-                        <div className="ml-4">
+                        <div className="ml-3">
                           <div className="text-sm font-medium text-gray-900 dark:text-white">
                             {userData.name}
                           </div>
-                          <div className="text-sm text-gray-500 dark:text-gray-400">
+                          <div className="text-xs text-gray-500 dark:text-gray-400 hidden sm:block">
                             {userData.email}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                       <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-${getRoleColor(userData.role)}-100 dark:bg-${getRoleColor(userData.role)}-900 text-${getRoleColor(userData.role)}-800 dark:text-${getRoleColor(userData.role)}-200`}>
                         {roleOptions.find(r => r.value === userData.role)?.label}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-3 md:px-6 py-4 whitespace-nowrap">
                       <button
                         onClick={() => toggleUserStatus(userData.user_id)}
                         disabled={userData.user_id === user.user_id}
@@ -422,10 +422,10 @@ const ManajemenAkun = () => {
                         {userData.is_active ? 'Aktif' : 'Nonaktif'}
                       </button>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                    <td className="hidden sm:table-cell px-3 md:px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                       {new Date(userData.created_at).toLocaleDateString('id-ID')}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-3 md:px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex justify-end gap-2">
                         {canEditUser(userData) && (
                           <button
