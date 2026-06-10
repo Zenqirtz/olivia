@@ -77,9 +77,9 @@ const Layout = ({ children }) => {
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
         {/* Sticky Header Block */}
         <div className="sticky top-0 z-30 flex flex-col">
-          {/* Top Bar */}
-          <div className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 py-3">
-            <div className="flex items-center justify-between">
+          {/* Top Bar — h-20 diselaraskan dengan header sidebar */}
+          <div className="h-20 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 flex items-center">
+            <div className="flex items-center justify-between w-full">
               {/* Mobile menu button */}
               <button
                 onClick={toggleSidebar}

@@ -82,25 +82,23 @@ const Sidebar = ({ isOpen, onClose }) => {
       <div className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0 lg:static lg:z-auto border-r border-gray-200 dark:border-gray-700`}>
 
-        {/* Header with Logo */}
-        <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900">
-          <div className="flex items-center justify-between">
-            <div className="flex-1 flex justify-center">
-              <div className="w-48 h-12">
-                <img
-                  src={newLogo}
-                  alt="Smarternak Logo"
-                  className="w-full h-full object-contain"
-                />
-              </div>
+        {/* Header with Logo — tinggi diselaraskan dengan top bar di Layout (h-20) */}
+        <div className="h-20 px-4 flex items-center justify-between border-b border-amber-900 dark:border-amber-950 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 shrink-0">
+          <div className="flex-1 flex justify-center">
+            <div className="h-12 w-auto">
+              <img
+                src={newLogo}
+                alt="GardaOva Logo"
+                className="h-full w-auto object-contain"
+              />
             </div>
-            <button
-              onClick={onClose}
-              className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-amber-800 dark:hover:bg-amber-900 transition-colors"
-            >
-              <i className="fas fa-times text-lg"></i>
-            </button>
           </div>
+          <button
+            onClick={onClose}
+            className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-amber-800 dark:hover:bg-amber-900 transition-colors"
+          >
+            <i className="fas fa-times text-lg"></i>
+          </button>
         </div>
 
         {/* User Info */}
