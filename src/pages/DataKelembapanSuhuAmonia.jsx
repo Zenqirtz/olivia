@@ -562,7 +562,7 @@ const DataKelembapanSuhuAmonia = () => {
                     <th className="py-4 px-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-750">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-750 tbody-stagger">
                   {logs.map((log, index) => {
                     const rowNumber = ((pagination.current_page - 1) * pagination.per_page) + index + 1;
                     const overallStat = getOverallStatus(log.temperature, log.humidity, log.ammonia);
@@ -571,7 +571,7 @@ const DataKelembapanSuhuAmonia = () => {
                     const ammStat = getAmmoniaStatus(log.ammonia);
 
                     return (
-                      <tr key={log.reading_id || index} className="hover:bg-amber-500/[0.02] dark:hover:bg-gray-700/25 transition-colors">
+                      <tr key={log.reading_id || index} className="hover:bg-amber-500/[0.02] dark:hover:bg-gray-700/25 transition-all table-row-animated">
                         <td className="py-4 px-5 font-semibold text-gray-400 dark:text-gray-500 text-sm">{rowNumber}</td>
                         <td className="py-4 px-5 font-medium text-gray-800 dark:text-gray-250 text-sm whitespace-nowrap">
                           {formatDateForDisplay(log.recorded_at)}
