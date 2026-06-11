@@ -73,7 +73,7 @@ const Layout = ({ children }) => {
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
       <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
-      
+
       <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
         {/* Sticky Header Block */}
         <div className="sticky top-0 z-30 flex flex-col">
@@ -110,8 +110,8 @@ const Layout = ({ children }) => {
 
                 {/* User info (hidden on mobile) */}
                 <div className="hidden md:flex items-center gap-3 ml-2">
-                  <div 
-                    onClick={goToSettings} 
+                  <div
+                    onClick={goToSettings}
                     className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium text-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                     title="Pengaturan Profil"
                   >
@@ -160,7 +160,7 @@ const Layout = ({ children }) => {
             </div>
           )}
         </div>
-        
+
         {/* Main content */}
         <div className="flex-1 overflow-auto">
           <div className="p-4 md:p-6">
