@@ -5,12 +5,13 @@
 #include <HTTPClient.h>
 
 // === WiFi Configuration ===
-const char* ssid = "MONICA 123";
-const char* password = "11223344";
+const char* ssid = "TP-Link_9B8E";
+const char* password = "58797044";
 
 // === Server Manual IP ===
-const String serverIP = "192.168.100.37";
-const String serverPath = "/telur/simpan.php";
+const String serverIP = "192.168.0.107";
+const int serverPort = 5000;
+const String serverPath = "/api/eggs";
 
 // === ESP32 Server for ESP32-CAM Communication ===
 WiFiServer server(8080);
@@ -29,6 +30,16 @@ const int echoPin1 = 26;
 const int trigPin2 = 33; // Sensor bagus
 const int echoPin2 = 32;
 
+// === Cooldown Sensor (mencegah spam ke database) ===
+// Setelah terdeteksi, tunggu 5 detik sebelum bisa kirim lagi
+const unsigned long COOLDOWN_MS = 5000;
+unsigned long lastSendSensor1 = 0;
+unsigned long lastSendSensor2 = 0;
+
+// Flag: apakah telur sedang ada di depan sensor (untuk debounce)
+bool sensor1WasTriggered = false;
+bool sensor2WasTriggered = false;
+
 long readDistanceCM(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -46,12 +57,12 @@ void kirimKeDatabase(const String& jenisTelur) {
   }
 
   HTTPClient http;
-  String url = "http://" + serverIP + serverPath;
+  String url = "http://" + serverIP + ":" + String(serverPort) + serverPath;
 
   http.begin(url);
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
-  String data ="egg_scans=" + jenisTelur;
+  String data = "quality=" + jenisTelur;
   int httpResponseCode = http.POST(data);
 
   Serial.print("Mengirim ke DB: ");
@@ -114,6 +125,8 @@ void setup() {
 }
 
 void loop() {
+  unsigned long now = millis();
+
   // === ESP32-CAM Communication ===
   client = server.available();
   if (client) {
@@ -143,30 +156,43 @@ void loop() {
           servoTelur.write(90);
         } else if (incomingData == "bagus") {
           servoTelur.write(90);
-        } 
+        }
         client.stop();
-        Serial.println ("koneksi terputus");
-
-        
+        Serial.println("koneksi terputus");
       }
     }
   }
 
   // === Sensor Jelek (Sensor 1) ===
+  // Hanya kirim ke DB jika:
+  // 1. Telur baru saja masuk (rising edge: sebelumnya tidak ada, sekarang ada)
+  // 2. Cooldown sudah lewat (minimal 5 detik dari pengiriman terakhir)
   long jarak1 = readDistanceCM(trigPin1, echoPin1);
-  if (jarak1 > 0 && jarak1 < 5) {
-    Serial.println("Telur JELEK terdeteksi.");
-    kirimKeDatabase("bad");
-    delay(1000);
+  bool sensor1Aktif = (jarak1 > 0 && jarak1 < 5);
+
+  if (sensor1Aktif && !sensor1WasTriggered) {
+    // Telur baru masuk ke area sensor jelek
+    if (now - lastSendSensor1 >= COOLDOWN_MS) {
+      Serial.println("Telur JELEK terdeteksi.");
+      kirimKeDatabase("bad");
+      lastSendSensor1 = now;
+    }
   }
+  sensor1WasTriggered = sensor1Aktif;
 
   // === Sensor Bagus (Sensor 2) ===
   long jarak2 = readDistanceCM(trigPin2, echoPin2);
-  if (jarak2 > 0 && jarak2 < 5) {
-    Serial.println("Telur BAGUS terdeteksi.");
-    kirimKeDatabase("good");
-    delay(1000);
+  bool sensor2Aktif = (jarak2 > 0 && jarak2 < 5);
+
+  if (sensor2Aktif && !sensor2WasTriggered) {
+    // Telur baru masuk ke area sensor bagus
+    if (now - lastSendSensor2 >= COOLDOWN_MS) {
+      Serial.println("Telur BAGUS terdeteksi.");
+      kirimKeDatabase("good");
+      lastSendSensor2 = now;
+    }
   }
+  sensor2WasTriggered = sensor2Aktif;
 
   delay(200); // minimal delay
 }

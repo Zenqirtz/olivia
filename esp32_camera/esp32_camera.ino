@@ -1,4 +1,4 @@
-  #include <dummy.h>
+#include <dummy.h>
 #include <WiFi.h>
 #include <telur_inferencing.h>
 #include "edge-impulse-sdk/dsp/image/image.hpp"
@@ -57,9 +57,9 @@
 
 
 
-const char* ssid = "MONICA 123";
-const char* password = "11223344";
-const char* serverAddress = "192.168.100.40"; // Replace with receiver ESP32 IP
+const char* ssid = "TP-Link_9B8E";
+const char* password = "58797044";
+const char* serverAddress = "192.168.0.108"; // IP ESP32 utama (sketch_may28a)
 const int serverPort = 8080;
 WiFiClient client;
 

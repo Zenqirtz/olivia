@@ -28,8 +28,8 @@
 #define MQ135_PIN 34
 
 // ---- KONFIGURASI WI-FI ----
-const char* ssid     = "POCO X7";
-const char* password = "pradana09";
+const char* ssid     = "TP-Link_9B8E";
+const char* password = "58797044";
 
 // ====================================================================
 // !!  GANTI IP INI dengan IP PC/Laptop tempat backend Express berjalan
@@ -37,7 +37,7 @@ const char* password = "pradana09";
 //     Cari bagian "IPv4 Address" pada adapter WiFi Anda
 //     Contoh hasil: 192.168.1.10 => isi jadi "192.168.1.10"444444444444
 // ====================================================================
-const char* serverIP   = "10.17.40.169";   // << GANTI dengan IP PC Anda
+const char* serverIP   = "192.168.0.107";   // << GANTI dengan IP PC Anda
 const int   serverPort = 5000;            // Port backend Express (default)
 const int   DEVICE_ID  = 1;              // ID perangkat ESP32 ini
 
