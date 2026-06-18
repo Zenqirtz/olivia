@@ -215,26 +215,26 @@ body {
 /* ========================================== */
 
 .animate-fade-in-up {
-  animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
 .animate-fade-in-scale {
-  animation: fadeInScale 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInScale 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
 .animate-slide-in-right {
-  animation: slideInRight 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: slideInRight 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
 .animate-count-up {
-  animation: countUp 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: countUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .animate-fadeIn {
-  animation: fadeInScale 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInScale 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Staggered animation delays */
@@ -291,7 +291,7 @@ body {
 /* ========================================== */
 
 .card-hover-lift {
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease;
 }
 
 .card-hover-lift:hover {
@@ -305,7 +305,7 @@ body {
 
 /* Colored glowing card hovers */
 .card-hover-amber {
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease;
 }
 
 .card-hover-amber:hover {
@@ -320,7 +320,7 @@ body {
 }
 
 .card-hover-green {
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease;
 }
 
 .card-hover-green:hover {
@@ -335,7 +335,7 @@ body {
 }
 
 .card-hover-red {
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease;
 }
 
 .card-hover-red:hover {
@@ -350,7 +350,7 @@ body {
 }
 
 .card-hover-blue {
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1), border-color 0.4s ease;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.6s ease;
 }
 
 .card-hover-blue:hover {
@@ -438,7 +438,7 @@ body {
 
 /* Table row hover animation */
 .table-row-animated {
-  transition: background-color 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+  transition: background-color 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.6s ease;
 }
 
 .table-row-animated:hover {
@@ -475,13 +475,13 @@ body {
 
 /* Chart container fade-in */
 .chart-container {
-  animation: fadeInScale 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fadeInScale 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
 /* Button press effect */
 .btn-press {
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.5s ease, background-color 0.5s ease;
 }
 
 .btn-press:hover {
@@ -513,13 +513,13 @@ body {
 
 /* Smooth page transition */
 .page-enter {
-  animation: fadeInUp 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
 /* Tab switching animation */
 .tab-content-enter {
-  animation: fadeInScale 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInScale 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
   opacity: 0;
 }
 
@@ -553,62 +553,62 @@ body {
 
 /* Modal and Overlay transitions */
 .modal-backdrop-animate {
-  animation: modalFadeIn 0.25s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: modalFadeIn 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .modal-content-animate {
-  animation: modalZoomIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: modalZoomIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 /* Table Row Staggered entry */
 .tbody-stagger tr {
   opacity: 0;
-  animation: fadeInUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+  animation: fadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
 .tbody-stagger tr:nth-child(1) {
-  animation-delay: 40ms;
+  animation-delay: 100ms;
 }
 
 .tbody-stagger tr:nth-child(2) {
-  animation-delay: 80ms;
-}
-
-.tbody-stagger tr:nth-child(3) {
-  animation-delay: 120ms;
-}
-
-.tbody-stagger tr:nth-child(4) {
-  animation-delay: 160ms;
-}
-
-.tbody-stagger tr:nth-child(5) {
   animation-delay: 200ms;
 }
 
+.tbody-stagger tr:nth-child(3) {
+  animation-delay: 300ms;
+}
+
+.tbody-stagger tr:nth-child(4) {
+  animation-delay: 400ms;
+}
+
+.tbody-stagger tr:nth-child(5) {
+  animation-delay: 500ms;
+}
+
 .tbody-stagger tr:nth-child(6) {
-  animation-delay: 240ms;
+  animation-delay: 600ms;
 }
 
 .tbody-stagger tr:nth-child(7) {
-  animation-delay: 280ms;
+  animation-delay: 700ms;
 }
 
 .tbody-stagger tr:nth-child(8) {
-  animation-delay: 320ms;
+  animation-delay: 800ms;
 }
 
 .tbody-stagger tr:nth-child(9) {
-  animation-delay: 360ms;
+  animation-delay: 900ms;
 }
 
 .tbody-stagger tr:nth-child(10) {
-  animation-delay: 400ms;
+  animation-delay: 1000ms;
 }
 
 /* Input field premium focus glow */
 .input-glow {
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
+  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease;
 }
 
 .input-glow:focus {
@@ -619,7 +619,7 @@ body {
 
 /* Sidebar micro-interaction hover */
 .sidebar-link-hover {
-  transition: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .sidebar-link-hover:hover {
