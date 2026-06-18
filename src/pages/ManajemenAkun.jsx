@@ -414,10 +414,10 @@ const ManajemenAkun = () => {
                       <button
                         onClick={() => toggleUserStatus(userData.user_id)}
                         disabled={userData.user_id === user.user_id}
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${userData.is_active
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full transition-all duration-200 ${userData.is_active
                             ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
                             : 'bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200'
-                          } ${userData.user_id === user.user_id ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80 cursor-pointer'}`}
+                          } ${userData.user_id === user.user_id ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-80 cursor-pointer btn-press ripple-effect'}`}
                       >
                         {userData.is_active ? 'Aktif' : 'Nonaktif'}
                       </button>
@@ -430,7 +430,7 @@ const ManajemenAkun = () => {
                         {canEditUser(userData) && (
                           <button
                             onClick={() => handleOpenModal('edit', userData)}
-                            className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                            className="text-amber-600 dark:text-amber-400 hover:text-amber-800 dark:hover:text-amber-300 p-2 rounded-lg hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-all btn-press ripple-effect"
                           >
                             <i className="fas fa-edit"></i>
                           </button>
@@ -438,7 +438,7 @@ const ManajemenAkun = () => {
                         {canDeleteUser(userData) && (
                           <button
                             onClick={() => handleOpenModal('delete', userData)}
-                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20"
+                            className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-300 p-2 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20 transition-all btn-press ripple-effect"
                           >
                             <i className="fas fa-trash"></i>
                           </button>
@@ -605,7 +605,7 @@ const ManajemenAkun = () => {
               <button
                 onClick={handleCloseModal}
                 disabled={submitting}
-                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50"
+                className="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 transition-all btn-press ripple-effect"
               >
                 Batal
               </button>
@@ -613,18 +613,18 @@ const ManajemenAkun = () => {
                 <button
                   onClick={handleDelete}
                   disabled={submitting}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 flex items-center gap-2 transition-all btn-press ripple-effect"
                 >
-                  {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
+                  {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>}
                   Hapus
                 </button>
               ) : (
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg hover:opacity-90 disabled:opacity-50 flex items-center gap-2"
+                  className="px-4 py-2 bg-gradient-to-r from-amber-600 to-amber-700 text-white rounded-lg hover:opacity-90 disabled:opacity-50 flex items-center gap-2 transition-all btn-press ripple-effect"
                 >
-                  {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>}
+                  {submitting && <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>}
                   {modalType === 'create' ? 'Tambah' : 'Simpan'}
                 </button>
               )}

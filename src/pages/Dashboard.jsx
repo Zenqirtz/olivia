@@ -841,7 +841,7 @@ const Dashboard = () => {
                   <th className="py-3 px-4 text-left font-medium">TANGGAL</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="tbody-stagger">
                 {recentEggs.length > 0 ? (
                   recentEggs.map((egg, index) => (
                     <tr key={egg.scan_id || index} className="border-b border-amber-100 dark:border-gray-700 hover:bg-amber-100/50 dark:hover:bg-gray-700/50 table-row-animated">

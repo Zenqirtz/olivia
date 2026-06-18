@@ -287,7 +287,7 @@ const UnduhLaporan = () => {
                 type="date"
                 value={selectedDate}
                 onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow transition-all"
               />
             </div>
           </div>
@@ -307,7 +307,7 @@ const UnduhLaporan = () => {
                     type="date"
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow transition-all"
                   />
                 </div>
               </div>
@@ -321,7 +321,7 @@ const UnduhLaporan = () => {
                     type="date"
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
+                    className="w-full border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow transition-all"
                   />
                 </div>
               </div>
@@ -510,7 +510,7 @@ const UnduhLaporan = () => {
                       >
                         <button
                           onClick={() => toggleDropdown(report.id || report.report_id || index)}
-                          className="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none"
+                          className="text-gray-600 dark:text-gray-300 hover:text-amber-600 dark:hover:text-amber-400 focus:outline-none transition-colors duration-200 btn-press"
                         >
                           <i className="fas fa-ellipsis-v"></i>
                         </button>

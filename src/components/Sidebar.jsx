@@ -135,16 +135,16 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <Link
                     to={item.path}
                     onClick={onClose}
-                    className={`flex items-center px-3 py-2.5 rounded-lg transition-all duration-200 group ${isActive
-                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-r-2 border-amber-600 dark:border-amber-400'
+                    className={`flex items-start px-3 py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 btn-press ripple-effect ${isActive
+                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-r-2 border-amber-600 dark:border-amber-400 shadow-sm'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-amber-600 dark:hover:text-amber-400'
                       }`}
                   >
-                    <i className={`${item.icon} w-5 text-center mr-3 ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
+                    <i className={`${item.icon} w-5 text-center mr-3 mt-[3px] shrink-0 transition-colors ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
                       }`}></i>
-                    <span className="font-medium">{item.name}</span>
+                    <span className="font-medium text-sm leading-normal">{item.name}</span>
                     {item.superAdminOnly && (
-                      <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full">
+                      <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full mt-0.5 shrink-0">
                         Super
                       </span>
                     )}
@@ -162,10 +162,10 @@ const Sidebar = ({ isOpen, onClose }) => {
           </div>
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="w-full flex items-center px-3 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200"
+            className="w-full flex items-start px-3 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 btn-press"
           >
-            <i className="fas fa-sign-out-alt w-5 text-center mr-3"></i>
-            <span className="font-medium">Logout</span>
+            <i className="fas fa-sign-out-alt w-5 text-center mr-3 mt-[3px] shrink-0"></i>
+            <span className="font-medium text-sm leading-normal">Logout</span>
           </button>
         </div>
       </div>

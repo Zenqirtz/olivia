@@ -344,9 +344,9 @@ const Pengaturan = () => {
           <button
             onClick={() => isEditing ? handleProfileSave() : setIsEditing(true)}
             disabled={isSaving}
-            className={`px-4 py-2 rounded-lg font-medium transition-colors ${isEditing
-                ? 'bg-green-500 hover:bg-green-600 text-white'
-                : 'bg-amber-600 hover:bg-amber-700 text-white'
+            className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 btn-press ripple-effect ${isEditing
+                ? 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
+                : 'bg-amber-600 hover:bg-amber-700 text-white shadow-sm'
               } ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
           >
             {isSaving ? (
@@ -541,7 +541,7 @@ const Pengaturan = () => {
             <button
               onClick={handleUpdatePassword}
               disabled={isUpdatingPassword}
-              className={`bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white px-6 py-3 rounded-lg font-medium transition-colors ${isUpdatingPassword ? 'opacity-70 cursor-not-allowed' : ''} flex items-center justify-center`}
+              className={`bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 btn-press ripple-effect ${isUpdatingPassword ? 'opacity-70 cursor-not-allowed' : ''} flex items-center justify-center shadow-sm`}
             >
               {isUpdatingPassword ? (
                 <>

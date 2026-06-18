@@ -281,7 +281,7 @@ const DataKualitasTelur = () => {
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">Filter Data</h3>
             <button
-              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 absolute top-6 right-6 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-all"
+              className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 absolute top-6 right-6 bg-gray-100 dark:bg-gray-700 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-600 transition-all btn-press ripple-effect"
               onClick={() => setFilterVisible(false)}
             >
               <i className="fas fa-times"></i>
@@ -297,7 +297,7 @@ const DataKualitasTelur = () => {
                 </div>
                 <input
                   type="date"
-                  className="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-3"
+                  className="bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 text-sm rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 block w-full pl-10 p-3 input-glow transition-all"
                   value={selectedDate}
                   onChange={handleDateChange}
                 />
