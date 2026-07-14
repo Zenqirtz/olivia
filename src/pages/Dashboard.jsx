@@ -756,7 +756,7 @@ const Dashboard = () => {
               <p className="text-amber-600 dark:text-gray-400 text-sm">Statistik Telur</p>
               <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">
                 {donutMode === 'harian'
-                  ? `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
+                  ?   `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
                   : 'Statistik Telur 7 Hari Terakhir'
                 }
               </h3>
