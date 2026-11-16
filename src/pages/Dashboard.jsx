@@ -30,23 +30,16 @@ const Dashboard = () => {
   const navigate = useNavigate();
 
   const [weeklyData, setWeeklyData] = useState({
-    labels: ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4'],
+    labels: [],
     datasets: [
       {
-        label: 'Telur Bagus',
-        data: [0, 0, 0, 0],
-        borderColor: '#3498db',
-        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: 'Telur Jelek',
-        data: [0, 0, 0, 0],
-        borderColor: '#f04438',
-        backgroundColor: 'rgba(240, 68, 56, 0.1)',
-        fill: true,
-        tension: 0.4,
+        label: 'Total Produksi',
+        data: [],
+        backgroundColor: '#3b82f6',
+        hoverBackgroundColor: '#2563eb',
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 32,
       }
     ]
   });
@@ -57,8 +50,8 @@ const Dashboard = () => {
       {
         label: 'Kualitas Telur',
         data: [0, 0],
-        backgroundColor: ['#2b2796', '#f4536a'],
-        hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+        backgroundColor: ['#3b82f6', '#f4536a'],
+        hoverBackgroundColor: ['#2563eb', '#e8384f'],
         borderColor: ['#ffffff', '#ffffff'],
         borderWidth: 2,
         cutout: '72%',
@@ -73,6 +66,10 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // State rincian data untuk tooltip inspeksi
+  const [dailyDetails, setDailyDetails] = useState({ good: [], bad: [], total: [] });
+  const [weeklyDetails, setWeeklyDetails] = useState({ good: [], bad: [], total: [] });
+
   // State untuk donut mode (harian/mingguan)
   const [donutMode, setDonutMode] = useState('harian');
   const [donutStats, setDonutStats] = useState({
@@ -82,13 +79,19 @@ const Dashboard = () => {
     goodPercentage: 0,
   });
 
-  // State untuk grafik produksi harian (per jam)
+  // State untuk grafik produksi harian (per jam) - 1 bar per jam dengan rincian saat di-inspect
   const [dailyData, setDailyData] = useState({
     labels: [],
     datasets: [
-      { label: 'Telur Bagus', data: [], backgroundColor: '#2b2796', hoverBackgroundColor: '#3a34c0', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 },
-      { label: 'Telur Jelek', data: [], backgroundColor: '#f4536a', hoverBackgroundColor: '#e8384f', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 },
-      { label: 'Total', data: [], backgroundColor: '#f9b02b', hoverBackgroundColor: '#eda11c', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 }
+      {
+        label: 'Total Produksi',
+        data: [],
+        backgroundColor: '#3b82f6',
+        hoverBackgroundColor: '#2563eb',
+        borderRadius: 8,
+        borderSkipped: false,
+        maxBarThickness: 32,
+      }
     ]
   });
 
@@ -195,8 +198,8 @@ const Dashboard = () => {
             datasets: [{
               ...prev.datasets[0],
               data: [stats.goodEggs, stats.badEggs],
-              backgroundColor: ['#2b2796', '#f4536a'],
-              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              backgroundColor: ['#3b82f6', '#f4536a'],
+              hoverBackgroundColor: ['#2563eb', '#e8384f'],
               borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
@@ -217,8 +220,8 @@ const Dashboard = () => {
             datasets: [{
               ...prev.datasets[0],
               data: [stats.goodEggs, stats.badEggs],
-              backgroundColor: ['#2b2796', '#f4536a'],
-              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              backgroundColor: ['#3b82f6', '#f4536a'],
+              hoverBackgroundColor: ['#2563eb', '#e8384f'],
               borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
@@ -260,8 +263,8 @@ const Dashboard = () => {
             datasets: [{
               ...prev.datasets[0],
               data: [summary.good_eggs || 0, summary.bad_eggs || 0],
-              backgroundColor: ['#2b2796', '#f4536a'],
-              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              backgroundColor: ['#3b82f6', '#f4536a'],
+              hoverBackgroundColor: ['#2563eb', '#e8384f'],
               borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
@@ -302,6 +305,7 @@ const Dashboard = () => {
       const labels = [];
       const goodEggsData = [];
       const badEggsData = [];
+      const totalEggsData = [];
 
       // Get data for last 7 days
       for (let i = 6; i >= 0; i--) {
@@ -319,9 +323,11 @@ const Dashboard = () => {
           const stats = response.data.statistics[0];
           goodEggsData.push(stats.good_eggs || 0);
           badEggsData.push(stats.bad_eggs || 0);
+          totalEggsData.push(stats.total_eggs || 0);
         } else {
           goodEggsData.push(0);
           badEggsData.push(0);
+          totalEggsData.push(0);
         }
 
         labels.push(date.toLocaleDateString('id-ID', {
@@ -330,41 +336,25 @@ const Dashboard = () => {
         }));
       }
 
+      const totalData = totalEggsData;
+
+      setWeeklyDetails({
+        good: goodEggsData,
+        bad: badEggsData,
+        total: totalData
+      });
+
       setWeeklyData({
         labels: labels,
         datasets: [
           {
-            label: 'Telur Bagus',
-            data: goodEggsData,
-            backgroundColor: '#2b2796',
-            hoverBackgroundColor: '#3a34c0',
-            borderRadius: 6,
+            label: 'Total Produksi',
+            data: totalData,
+            backgroundColor: '#3b82f6',
+            hoverBackgroundColor: '#2563eb',
+            borderRadius: 8,
             borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
-          },
-          {
-            label: 'Telur Jelek',
-            data: badEggsData,
-            backgroundColor: '#f4536a',
-            hoverBackgroundColor: '#e8384f',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
-          },
-          {
-            label: 'Total',
-            data: goodEggsData.map((g, i) => g + (badEggsData[i] || 0)),
-            backgroundColor: '#f9b02b',
-            hoverBackgroundColor: '#eda11c',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
+            maxBarThickness: 32,
           }
         ]
       });
@@ -374,7 +364,7 @@ const Dashboard = () => {
     }
   };
 
-  // Load daily statistics per hour block
+  // Load daily statistics per hour block (single bar per block with detailed breakdown on hover/inspect)
   const loadDailyStatistics = async () => {
     try {
       const hourBlocks = [
@@ -393,57 +383,39 @@ const Dashboard = () => {
 
       const goodData = [0, 0, 0, 0, 0, 0];
       const badData = [0, 0, 0, 0, 0, 0];
+      const totalData = [0, 0, 0, 0, 0, 0];
 
       eggs.forEach((egg) => {
         const d = new Date(egg.scanned_at);
         const h = d.getHours();
         const idx = hourBlocks.findIndex(b => h >= b.start && h < b.end);
         if (idx !== -1) {
+          totalData[idx] += 1;
           if (egg.quality === 'good') {
             goodData[idx] += 1;
-          } else {
+          } else if (egg.quality === 'bad') {
             badData[idx] += 1;
           }
         }
       });
 
-      const totalData = goodData.map((g, i) => g + badData[i]);
+      setDailyDetails({
+        good: goodData,
+        bad: badData,
+        total: totalData
+      });
 
       setDailyData({
         labels: hourBlocks.map(b => b.label),
         datasets: [
           {
-            label: 'Telur Bagus',
-            data: goodData,
-            backgroundColor: '#2b2796',
-            hoverBackgroundColor: '#3a34c0',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
-          },
-          {
-            label: 'Telur Jelek',
-            data: badData,
-            backgroundColor: '#f4536a',
-            hoverBackgroundColor: '#e8384f',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
-          },
-          {
-            label: 'Total',
+            label: 'Total Produksi',
             data: totalData,
-            backgroundColor: '#f9b02b',
-            hoverBackgroundColor: '#eda11c',
-            borderRadius: 6,
+            backgroundColor: '#3b82f6',
+            hoverBackgroundColor: '#2563eb',
+            borderRadius: 8,
             borderSkipped: false,
-            maxBarThickness: 21,
-            categoryPercentage: 0.62,
-            barPercentage: 0.72,
+            maxBarThickness: 32,
           }
         ]
       });
@@ -531,7 +503,7 @@ const Dashboard = () => {
   }
 
   // Circular gauge helper (ring progress indicator)
-  const GaugeRing = ({ value, color, size = 48, label }) => {
+  const GaugeRing = ({ value, color, size = 54, label }) => {
     const stroke = 5;
     const radius = (size - stroke) / 2;
     const circumference = 2 * Math.PI * radius;
@@ -544,7 +516,8 @@ const Dashboard = () => {
             cx={size / 2}
             cy={size / 2}
             r={radius}
-            stroke="rgba(156, 163, 175, 0.18)"
+            stroke="currentColor"
+            className="text-gray-100 dark:text-gray-700/60"
             strokeWidth={stroke}
             fill="none"
           />
@@ -561,9 +534,10 @@ const Dashboard = () => {
             className="transition-all duration-1000 ease-out"
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <div className="font-bold text-gray-900 dark:text-white">{label}</div>
-          <div className="text-[10px] text-gray-500 dark:text-gray-400">{progress}%</div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">
+            {label !== undefined ? label : `${Math.round(progress)}%`}
+          </span>
         </div>
       </div>
     );
@@ -620,55 +594,70 @@ const Dashboard = () => {
       )}
 
 
-        {/* Metric Cards (4 cards with circular rings) */}
+        {/* Metric Cards */}
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
           {/* Total Telur */}
-          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-egg text-lg"></i>
               </div>
-              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${dashboardStats.trend >= 0
+              <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${dashboardStats.trend >= 0
                   ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
                   : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
                 }`}>
-                <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} mr-1 text-[10px]`}></i>
-                {formatPercentage(Math.abs(dashboardStats.trend || 0))}%
+                <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} text-[10px]`}></i>
+                {formatPercentage(Math.abs(dashboardStats.trend || 0))}% dari kemarin
               </span>
             </div>
-            <GaugeRing value={Math.min(dashboardStats.totalEggs, 100)} color="#2b2796" label={dashboardStats.totalEggs} size={48} />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Total Telur Hari Ini</p>
+            <div className="relative z-10 flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.totalEggs}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Total Telur Hari Ini</p>
+              </div>
+              <GaugeRing value={Math.min(dashboardStats.totalEggs, 100)} color="#3b82f6" label={`${Math.min(dashboardStats.totalEggs, 100)}%`} size={56} />
+            </div>
           </div>
 
           {/* Telur Bagus */}
-          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
-            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
+            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-blue-50 dark:bg-blue-900/10 pointer-events-none"></div>
+            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-check-circle text-lg"></i>
               </div>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 whitespace-nowrap">
                 {formatPercentage(dashboardStats.goodPercentage, 1)}%
               </span>
             </div>
-            <GaugeRing value={dashboardStats.goodPercentage} color="#3b82f6" label={dashboardStats.goodEggs} size={48} />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Telur Bagus</p>
+            <div className="relative z-10 flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.goodEggs}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Telur Bagus</p>
+              </div>
+              <GaugeRing value={dashboardStats.goodPercentage} color="#3b82f6" label={`${formatPercentage(dashboardStats.goodPercentage, 0)}%`} size={56} />
+            </div>
           </div>
 
           {/* Telur Jelek */}
-          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
-            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
+          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-red-50 dark:bg-red-900/10 pointer-events-none"></div>
+            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
                 <i className="fas fa-times-circle text-lg"></i>
               </div>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 whitespace-nowrap">
                 {formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 1)}%
               </span>
             </div>
-            <GaugeRing value={formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)} color="#f4536a" label={dashboardStats.badEggs} size={48} />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Telur Jelek</p>
+            <div className="relative z-10 flex items-end justify-between gap-3">
+              <div className="min-w-0">
+                <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.badEggs}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">Telur Jelek</p>
+              </div>
+              <GaugeRing value={(dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100} color="#f4536a" label={`${formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)}%`} size={56} />
+            </div>
           </div>
         </div>
 
@@ -678,51 +667,70 @@ const Dashboard = () => {
           <div className="space-y-4">
             {/* Suhu Kandang */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 group relative overflow-hidden animate-fade-in-up delay-250">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shadow-sm">
-                      <i className="fas fa-temperature-high"></i>
-                    </div>
-                    <span className="text-xs font-medium text-orange-600 dark:text-orange-300">Suhu Kandang</span>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50/70 dark:bg-orange-900/10 rounded-bl-full -mt-4 -mr-4 pointer-events-none"></div>
+              <div className="relative flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shadow-sm shrink-0">
+                    <i className="fas fa-temperature-high text-lg"></i>
                   </div>
-                  <p className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-300">
-                    {latestSensor ? latestSensor.temperature : 0}<span className="text-base font-normal">°C</span>
+                  <div>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 block">Sensor Suhu</span>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Suhu Kandang</h4>
+                  </div>
+                </div>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
+                  latestSensor && latestSensor.temperature >= 25 && latestSensor.temperature <= 33
+                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800'
+                    : 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-100 dark:border-orange-800'
+                }`}>
+                  {latestSensor && latestSensor.temperature >= 25 && latestSensor.temperature <= 33 ? 'Optimal' : 'Perhatian'}
+                </span>
+              </div>
+              <div className="relative flex items-end justify-between pt-1">
+                <div>
+                  <p className="text-3xl md:text-4xl font-extrabold text-orange-600 dark:text-orange-400 tracking-tight">
+                    {latestSensor ? latestSensor.temperature : 0}
+                    <span className="text-lg font-normal text-gray-400 dark:text-gray-500 ml-1">°C</span>
                   </p>
                 </div>
-                <div className="h-12 w-px bg-orange-200 dark:bg-orange-800/50 mx-4"></div>
-                <div className="flex flex-col items-center gap-1.5">
-                  <div className="w-2 h-5 bg-orange-400 rounded-full"></div>
-                  <div className="w-2 h-6 bg-orange-500 rounded-full"></div>
-                  <div className="w-2 h-8 bg-orange-600 rounded-full"></div>
-                  <div className="w-2 h-5 bg-orange-400 rounded-full"></div>
+                <div className="text-right">
+                  <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 block">Rentang Ideal</span>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">25°C - 32°C</span>
                 </div>
               </div>
             </div>
 
             {/* Kelembapan */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 group relative overflow-hidden animate-fade-in-up delay-300">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-sky-50 dark:bg-sky-900/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-              <div className="flex items-center justify-between">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shadow-sm">
-                      <i className="fas fa-tint"></i>
-                    </div>
-                    <span className="text-xs font-medium text-sky-600 dark:text-sky-300">Kelembapan Udara</span>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50/70 dark:bg-blue-900/10 rounded-bl-full -mt-4 -mr-4 pointer-events-none"></div>
+              <div className="relative flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm shrink-0">
+                    <i className="fas fa-tint text-lg"></i>
                   </div>
-                  <p className="text-3xl md:text-4xl font-bold text-sky-700 dark:text-sky-300">
-                    {latestSensor ? latestSensor.humidity : 0}<span className="text-base font-normal">%</span>
+                  <div>
+                    <span className="text-xs font-medium text-gray-500 dark:text-gray-400 block">Sensor Udara</span>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Kelembapan Udara</h4>
+                  </div>
+                </div>
+                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
+                  latestSensor && latestSensor.humidity >= 50 && latestSensor.humidity <= 75
+                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800'
+                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-800'
+                }`}>
+                  {latestSensor && latestSensor.humidity >= 50 && latestSensor.humidity <= 75 ? 'Optimal' : 'Normal'}
+                </span>
+              </div>
+              <div className="relative flex items-end justify-between pt-1">
+                <div>
+                  <p className="text-3xl md:text-4xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">
+                    {latestSensor ? latestSensor.humidity : 0}
+                    <span className="text-lg font-normal text-gray-400 dark:text-gray-500 ml-1">%</span>
                   </p>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button className="w-7 h-7 rounded-full bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-300 hover:bg-sky-100 transition-colors">
-                    <i className="fas fa-chevron-up text-[10px]"></i>
-                  </button>
-                  <button className="w-7 h-7 rounded-full bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-300 hover:bg-sky-100 transition-colors">
-                    <i className="fas fa-chevron-down text-[10px]"></i>
-                  </button>
+                <div className="text-right">
+                  <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 block">Rentang Ideal</span>
+                  <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">50% - 70%</span>
                 </div>
               </div>
             </div>
@@ -752,7 +760,7 @@ const Dashboard = () => {
                     <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
                       <stop offset="0%" stopColor="#f4536a" />
                       <stop offset="40%" stopColor="#f9b02b" />
-                      <stop offset="100%" stopColor="#2b2796" />
+                      <stop offset="100%" stopColor="#3b82f6" />
                     </linearGradient>
                   </defs>
                   <path
@@ -783,11 +791,11 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Production Charts: Harian (kiri) & Mingguan (kanan) - keduanya bentuk grafik bar */}
+        {/* Production Charts: single bar per time period, details available on hover */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          {/* Daily Production Bar Chart */}
+          {/* Daily Production Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
-            <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-50/70 dark:bg-blue-900/10 rounded-full pointer-events-none"></div>
             <div className="relative flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -797,23 +805,18 @@ const Dashboard = () => {
                 <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi Hari Ini</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan per jam ({formatDateForDisplay(activeDate)})</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">Harian</span>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Harian</span>
             </div>
 
-            {/* Chart Legend */}
-            <div className="relative flex justify-center gap-5 mb-4">
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
-                Telur Bagus
+            <div className="relative flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4 px-1">
+              <div className="flex items-center gap-2 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                <span className="text-gray-700 dark:text-gray-300">Total Produksi</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
-                Telur Jelek
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
-                Total
-              </div>
+              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
+                <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
+                Arahkan kursor ke bar untuk rincian
+              </span>
             </div>
 
             <div className="relative h-56 md:h-72">
@@ -824,6 +827,9 @@ const Dashboard = () => {
                   plugins: {
                     legend: { display: false },
                     tooltip: {
+                      mode: 'index',
+                      intersect: false,
+                      displayColors: false,
                       backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                       titleColor: isDarkMode ? '#f3f4f6' : '#111827',
                       bodyColor: isDarkMode ? '#d1d5db' : '#374151',
@@ -833,7 +839,12 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          return `${context.dataset.label}: ${context.raw}`;
+                          const index = context.dataIndex;
+                          return [
+                            `Telur Bagus: ${dailyDetails.good[index] || 0}`,
+                            `Telur Jelek: ${dailyDetails.bad[index] || 0}`,
+                            `Total: ${dailyDetails.total[index] || 0}`
+                          ];
                         }
                       }
                     }
@@ -855,9 +866,9 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* Weekly Production Bar Chart */}
+          {/* Weekly Production Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-450">
-            <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-indigo-50 dark:bg-indigo-900/10 pointer-events-none"></div>
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-50/70 dark:bg-blue-900/10 rounded-full pointer-events-none"></div>
             <div className="relative flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
@@ -867,23 +878,18 @@ const Dashboard = () => {
                 <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan bagus, jelek, dan total</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">Mingguan</span>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Mingguan</span>
             </div>
 
-            {/* Chart Legend */}
-            <div className="relative flex justify-center gap-5 mb-4">
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
-                Telur Bagus
+            <div className="relative flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4 px-1">
+              <div className="flex items-center gap-2 font-medium">
+                <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                <span className="text-gray-700 dark:text-gray-300">Total Produksi</span>
               </div>
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
-                Telur Jelek
-              </div>
-              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-                <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
-                Total
-              </div>
+              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
+                <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
+                Arahkan kursor ke bar untuk rincian
+              </span>
             </div>
 
             <div className="relative h-56 md:h-72">
@@ -894,6 +900,9 @@ const Dashboard = () => {
                   plugins: {
                     legend: { display: false },
                     tooltip: {
+                      mode: 'index',
+                      intersect: false,
+                      displayColors: false,
                       backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                       titleColor: isDarkMode ? '#f3f4f6' : '#111827',
                       bodyColor: isDarkMode ? '#d1d5db' : '#374151',
@@ -903,7 +912,12 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          return `${context.dataset.label}: ${context.raw}`;
+                          const index = context.dataIndex;
+                          return [
+                            `Telur Bagus: ${weeklyDetails.good[index] || 0}`,
+                            `Telur Jelek: ${weeklyDetails.bad[index] || 0}`,
+                            `Total: ${weeklyDetails.total[index] || 0}`
+                          ];
                         }
                       }
                     }
