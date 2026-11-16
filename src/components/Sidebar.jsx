@@ -153,9 +153,9 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
                       }`}></i>
                     {!collapsed && (
                       <>
-                        <span className="font-medium text-sm leading-normal truncate text-white">{item.name}</span>
+                        <span className={`font-medium text-sm leading-normal truncate ${isActive ? 'text-blue-600 font-semibold' : 'text-white'}`}>{item.name}</span>
                         {item.superAdminOnly && (
-                          <span className="ml-auto text-xs bg-white/25 text-white font-medium px-2 py-0.5 rounded-full shrink-0">
+                          <span className={`ml-auto text-xs font-medium px-2 py-0.5 rounded-full shrink-0 ${isActive ? 'bg-blue-100 text-blue-700' : 'bg-white/25 text-white'}`}>
                             Super
                           </span>
                         )}
