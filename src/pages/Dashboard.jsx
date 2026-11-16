@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from 'chart.js';
-import { Line, Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, Filler } from 'chart.js';
+import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import { useTheme } from '../contexts/ThemeContext';
+import { useAuth } from '../contexts/AuthContext';
 import {
   getDailyEggSummary,
   getRecentEggs,
@@ -14,7 +15,7 @@ import {
 import sensorService from '../services/sensorService';
 
 // Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, BarElement, ArcElement, Title, Tooltip, Legend, Filler);
 
 const Dashboard = () => {
   // Helper function untuk format percentage yang aman
@@ -24,6 +25,7 @@ const Dashboard = () => {
   };
 
   const { isDarkMode } = useTheme();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const [weeklyData, setWeeklyData] = useState({
@@ -309,18 +311,35 @@ const Dashboard = () => {
           {
             label: 'Telur Bagus',
             data: goodEggsData,
-            borderColor: '#3498db',
-            backgroundColor: 'rgba(52, 152, 219, 0.1)',
-            fill: true,
-            tension: 0.4,
+            backgroundColor: '#2b2796',
+            hoverBackgroundColor: '#3a34c0',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
           },
           {
             label: 'Telur Jelek',
             data: badEggsData,
-            borderColor: '#f04438',
-            backgroundColor: 'rgba(240, 68, 56, 0.1)',
-            fill: true,
-            tension: 0.4,
+            backgroundColor: '#f4536a',
+            hoverBackgroundColor: '#e8384f',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
+          },
+          {
+            label: 'Total',
+            data: goodEggsData.map((g, i) => g + (badEggsData[i] || 0)),
+            backgroundColor: '#f9b02b',
+            hoverBackgroundColor: '#eda11c',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
           }
         ]
       });
@@ -408,34 +427,80 @@ const Dashboard = () => {
     );
   }
 
+  // Circular gauge helper (ring progress indicator)
+  const GaugeRing = ({ value, color, size = 48, label }) => {
+    const stroke = 5;
+    const radius = (size - stroke) / 2;
+    const circumference = 2 * Math.PI * radius;
+    const progress = Math.min(100, Math.max(0, Number(value) || 0));
+    const offset = circumference - (progress / 100) * circumference;
+    return (
+      <div className="relative flex items-center justify-center shrink-0" style={{ width: size, height: size }}>
+        <svg width={size} height={size} className="-rotate-90">
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke="rgba(156, 163, 175, 0.18)"
+            strokeWidth={stroke}
+            fill="none"
+          />
+          <circle
+            cx={size / 2}
+            cy={size / 2}
+            r={radius}
+            stroke={color}
+            strokeWidth={stroke}
+            fill="none"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
+            strokeLinecap="round"
+            className="transition-all duration-1000 ease-out"
+          />
+        </svg>
+        <div className="absolute inset-0 flex flex-col items-center justify-center">
+          <div className="font-bold text-gray-900 dark:text-white">{label}</div>
+          <div className="text-[10px] text-gray-500 dark:text-gray-400">{progress}%</div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="max-w-7xl mx-auto page-enter space-y-6 md:space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-3xl bg-gradient-to-br from-[#1e1b4b] via-[#252262] to-indigo-800 p-6 md:p-8 text-white shadow-lg shadow-indigo-900/10 animate-fade-in-up">
-        <div>
-          <p className="text-sm font-medium text-indigo-200">Ringkasan operasional peternakan</p>
-          <h1 className="mt-1 text-2xl md:text-3xl font-bold">Selamat datang di Olivia</h1>
-          <p className="mt-2 text-sm text-indigo-200">Pantau produksi telur dan kondisi kandang dalam satu tempat.</p>
-          <p className="mt-3 text-xs text-indigo-300">
-            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-blue-300"></span>
-            Diperbarui {lastRefresh.toLocaleTimeString('id-ID')}
-          </p>
+      {/* Top Navigation Bar */}
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-0 rounded-3xl bg-[#f4f6fb] dark:bg-gray-800 p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up">
+        <div className="relative w-full lg:w-auto flex items-center gap-2">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+            <i className="fas fa-search text-gray-400 text-sm"></i>
+          </div>
+          <input
+            type="text"
+            placeholder="Cari data, tanggal, sensor..."
+            className="w-full lg:w-64 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+          />
         </div>
-        <div className="flex w-full sm:w-auto gap-2">
-          <button
-            onClick={handleRefresh}
-            disabled={isRefreshing}
-            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/20 disabled:opacity-60"
-          >
-            <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
-            <span>Perbarui</span>
-          </button>
-          <button
-            onClick={handleViewAllData}
-            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-900 shadow-sm transition hover:bg-blue-50"
-          >
-            <i className="fas fa-list"></i>
-            <span>Lihat Data</span>
-          </button>
+        <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
+          <div className="text-right hidden sm:block">
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">
+              {new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+            </p>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
+          </div>
+          <div className="hidden lg:flex items-center gap-2">
+            <button className="p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <i className="fas fa-bell text-lg"></i>
+            </button>
+            <button className="p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
+              <i className="fas fa-comment text-lg"></i>
+            </button>
+            <div className="relative group">
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer group-hover:scale-105 transition-transform">
+                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+              </div>
+              <div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-[#f4f6fb] dark:ring-gray-800"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -458,276 +523,249 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Stat Cards */}
-      <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
-        }`}>
-        {/* Total Telur */}
-        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <i className="fas fa-egg text-lg"></i>
+      {/* Main dashboard: metrics and monitoring on left, quick panels on right */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+      {/* Left Column */}
+      <div className="lg:col-span-8 space-y-6 md:space-y-8">
+        {/* Metric Cards (4 cards with circular rings) */}
+        <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+          {/* Total Telur */}
+          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <i className="fas fa-egg text-lg"></i>
+              </div>
+              <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${dashboardStats.trend >= 0
+                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                  : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
+                }`}>
+                <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} mr-1 text-[10px]`}></i>
+                {formatPercentage(Math.abs(dashboardStats.trend || 0))}%
+              </span>
             </div>
-            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${dashboardStats.trend >= 0
-                ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
-              }`}>
-              <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} mr-1 text-[10px]`}></i>
-              {formatPercentage(Math.abs(dashboardStats.trend || 0))}%
-            </span>
+            <GaugeRing value={Math.min(dashboardStats.totalEggs, 100)} color="#2b2796" label={dashboardStats.totalEggs} size={48} />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Total Telur Hari Ini</p>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Telur Hari Ini</p>
+
+          {/* Telur Bagus — highlighted active card like reference */}
+          <div className="group bg-[#2b2796] dark:bg-[#252075] text-white rounded-2xl p-5 shadow-lg shadow-indigo-900/20 border border-indigo-400/20 transition-all hover:shadow-indigo-500/25 animate-fade-in-up delay-100">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-indigo-200/20 flex items-center justify-center text-indigo-100 border border-indigo-400/30">
+                <i className="fas fa-check-circle text-lg"></i>
+              </div>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/10 text-white backdrop-blur-sm">
+                {formatPercentage(dashboardStats.goodPercentage, 1)}%
+              </span>
+            </div>
+            <GaugeRing value={dashboardStats.goodPercentage} color="#60a5fa" label={dashboardStats.goodEggs} size={48} />
+            <p className="text-xs text-indigo-200 mt-3">Telur Bagus</p>
+          </div>
+
+          {/* Telur Jelek */}
+          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
+                <i className="fas fa-times-circle text-lg"></i>
+              </div>
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+                {formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 1)}%
+              </span>
+            </div>
+            <GaugeRing value={formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)} color="#f4536a" label={dashboardStats.badEggs} size={48} />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Telur Jelek</p>
+          </div>
+
+          {/* Akurasi / Status Sistem */}
+          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-200">
+            <div className="flex items-center justify-between mb-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <i className="fas fa-shield-halved text-lg"></i>
+              </div>
+              <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 active-dot"></span>
+                Aman
+              </span>
+            </div>
+            <GaugeRing value={98} color="#34d399" label="98%" size={48} />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Akurasi Sistem</p>
+          </div>
         </div>
 
-        {/* Telur Bagus */}
-        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-              <i className="fas fa-check-circle text-lg"></i>
-            </div>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-              {formatPercentage(dashboardStats.goodPercentage, 1)}%
-            </span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.goodEggs}</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Telur Bagus</p>
-        </div>
-
-        {/* Telur Jelek */}
-        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
-              <i className="fas fa-times-circle text-lg"></i>
-            </div>
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
-              {formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 1)}%
-            </span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.badEggs}</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Telur Jelek</p>
-        </div>
-
-        {/* Status Sistem */}
-        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-200">
-          <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center text-violet-600 dark:text-violet-400">
-              <i className="fas fa-server text-lg"></i>
-            </div>
-            <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 active-dot"></span>
-              Aktif
-            </span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Online</h2>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Status Sistem</p>
-        </div>
-      </div>
-
-      {/* Sensor Cards Row */}
-      {latestSensor && (
-        <div className="grid grid-cols-3 gap-3 md:gap-5 animate-fade-in-up delay-250">
-          <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/40 dark:to-orange-900/30 rounded-2xl p-4 md:p-5 border border-orange-200/60 dark:border-orange-800/40">
-            <div className="flex items-center gap-2 mb-2">
-              <i className="fas fa-temperature-high text-orange-500 dark:text-orange-400"></i>
-              <span className="text-xs font-medium text-orange-600 dark:text-orange-300">Suhu</span>
-            </div>
-            <p className="text-2xl md:text-3xl font-bold text-orange-700 dark:text-orange-300">{latestSensor.temperature}<span className="text-base font-normal">°C</span></p>
-          </div>
-          <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/40 dark:to-sky-900/30 rounded-2xl p-4 md:p-5 border border-sky-200/60 dark:border-sky-800/40">
-            <div className="flex items-center gap-2 mb-2">
-              <i className="fas fa-tint text-sky-500 dark:text-sky-400"></i>
-              <span className="text-xs font-medium text-sky-600 dark:text-sky-300">Kelembapan</span>
-            </div>
-            <p className="text-2xl md:text-3xl font-bold text-sky-700 dark:text-sky-300">{latestSensor.humidity}<span className="text-base font-normal">%</span></p>
-          </div>
-          <div className="bg-gradient-to-br from-AMONIAKEEP-50 to-AMONIAKEEP-100 dark:from-AMONIAKEEP-950/40 dark:to-AMONIAKEEP-900/30 rounded-2xl p-4 md:p-5 border border-AMONIAKEEP-200/60 dark:border-AMONIAKEEP-800/40">
-            <div className="flex items-center gap-2 mb-2">
-              <i className="fas fa-wind text-AMONIAKEEP-500 dark:text-AMONIAKEEP-400"></i>
-              <span className="text-xs font-medium text-AMONIAKEEP-600 dark:text-AMONIAKEEP-300">Amonia</span>
-            </div>
-            <p className="text-2xl md:text-3xl font-bold text-AMONIAKEEP-700 dark:text-AMONIAKEEP-300">{latestSensor.ammonia}<span className="text-base font-normal"> ppm</span></p>
-          </div>
-        </div>
-      )}
-
-      {/* Sensor Chart */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-250">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
-          <div>
-            <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Pemantauan Sensor</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Suhu, Kelembapan & Gas Amonia</p>
-          </div>
-          <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-            {[
-              { key: '24h', label: '24 Jam' },
-              { key: '7d', label: '7 Hari' },
-              { key: '30d', label: '30 Hari' },
-            ].map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => handleSensorPeriodChange(key)}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sensorPeriod === key
-                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                  }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="h-56 md:h-72">
-          {sensorLoading ? (
-            <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
-            </div>
-          ) : sensorChartData.labels.length > 0 ? (
-            <div className="h-full chart-container">
-              <Line
-                data={sensorChartData}
-                options={{
-                  maintainAspectRatio: false,
-                  interaction: {
-                    mode: 'index',
-                    intersect: false,
-                  },
-                  plugins: {
-                    legend: {
-                      display: true,
-                      position: 'bottom',
-                      labels: {
-                        color: isDarkMode ? '#9ca3af' : '#6b7280',
-                        usePointStyle: true,
-                        padding: 20,
-                      }
-                    },
-                    tooltip: {
-                      backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-                      titleColor: isDarkMode ? '#f3f4f6' : '#111827',
-                      bodyColor: isDarkMode ? '#d1d5db' : '#374151',
-                      borderColor: isDarkMode ? '#374151' : '#e5e7eb',
-                      borderWidth: 1,
-                      padding: 12,
-                      cornerRadius: 8,
-                      callbacks: {
-                        label: function (context) {
-                          let label = context.dataset.label || '';
-                          let value = context.parsed.y;
-                          if (label.includes('Suhu')) return `${label}: ${value}°C`;
-                          if (label.includes('Kelembapan')) return `${label}: ${value}%`;
-                          if (label.includes('Amonia')) return `${label}: ${value} ppm`;
-                          return `${label}: ${value}`;
-                        }
-                      }
-                    }
-                  },
-                  scales: {
-                    y: {
-                      type: 'linear',
-                      display: true,
-                      position: 'left',
-                      title: {
-                        display: true,
-                        text: 'Suhu (°C) / Kelembapan (%)',
-                        color: isDarkMode ? '#9ca3af' : '#6b7280',
-                        font: { size: 11 }
-                      },
-                      grid: {
-                        color: isDarkMode ? '#374151' : '#f3f4f6'
-                      },
-                      ticks: {
-                        color: isDarkMode ? '#9ca3af' : '#6b7280'
-                      }
-                    },
-                    y1: {
-                      type: 'linear',
-                      display: true,
-                      position: 'right',
-                      title: {
-                        display: true,
-                        text: 'Amonia (ppm)',
-                        color: isDarkMode ? '#9ca3af' : '#6b7280',
-                        font: { size: 11 }
-                      },
-                      grid: {
-                        drawOnChartArea: false,
-                      },
-                      ticks: {
-                        color: isDarkMode ? '#9ca3af' : '#6b7280'
-                      }
-                    },
-                    x: {
-                      grid: {
-                        color: isDarkMode ? '#374151' : '#f3f4f6'
-                      },
-                      ticks: {
-                        color: isDarkMode ? '#9ca3af' : '#6b7280',
-                        maxRotation: 45,
-                        font: { size: 10 },
-                        maxTicksLimit: 20,
-                        autoSkip: true,
-                        autoSkipPadding: 8,
-                      }
-                    }
-                  }
-                }}
-              />
-            </div>
-          ) : (
-            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500">
-              <div className="text-center">
-                <i className="fas fa-thermometer-half text-4xl mb-2"></i>
-                <p>Belum ada data sensor</p>
+        {/* Sensors Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
+          {/* Left stacked sensor cards */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Suhu Kandang */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 group relative overflow-hidden animate-fade-in-up delay-250">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-9 h-9 rounded-xl bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 dark:text-orange-400 shadow-sm">
+                      <i className="fas fa-temperature-high"></i>
+                    </div>
+                    <span className="text-xs font-medium text-orange-600 dark:text-orange-300">Suhu Kandang</span>
+                  </div>
+                  <p className="text-3xl md:text-4xl font-bold text-orange-700 dark:text-orange-300">
+                    {latestSensor ? latestSensor.temperature : 0}<span className="text-base font-normal">°C</span>
+                  </p>
+                </div>
+                <div className="h-12 w-px bg-orange-200 dark:bg-orange-800/50 mx-4"></div>
+                <div className="flex flex-col items-center gap-1.5">
+                  <div className="w-2 h-5 bg-orange-400 rounded-full"></div>
+                  <div className="w-2 h-6 bg-orange-500 rounded-full"></div>
+                  <div className="w-2 h-8 bg-orange-600 rounded-full"></div>
+                  <div className="w-2 h-5 bg-orange-400 rounded-full"></div>
+                </div>
               </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
-        {/* Weekly Line Chart */}
-        <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-300">
-          <div className="flex justify-between items-center mb-5">
-            <div>
-              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Grafik mingguan</p>
+            {/* Kelembapan */}
+            <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 group relative overflow-hidden animate-fade-in-up delay-300">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-sky-50 dark:bg-sky-900/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-9 h-9 rounded-xl bg-sky-100 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shadow-sm">
+                      <i className="fas fa-tint"></i>
+                    </div>
+                    <span className="text-xs font-medium text-sky-600 dark:text-sky-300">Kelembapan Udara</span>
+                  </div>
+                  <p className="text-3xl md:text-4xl font-bold text-sky-700 dark:text-sky-300">
+                    {latestSensor ? latestSensor.humidity : 0}<span className="text-base font-normal">%</span>
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button className="w-7 h-7 rounded-full bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-300 hover:bg-sky-100 transition-colors">
+                    <i className="fas fa-chevron-up text-[10px]"></i>
+                  </button>
+                  <button className="w-7 h-7 rounded-full bg-sky-50 dark:bg-sky-900/30 flex items-center justify-center text-sky-600 dark:text-sky-300 hover:bg-sky-100 transition-colors">
+                    <i className="fas fa-chevron-down text-[10px]"></i>
+                  </button>
+                </div>
+              </div>
             </div>
-            <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">Mingguan</span>
           </div>
-          <div className="h-52 md:h-64">
-            <Line
+
+          {/* Amonia Arc Gauge */}
+          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden animate-fade-in-up delay-350">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-bl-full -mt-6 -mr-6 z-0"></div>
+            <div className="flex flex-col items-center justify-center h-full">
+              <div className="flex flex-col items-center gap-1">
+                <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Kadar Amonia & Udara</span>
+                <p className="text-4xl md:text-5xl font-bold text-emerald-700 dark:text-emerald-300">
+                  {latestSensor ? latestSensor.ammonia : 12}<span className="text-lg font-normal"> ppm</span>
+                </p>
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                  latestSensor && latestSensor.ammonia <= 20
+                    ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300'
+                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
+                }`}>
+                  {latestSensor && latestSensor.ammonia <= 20 ? 'Aman' : 'Tinggi'}
+                </span>
+              </div>
+              {/* Arc Gauge */}
+              <div className="relative w-48 h-24 mt-6">
+                <svg width="200" height="100" viewBox="0 0 200 100" className="w-full h-full block">
+                  <defs>
+                    <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stopColor="#f4536a" />
+                      <stop offset="40%" stopColor="#f9b02b" />
+                      <stop offset="100%" stopColor="#2b2796" />
+                    </linearGradient>
+                  </defs>
+                  <path
+                    d="M 20 80 Q 100 20 180 80"
+                    stroke="rgba(156,163,175,0.12)"
+                    strokeWidth="14"
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    id="gaugeArc"
+                    d="M 20 80 Q 100 20 180 80"
+                    stroke="url(#gaugeGradient)"
+                    strokeWidth="14"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeDasharray="220"
+                    strokeDashoffset={220 - (Math.min(Math.max(latestSensor ? latestSensor.ammonia : 12, 0), 50) / 50) * 220}
+                    className="transition-all duration-1000 ease-out"
+                  />
+                </svg>
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[10px] text-gray-400 font-medium uppercase tracking-wider">
+                  <span>0</span>
+                  <span>50 ppm</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Weekly Production Bar Chart */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
+          <div className="flex justify-between items-center mb-6">
+            <div>
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <i className="fas fa-chart-bar"></i>
+                <span>Produksi Telur Mingguan</span>
+              </div>
+              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
+            </div>
+            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
+              <span className="text-xs font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-600 px-2 py-1 rounded-md">Mingguan</span>
+              <i className="fas fa-chevron-down text-xs text-gray-500"></i>
+            </div>
+          </div>
+
+          {/* Chart Legend */}
+          <div className="flex justify-center gap-5 mb-6">
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
+              Telur Bagus
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
+              Telur Jelek
+            </div>
+            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+              <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
+              Total
+            </div>
+          </div>
+
+          <div className="h-56 md:h-72">
+            <Bar
               data={weeklyData}
               options={{
                 maintainAspectRatio: false,
                 plugins: {
-                  legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280',
-                      usePointStyle: true,
-                      padding: 16,
+                  legend: { display: false },
+                  tooltip: {
+                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                    titleColor: isDarkMode ? '#f3f4f6' : '#111827',
+                    bodyColor: isDarkMode ? '#d1d5db' : '#374151',
+                    borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                    borderWidth: 1,
+                    padding: 12,
+                    cornerRadius: 8,
+                    callbacks: {
+                      label: function (context) {
+                        return `${context.dataset.label}: ${context.raw}`;
+                      }
                     }
                   }
                 },
                 scales: {
                   y: {
                     beginAtZero: true,
-                    grid: {
-                      color: isDarkMode ? '#374151' : '#f3f4f6'
-                    },
-                    ticks: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280'
-                    }
+                    grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
+                    ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
+                    maxTicksLimit: 5
                   },
                   x: {
-                    grid: {
-                      color: isDarkMode ? '#374151' : '#f3f4f6'
-                    },
-                    ticks: {
-                      color: isDarkMode ? '#9ca3af' : '#6b7280'
-                    }
+                    grid: { display: false },
+                    ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                   }
                 }
               }}
@@ -735,127 +773,165 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Donut Chart */}
-        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-350">
-          <div className="flex justify-between items-center mb-4">
+        {/* Recent Eggs Table */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-450">
+          <div className="flex justify-between items-center mb-5">
             <div>
-              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Kualitas Telur</h3>
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                {donutMode === 'harian'
-                    ? formatDateForDisplay(activeDate)
-                    : '7 hari terakhir'
-                }
-              </p>
+              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <i className="fas fa-egg"></i>
+                <span>Terbaru</span>
+              </div>
+              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Telur Terbaru</h3>
             </div>
-            <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
-              <button
-                onClick={() => handleDonutModeChange('harian')}
-                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${donutMode === 'harian'
-                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
-                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
-                  }`}
-              >
-                Harian
-              </button>
-            </div>
+            <button
+              onClick={handleViewAllData}
+              className="text-blue-600 dark:text-blue-400 text-xs font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50"
+            >
+              <span>Lihat Semua</span>
+              <i className="fas fa-arrow-right text-[10px]"></i>
+            </button>
           </div>
 
-          <div className="h-44 md:h-52 flex justify-center items-center">
-            <Doughnut
-              data={donutData}
-              options={{
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: {
-                    display: false
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: function (context) {
-                        const label = context.label || '';
-                        const value = context.raw || 0;
-                        const total = donutStats.totalEggs;
-                        const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
-                        return `${label}: ${value} (${percentage}%)`;
-                      }
-                    }
-                  }
-                },
-                cutout: '70%'
-              }}
-            />
-          </div>
-
-          <div className="flex justify-center gap-5 mt-4">
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
-              <span className="text-xs text-gray-600 dark:text-gray-300">
-                Bagus: {donutStats.goodEggs} ({formatPercentage(donutStats.goodPercentage, 0)}%)
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
-              <span className="text-xs text-gray-600 dark:text-gray-300">
-                Jelek: {donutStats.badEggs} ({formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 0)}%)
-              </span>
-            </div>
+          <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700">
+            <table className="min-w-full">
+              <thead>
+                <tr className="bg-gray-50 dark:bg-gray-750 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                  <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kode</th>
+                  <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kualitas</th>
+                  <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Tanggal</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+                {recentEggs.length > 0 ? (
+                  recentEggs.map((egg, index) => (
+                    <tr key={egg.scan_id || index} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                      <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-200">{egg.egg_code}</td>
+                      <td className="py-3 px-4">
+                        <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
+                            ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
+                            : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
+                          }`}>
+                          <i className={`fas ${egg.quality === 'good' ? 'fa-check' : 'fa-times'} text-[10px]`}></i>
+                          {getQualityText(egg.quality)}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{formatDateForDisplay(egg.scanned_at)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="3" className="py-10 text-center text-gray-400 dark:text-gray-500">
+                      <i className="fas fa-inbox text-3xl mb-2 block"></i>
+                      Belum ada data telur hari ini
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
 
-      {/* Recent Eggs Table */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
-        <div className="flex justify-between items-center mb-5">
-          <div>
-            <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Telur Terbaru</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">5 telur terakhir yang terdeteksi</p>
+      {/* Right Widget Panel */}
+      <div className="lg:col-span-4 space-y-6">
+        {/* Welcome Card */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-500">
+          <div className="flex items-center justify-between mb-5">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                <i className="fas fa-user text-sm"></i>
+              </div>
+              <div className="text-left">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Hai, kembali lagi</p>
+                <h3 className="font-semibold text-base text-gray-900 dark:text-white">
+                  {user?.name || 'Peternak'}
+                </h3>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <button className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
+                <i className="fas fa-bell text-xs"></i>
+              </button>
+              <button className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
+                <i className="fas fa-comment text-xs"></i>
+              </button>
+            </div>
           </div>
-          <button
-            onClick={handleViewAllData}
-            className="text-blue-600 dark:text-blue-400 text-xs font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50"
-          >
-            <span>Lihat Semua</span>
-            <i className="fas fa-arrow-right text-[10px]"></i>
-          </button>
+          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 shadow-lg shadow-blue-500/25 overflow-hidden relative group">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
+            <p className="text-xs text-blue-100 font-medium mb-1">Selamat datang di Olivia</p>
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Sistem monitoring kandang siap digunakan</h2>
+            <p className="text-xs text-blue-100/80">Pantau suhu, kelembapan, dan amonia secara real-time melalui dashboard ini.</p>
+          </div>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700">
-          <table className="min-w-full">
-            <thead>
-              <tr className="bg-gray-50 dark:bg-gray-750 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
-                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kode</th>
-                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kualitas</th>
-                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Tanggal</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
-              {recentEggs.length > 0 ? (
-                recentEggs.map((egg, index) => (
-                  <tr key={egg.scan_id || index} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
-                    <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-200">{egg.egg_code}</td>
-                    <td className="py-3 px-4">
-                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
-                          ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                          : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
-                        }`}>
-                        <i className={`fas ${egg.quality === 'good' ? 'fa-check' : 'fa-times'} text-[10px]`}></i>
-                        {getQualityText(egg.quality)}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{formatDateForDisplay(egg.scanned_at)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td colSpan="3" className="py-10 text-center text-gray-400 dark:text-gray-500">
-                    <i className="fas fa-inbox text-3xl mb-2 block"></i>
-                    Belum ada data telur hari ini
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+        {/* My Devices */}
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-550">
+          <div className="flex justify-between items-center mb-5">
+            <div className="flex flex-col gap-0">
+              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Perangkat Pintar</p>
+              <h3 className="font-semibold text-base text-gray-900 dark:text-white">My Devices</h3>
+            </div>
+            <button className="text-xs font-medium text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
+              <i className="fas fa-ellipsis text-xs"></i>
+            </button>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            {/* AC / Exhaust Fan */}
+            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 border border-red-100/50 dark:border-red-900/30 flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-800/30 flex items-center justify-center text-red-600 dark:text-red-400 shadow-sm">
+                <i className="fas fa-fan"></i>
+              </div>
+              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Exhaust Fan</h4>
+              <p className="text-[10px] text-red-600 dark:text-red-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Aktif
+              </p>
+            </div>
+            {/* Gateway IoT */}
+            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-4 border border-emerald-100/50 dark:border-emerald-900/30 flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-800/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
+                <i className="fas fa-wifi"></i>
+              </div>
+              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Gateway IoT</h4>
+              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Online
+              </p>
+            </div>
+            {/* Konveyor Telur */}
+            <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-800/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
+                <i className="fas fa-conveyor-belt-alt"></i>
+              </div>
+              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Konveyor Telur</h4>
+              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Standby</p>
+            </div>
+            {/* Kamera AI Scanner */}
+            <div className="bg-sky-50 dark:bg-sky-900/20 rounded-2xl p-4 border border-sky-100/50 dark:border-sky-900/30 flex flex-col items-center justify-center gap-2">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-800/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shadow-sm">
+                <i className="fas fa-microchip"></i>
+              </div>
+              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Kamera AI</h4>
+              <p className="text-[10px] text-sky-600 dark:text-sky-400 font-medium">Siap</p>
+            </div>
+          </div>
         </div>
+
+        {/* Quick Info / Illustration placeholder */}
+        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-5 md:p-6 border border-blue-100/50 dark:border-blue-900/20 animate-fade-in-up delay-600">
+          <div className="flex flex-col items-center gap-3 text-center">
+            <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600">
+              <i className="fas fa-chicken text-2xl"></i>
+            </div>
+            <h3 className="font-semibold text-base text-gray-900 dark:text-white">Olivia Farm Monitor</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
+              Pantau kondisi kandang dan produksi telur secara real-time dari dashboard Olivia.
+            </p>
+          </div>
+        </div>
+      </div>
+
       </div>
     </div>
   );
