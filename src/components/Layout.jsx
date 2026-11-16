@@ -128,7 +128,7 @@ const Layout = ({ children }) => {
                 <div className="hidden md:flex items-center gap-3 ml-2">
                   <div
                     onClick={goToSettings}
-                    className="w-8 h-8 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium text-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+                    className="w-8 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium text-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
                     title="Pengaturan Profil"
                   >
                     {user?.avatar_url ? (

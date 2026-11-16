@@ -249,12 +249,12 @@ const DataKelembapanSuhuAmonia = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 md:p-8 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in-up">
+      <div className="bg-gradient-to-r from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in-up">
         <div className="px-6 py-8 sm:px-8 sm:py-10 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Data Kelembapan, Suhu, dan Amonia</h1>
-            <p className="text-amber-100 text-sm sm:text-base">Monitoring real-time iklim dan kadar amonia kandang ayam</p>
-            <p className="text-xs text-amber-200/80 mt-1">
+            <p className="text-blue-100 text-sm sm:text-base">Monitoring real-time iklim dan kadar amonia kandang ayam</p>
+            <p className="text-xs text-blue-200/80 mt-1">
               Terakhir diperbarui: {lastUpdated.toLocaleTimeString('id-ID')}
             </p>
           </div>
@@ -286,7 +286,7 @@ const DataKelembapanSuhuAmonia = () => {
         {(() => {
           const status = latestSensor ? getTemperatureStatus(latestSensor.temperature) : { label: '-', bg: 'bg-gray-100 dark:bg-gray-800 text-gray-400' };
           return (
-            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 relative overflow-hidden group transition-all duration-300 card-hover-amber">
+            <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 relative overflow-hidden group transition-all duration-300 card-hover-blue">
               <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-bl-full -mt-4 -mr-4 group-hover:bg-orange-500/10 transition-all"></div>
               <div className="relative z-10 flex flex-col justify-between h-full">
                 <div className="flex justify-between items-start mb-4">
@@ -371,7 +371,7 @@ const DataKelembapanSuhuAmonia = () => {
       </div>
 
       {/* Environmental Trend Chart */}
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 mb-8 card-hover-amber transition-all">
+      <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 mb-8 card-hover-blue transition-all">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div>
             <h2 className="text-lg font-bold text-gray-800 dark:text-gray-150">Grafik Analisis Tren</h2>
@@ -388,7 +388,7 @@ const DataKelembapanSuhuAmonia = () => {
                 onClick={() => handlePeriodChange(key)}
                 className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all btn-press ripple-effect ${
                   chartPeriod === key
-                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
+                    ? 'bg-blue-600 dark:bg-blue-700 text-white shadow-sm'
                     : 'bg-gray-50 dark:bg-gray-700 text-gray-650 dark:text-gray-300 border border-gray-200 dark:border-gray-650 hover:bg-gray-100 dark:hover:bg-gray-600'
                 }`}
               >
@@ -401,7 +401,7 @@ const DataKelembapanSuhuAmonia = () => {
         <div className="h-80 relative">
           {chartLoading ? (
             <div className="flex justify-center items-center h-full absolute inset-0">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
           ) : chartData.labels.length > 0 ? (
             <div className="h-full chart-container">
@@ -505,7 +505,7 @@ const DataKelembapanSuhuAmonia = () => {
       </div>
 
       {/* Historical Logs Section */}
-      <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 card-hover-amber transition-all">
+      <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 card-hover-blue transition-all">
         {/* Table Filter / Controls */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-gray-100 dark:border-gray-700/60 pb-5">
           <div>
@@ -515,13 +515,13 @@ const DataKelembapanSuhuAmonia = () => {
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:flex-initial">
               <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-gray-400">
-                <i className="far fa-calendar-alt text-amber-500"></i>
+                <i className="far fa-calendar-alt text-blue-500"></i>
               </div>
               <input
                 type="date"
                 value={selectedDate}
                 onChange={handleDateChange}
-                className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-250 dark:border-gray-600 text-gray-800 dark:text-gray-150 text-sm rounded-xl pl-9 pr-3 py-2 focus:ring-2 focus:ring-amber-500 focus:outline-none transition-all"
+                className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-250 dark:border-gray-600 text-gray-800 dark:text-gray-150 text-sm rounded-xl pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
               />
             </div>
             {selectedDate && (
@@ -538,7 +538,7 @@ const DataKelembapanSuhuAmonia = () => {
         {/* Logs Table */}
         {logsLoading && logs.length === 0 ? (
           <div className="flex justify-center items-center h-48">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             <span className="ml-3 text-sm text-gray-500 dark:text-gray-400 font-medium">Memuat data sensor...</span>
           </div>
         ) : logs.length === 0 ? (
@@ -571,7 +571,7 @@ const DataKelembapanSuhuAmonia = () => {
                     const ammStat = getAmmoniaStatus(log.ammonia);
 
                     return (
-                      <tr key={log.reading_id || index} className="hover:bg-amber-500/[0.02] dark:hover:bg-gray-700/25 transition-all table-row-animated">
+                      <tr key={log.reading_id || index} className="hover:bg-blue-500/[0.02] dark:hover:bg-gray-700/25 transition-all table-row-animated">
                         <td className="py-4 px-5 font-semibold text-gray-400 dark:text-gray-500 text-sm">{rowNumber}</td>
                         <td className="py-4 px-5 font-medium text-gray-800 dark:text-gray-250 text-sm whitespace-nowrap">
                           {formatDateForDisplay(log.recorded_at)}
@@ -631,7 +631,7 @@ const DataKelembapanSuhuAmonia = () => {
                           onClick={() => handlePageChange(pageNum)}
                           className={`px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all btn-press ${
                             pageNum === pagination.current_page
-                              ? 'bg-gradient-to-r from-amber-600 to-amber-700 text-white shadow-sm'
+                              ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-sm'
                               : 'border border-gray-200 dark:border-gray-650 text-gray-650 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                           }`}
                         >

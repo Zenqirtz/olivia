@@ -54,10 +54,10 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-amber-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center p-4 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform -skew-y-6 -translate-y-24 z-0"></div>
-      <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-amber-600/20 to-amber-700/20 dark:from-amber-900/20 dark:to-amber-950/20 transform skew-y-6 translate-y-24 z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-r from-blue-600/20 to-blue-700/20 dark:from-blue-900/20 dark:to-blue-950/20 transform -skew-y-6 -translate-y-24 z-0"></div>
+      <div className="absolute bottom-0 right-0 w-full h-64 bg-gradient-to-l from-blue-600/20 to-blue-700/20 dark:from-blue-900/20 dark:to-blue-950/20 transform skew-y-6 translate-y-24 z-0"></div>
 
       <div className="max-w-md w-full z-10 animate-fade-in-scale">
         {/* Theme Toggle Button */}
@@ -77,7 +77,7 @@ const ForgotPassword = () => {
 
         {/* Logo */}
         <div className="text-center mb-8 animate-fade-in-up delay-100">
-          <div className="mx-auto bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
+          <div className="mx-auto bg-gradient-to-br from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
             <div className="flex justify-center">
               <div className="w-64 h-16">
                 <img
@@ -124,7 +124,7 @@ const ForgotPassword = () => {
 
               <Link
                 to="/login"
-                className="w-full block text-center bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 text-white py-3 px-4 rounded-lg font-medium hover:from-amber-800 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl btn-press ripple-effect"
+                className="w-full block text-center bg-gradient-to-br from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-800 hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl btn-press ripple-effect"
               >
                 <i className="fas fa-arrow-left mr-2"></i> Kembali ke Login
               </Link>
@@ -138,14 +138,14 @@ const ForgotPassword = () => {
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i className="fas fa-envelope text-amber-600 dark:text-amber-400"></i>
+                    <i className="fas fa-envelope text-blue-600 dark:text-blue-400"></i>
                   </div>
                   <input
                     type="email"
                     name="email"
                     value={email}
                     onChange={handleEmailChange}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 transition-all input-glow ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all input-glow ${
                       error
                         ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                         : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
@@ -162,7 +162,7 @@ const ForgotPassword = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 text-white py-3 px-4 rounded-lg font-medium hover:from-amber-800 hover:to-amber-900 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl btn-press ripple-effect"
+                className="w-full bg-gradient-to-br from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-800 hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 shadow-lg hover:shadow-xl btn-press ripple-effect"
               >
                 {loading ? (
                   <div className="flex items-center justify-center">
@@ -180,7 +180,7 @@ const ForgotPassword = () => {
               <div className="text-center mt-4">
                 <Link
                   to="/login"
-                  className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 hover:underline transition-colors inline-flex items-center"
+                  className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 hover:underline transition-colors inline-flex items-center"
                 >
                   <i className="fas fa-arrow-left mr-1.5 text-xs"></i>
                   Kembali ke Login

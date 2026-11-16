@@ -78,11 +78,11 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-full ${collapsed ? 'lg:w-20' : 'lg:w-64'} w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-all duration-300 ease-in-out z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:static lg:z-auto border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
+      <div className={`fixed left-0 top-0 h-full ${collapsed ? 'lg:w-20' : 'lg:w-64'} w-64 bg-[#1e1b4b] dark:bg-[#0f0d2e] shadow-lg transform transition-all duration-300 ease-in-out z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 lg:static lg:z-auto border-r border-indigo-900/50 dark:border-indigo-950 flex flex-col`}>
 
         {/* Header with Logo — tinggi diselaraskan dengan top bar di Layout (h-20) */}
-        <div className="h-20 px-4 flex items-center justify-between border-b border-amber-900 dark:border-amber-950 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 shrink-0 overflow-hidden">
+        <div className="h-20 px-4 flex items-center justify-between border-b border-indigo-900 dark:border-indigo-950 bg-gradient-to-br from-[#1e1b4b] to-[#252262] dark:from-[#0f0d2e] dark:to-[#1a1750] shrink-0 overflow-hidden">
           <div className="flex-1 flex justify-center items-center">
             <div className="h-12 w-auto flex items-center justify-center">
               <img
@@ -94,18 +94,18 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-amber-800 dark:hover:bg-amber-900 transition-colors"
+            className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-indigo-800 dark:hover:bg-indigo-900 transition-colors"
           >
             <i className="fas fa-times text-lg"></i>
           </button>
         </div>
 
         {/* User Info */}
-        <div className={`px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all ${collapsed ? 'lg:px-2' : ''}`}>
+        <div className={`px-4 py-3 border-b border-indigo-800/50 dark:border-indigo-900 bg-[#1e1b4b] dark:bg-[#0f0d2e] transition-all ${collapsed ? 'lg:px-2' : ''}`}>
           <div className={`flex items-center ${collapsed ? 'lg:justify-center' : ''}`}>
             <div
               onClick={goToSettings}
-              className="w-10 h-10 shrink-0 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              className="w-10 h-10 shrink-0 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               title={collapsed ? `${user?.name} (${user?.role})` : 'Edit Profile'}
             >
               {user?.avatar_url ? (
@@ -116,8 +116,8 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
             </div>
             {!collapsed && (
               <div className="ml-3 truncate">
-                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400 capitalize truncate">{user?.role}</p>
+                <p className="text-sm font-medium text-white truncate">{user?.name}</p>
+                <p className="text-xs text-indigo-200 capitalize truncate">{user?.role}</p>
               </div>
             )}
           </div>
@@ -126,7 +126,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
         {/* Navigation */}
         <nav className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
           {!collapsed && (
-            <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
+            <div className="text-xs font-semibold text-indigo-400 dark:text-indigo-500 uppercase tracking-wider mb-2 px-3">
               Menu Utama
             </div>
           )}
@@ -139,18 +139,18 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
                     to={item.path}
                     onClick={onClose}
                     title={collapsed ? item.name : ''}
-                    className={`flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 btn-press ripple-effect ${isActive
-                      ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-r-2 border-amber-600 dark:border-amber-400 shadow-sm'
-                      : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-amber-600 dark:hover:text-amber-400'
+                    className={`flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 btn-press ripple-effect ${isActive
+                      ? 'bg-white dark:bg-white/10 text-[#1e1b4b] dark:text-white font-semibold shadow-sm border-r-0'
+                      : 'text-indigo-200/80 dark:text-indigo-300/70 hover:bg-white/10 dark:hover:bg-white/5 hover:text-white dark:hover:text-white'
                       }`}
                   >
-                    <i className={`${item.icon} w-5 text-center shrink-0 transition-colors ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'} ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
+                    <i className={`${item.icon} w-5 text-center shrink-0 transition-colors ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'} ${isActive ? 'text-[#1e1b4b] dark:text-white' : 'text-indigo-400 dark:text-indigo-500 group-hover:text-white dark:group-hover:text-white'
                       }`}></i>
                     {!collapsed && (
                       <>
                         <span className="font-medium text-sm leading-normal truncate">{item.name}</span>
                         {item.superAdminOnly && (
-                          <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full shrink-0">
+                          <span className="ml-auto text-xs bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-300 px-2 py-1 rounded-full shrink-0">
                             Super
                           </span>
                         )}
@@ -164,9 +164,9 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
         </nav>
 
         {/* Logout Button */}
-        <div className={`p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 ${collapsed ? 'lg:px-2' : ''}`}>
+        <div className={`p-3 border-t border-indigo-800/50 dark:border-indigo-900 bg-indigo-950/50 dark:bg-indigo-950/70 ${collapsed ? 'lg:px-2' : ''}`}>
           {!collapsed && (
-            <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
+            <div className="text-xs font-semibold text-indigo-400 dark:text-indigo-500 uppercase tracking-wider mb-2 px-3">
               Akun
             </div>
           )}
@@ -185,7 +185,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
       {showLogoutModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-sm w-full border border-gray-100 dark:border-gray-700 overflow-hidden">
-            <div className="bg-amber-50 dark:bg-amber-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+            <div className="bg-blue-50 dark:bg-blue-900/20 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Konfirmasi Logout</h3>
             </div>
             <div className="p-6">

@@ -410,13 +410,13 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto page-enter space-y-6 md:space-y-8">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-700 p-6 md:p-8 text-white shadow-lg shadow-emerald-900/10 animate-fade-in-up">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-3xl bg-gradient-to-br from-[#1e1b4b] via-[#252262] to-indigo-800 p-6 md:p-8 text-white shadow-lg shadow-indigo-900/10 animate-fade-in-up">
         <div>
-          <p className="text-sm font-medium text-emerald-100">Ringkasan operasional peternakan</p>
+          <p className="text-sm font-medium text-indigo-200">Ringkasan operasional peternakan</p>
           <h1 className="mt-1 text-2xl md:text-3xl font-bold">Selamat datang di Olivia</h1>
-          <p className="mt-2 text-sm text-emerald-100">Pantau produksi telur dan kondisi kandang dalam satu tempat.</p>
-          <p className="mt-3 text-xs text-emerald-200">
-            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-lime-300"></span>
+          <p className="mt-2 text-sm text-indigo-200">Pantau produksi telur dan kondisi kandang dalam satu tempat.</p>
+          <p className="mt-3 text-xs text-indigo-300">
+            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-blue-300"></span>
             Diperbarui {lastRefresh.toLocaleTimeString('id-ID')}
           </p>
         </div>
@@ -431,7 +431,7 @@ const Dashboard = () => {
           </button>
           <button
             onClick={handleViewAllData}
-            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-50"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-indigo-900 shadow-sm transition hover:bg-blue-50"
           >
             <i className="fas fa-list"></i>
             <span>Lihat Data</span>
@@ -464,11 +464,11 @@ const Dashboard = () => {
         {/* Total Telur */}
         <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
           <div className="flex items-center justify-between mb-3">
-            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
               <i className="fas fa-egg text-lg"></i>
             </div>
             <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${dashboardStats.trend >= 0
-                ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
+                ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
                 : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
               }`}>
               <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} mr-1 text-[10px]`}></i>
@@ -513,8 +513,8 @@ const Dashboard = () => {
             <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center text-violet-600 dark:text-violet-400">
               <i className="fas fa-server text-lg"></i>
             </div>
-            <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 active-dot"></span>
+            <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500 active-dot"></span>
               Aktif
             </span>
           </div>
@@ -540,12 +540,12 @@ const Dashboard = () => {
             </div>
             <p className="text-2xl md:text-3xl font-bold text-sky-700 dark:text-sky-300">{latestSensor.humidity}<span className="text-base font-normal">%</span></p>
           </div>
-          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/40 dark:to-emerald-900/30 rounded-2xl p-4 md:p-5 border border-emerald-200/60 dark:border-emerald-800/40">
+          <div className="bg-gradient-to-br from-AMONIAKEEP-50 to-AMONIAKEEP-100 dark:from-AMONIAKEEP-950/40 dark:to-AMONIAKEEP-900/30 rounded-2xl p-4 md:p-5 border border-AMONIAKEEP-200/60 dark:border-AMONIAKEEP-800/40">
             <div className="flex items-center gap-2 mb-2">
-              <i className="fas fa-wind text-emerald-500 dark:text-emerald-400"></i>
-              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-300">Amonia</span>
+              <i className="fas fa-wind text-AMONIAKEEP-500 dark:text-AMONIAKEEP-400"></i>
+              <span className="text-xs font-medium text-AMONIAKEEP-600 dark:text-AMONIAKEEP-300">Amonia</span>
             </div>
-            <p className="text-2xl md:text-3xl font-bold text-emerald-700 dark:text-emerald-300">{latestSensor.ammonia}<span className="text-base font-normal"> ppm</span></p>
+            <p className="text-2xl md:text-3xl font-bold text-AMONIAKEEP-700 dark:text-AMONIAKEEP-300">{latestSensor.ammonia}<span className="text-base font-normal"> ppm</span></p>
           </div>
         </div>
       )}
@@ -579,7 +579,7 @@ const Dashboard = () => {
         <div className="h-56 md:h-72">
           {sensorLoading ? (
             <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
             </div>
           ) : sensorChartData.labels.length > 0 ? (
             <div className="h-full chart-container">
@@ -693,7 +693,7 @@ const Dashboard = () => {
               <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Grafik mingguan</p>
             </div>
-            <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">Mingguan</span>
+            <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">Mingguan</span>
           </div>
           <div className="h-52 md:h-64">
             <Line
@@ -812,7 +812,7 @@ const Dashboard = () => {
           </div>
           <button
             onClick={handleViewAllData}
-            className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+            className="text-blue-600 dark:text-blue-400 text-xs font-medium hover:text-blue-700 dark:hover:text-blue-300 transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 hover:bg-blue-100 dark:hover:bg-blue-900/50"
           >
             <span>Lihat Semua</span>
             <i className="fas fa-arrow-right text-[10px]"></i>
@@ -835,7 +835,7 @@ const Dashboard = () => {
                     <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-200">{egg.egg_code}</td>
                     <td className="py-3 px-4">
                       <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
-                          ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
+                          ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
                           : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
                         }`}>
                         <i className={`fas ${egg.quality === 'good' ? 'fa-check' : 'fa-times'} text-[10px]`}></i>

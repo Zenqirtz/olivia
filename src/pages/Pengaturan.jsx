@@ -295,7 +295,7 @@ const Pengaturan = () => {
               onChange={toggleTheme}
               className="sr-only peer"
             />
-            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-amber-300 dark:peer-focus:ring-amber-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-amber-600"></div>
+            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
           </label>
         </div>
       </div>
@@ -305,7 +305,7 @@ const Pengaturan = () => {
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Foto Profil</h3>
         <div className="flex items-center space-x-6">
           <div className="relative">
-            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 flex items-center justify-center text-white text-2xl font-bold">
+            <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center text-white text-2xl font-bold">
               {isAvatarLoading ? (
                 <div className="flex items-center justify-center">
                   <i className="fas fa-spinner fa-spin text-white"></i>
@@ -317,7 +317,7 @@ const Pengaturan = () => {
               )}
             </div>
             {isEditing && (
-              <label className="absolute bottom-0 right-0 bg-amber-600 text-white p-2 rounded-full cursor-pointer hover:bg-amber-700 transition-colors">
+              <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-2 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">
                 <i className="fas fa-camera text-sm"></i>
                 <input
                   type="file"
@@ -346,7 +346,7 @@ const Pengaturan = () => {
             disabled={isSaving}
             className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 btn-press ripple-effect ${isEditing
                 ? 'bg-green-500 hover:bg-green-600 text-white shadow-sm'
-                : 'bg-amber-600 hover:bg-amber-700 text-white shadow-sm'
+                : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
               } ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
           >
             {isSaving ? (
@@ -372,7 +372,7 @@ const Pengaturan = () => {
               onChange={(e) => setProfileData(prev => ({ ...prev, name: e.target.value }))}
               disabled={!isEditing || isSaving}
               className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
-                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
+                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
             />
@@ -396,7 +396,7 @@ const Pengaturan = () => {
               onChange={(e) => setProfileData(prev => ({ ...prev, phone: e.target.value }))}
               disabled={!isEditing || isSaving}
               className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
-                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
+                  ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                   : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
                 } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
             />
@@ -421,7 +421,7 @@ const Pengaturan = () => {
             disabled={!isEditing || isSaving}
             rows={3}
             className={`w-full border rounded-lg px-4 py-2 input-glow ${isEditing
-                ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-amber-500 focus:border-amber-500'
+                ? 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
                 : 'border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-gray-100'
               } focus:outline-none ${isSaving ? 'opacity-75 cursor-not-allowed' : ''}`}
           />
@@ -448,7 +448,7 @@ const Pengaturan = () => {
                   name="currentPassword"
                   value={passwordData.currentPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.currentPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 input-glow ${passwordErrors.currentPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -479,7 +479,7 @@ const Pengaturan = () => {
                   name="newPassword"
                   value={passwordData.newPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.newPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 input-glow ${passwordErrors.newPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -502,7 +502,7 @@ const Pengaturan = () => {
               <button
                 type="button"
                 onClick={generateSecurePassword}
-                className="mt-1 text-xs text-amber-600 hover:text-amber-800 dark:text-amber-400 dark:hover:text-amber-300 flex items-center"
+                className="mt-1 text-xs text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300 flex items-center"
               >
                 <i className="fas fa-magic mr-1"></i> Generate password aman
               </button>
@@ -518,7 +518,7 @@ const Pengaturan = () => {
                   name="confirmPassword"
                   value={passwordData.confirmPassword}
                   onChange={handlePasswordChange}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-amber-500 input-glow ${passwordErrors.confirmPassword
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 input-glow ${passwordErrors.confirmPassword
                       ? 'border-red-300 dark:border-red-600 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700'
                     } text-gray-900 dark:text-gray-100`}
@@ -541,7 +541,7 @@ const Pengaturan = () => {
             <button
               onClick={handleUpdatePassword}
               disabled={isUpdatingPassword}
-              className={`bg-amber-600 hover:bg-amber-700 dark:bg-amber-700 dark:hover:bg-amber-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 btn-press ripple-effect ${isUpdatingPassword ? 'opacity-70 cursor-not-allowed' : ''} flex items-center justify-center shadow-sm`}
+              className={`bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white px-6 py-3 rounded-lg font-medium transition-all duration-200 btn-press ripple-effect ${isUpdatingPassword ? 'opacity-70 cursor-not-allowed' : ''} flex items-center justify-center shadow-sm`}
             >
               {isUpdatingPassword ? (
                 <>
@@ -619,17 +619,17 @@ const Pengaturan = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
+      <div className="bg-gradient-to-r from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
         <div className="px-4 md:px-8 py-6 md:py-10 text-white">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Pengaturan</h1>
-          <p className="text-amber-100 text-sm md:text-base">Kelola profil, akun, dan preferensi sistem Anda.</p>
+          <p className="text-blue-100 text-sm md:text-base">Kelola profil, akun, dan preferensi sistem Anda.</p>
         </div>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 md:gap-6">
         {/* Tab Navigation — horizontal scroll di mobile */}
         <div className="lg:w-1/4 animate-fade-in-up delay-75">
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-2 md:p-4 card-hover-amber">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 p-2 md:p-4 card-hover-blue">
             <nav className="flex flex-row lg:flex-col gap-1 overflow-x-auto pb-1 lg:pb-0">
               {tabs.map((tab) => (
                 <button
@@ -638,7 +638,7 @@ const Pengaturan = () => {
                     setActiveTab(tab.id);
                   }}
                   className={`flex-shrink-0 flex items-center space-x-2 px-3 md:px-4 py-2.5 md:py-3 rounded-lg text-left transition-all btn-press ripple-effect whitespace-nowrap ${activeTab === tab.id
-                      ? 'bg-amber-50 dark:bg-amber-900 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-700'
+                      ? 'bg-blue-50 dark:bg-blue-900 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-700'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                     }`}
                 >
