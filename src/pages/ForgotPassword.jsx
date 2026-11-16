@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
 import { Link } from 'react-router-dom';
-import newLogo from '../assets/logo.png';
+import logo1 from '../assets/logo1.png';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -79,10 +79,10 @@ const ForgotPassword = () => {
         <div className="text-center mb-8 animate-fade-in-up delay-100">
           <div className="mx-auto bg-gradient-to-br from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 p-5 rounded-xl shadow-lg w-full max-w-sm transform hover:scale-[1.01] transition-transform duration-300">
             <div className="flex justify-center">
-              <div className="w-64 h-16">
+              <div className="w-64 h-16 flex items-center justify-center">
                 <img
-                  src={newLogo}
-                  alt="Smarternak Logo"
+                  src={logo1}
+                  alt="GardaOva Logo"
                   className="w-full h-full object-contain"
                 />
               </div>

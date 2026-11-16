@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import newLogo from '../assets/logo.png';
+import logo2 from '../assets/logo2.png';
 
 const Sidebar = ({ isOpen, onClose, collapsed }) => {
   const location = useLocation();
@@ -86,7 +86,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
           <div className="flex-1 flex justify-center items-center">
             <div className="h-12 w-auto flex items-center justify-center">
               <img
-                src={newLogo}
+                src={logo2}
                 alt="GardaOva Logo"
                 className={`h-full w-auto object-contain transition-all duration-300 ${collapsed ? 'max-w-[40px]' : ''}`}
               />
