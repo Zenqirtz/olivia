@@ -11,6 +11,7 @@ const Layout = ({ children }) => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [latestSensor, setLatestSensor] = useState(null);
   const [hasNotified, setHasNotified] = useState(false);
 
@@ -66,20 +67,34 @@ const Layout = ({ children }) => {
     setSidebarOpen(false);
   };
 
+  const toggleCollapse = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
   const goToSettings = () => {
     navigate('/pengaturan');
   };
 
   return (
     <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      <Sidebar isOpen={sidebarOpen} onClose={closeSidebar} collapsed={sidebarCollapsed} onToggleCollapse={toggleCollapse} />
 
-      <div className="flex-1 flex flex-col overflow-hidden lg:ml-0">
+      <div className={`flex-1 flex flex-col overflow-hidden transition-all duration-300`}>
         {/* Sticky Header Block */}
         <div className="sticky top-0 z-30 flex flex-col">
           {/* Top Bar — h-20 diselaraskan dengan header sidebar */}
           <div className="h-20 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-4 md:px-6 flex items-center">
             <div className="flex items-center justify-between w-full">
+            <div className="flex items-center gap-2">
+              {/* Desktop collapse toggle */}
+              <button
+                onClick={toggleCollapse}
+                className="hidden lg:flex p-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                title={sidebarCollapsed ? 'Tampilkan sidebar' : 'Sembunyikan sidebar'}
+              >
+                <i className={`fas ${sidebarCollapsed ? 'fa-indent' : 'fa-outdent'} text-gray-600 dark:text-gray-300`}></i>
+              </button>
+
               {/* Mobile menu button */}
               <button
                 onClick={toggleSidebar}
@@ -87,6 +102,7 @@ const Layout = ({ children }) => {
               >
                 <i className="fas fa-bars text-gray-600 dark:text-gray-300"></i>
               </button>
+            </div>
 
               {/* Page title for mobile */}
               <div className="lg:hidden">

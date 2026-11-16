@@ -381,30 +381,25 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto page-enter">
+      <div className="max-w-7xl mx-auto page-enter space-y-6 md:space-y-8">
         {/* Skeleton Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-3 animate-fade-in-up">
-          <div>
-            <div className="skeleton h-8 w-40 mb-2"></div>
-            <div className="skeleton h-4 w-56"></div>
-          </div>
-          <div className="flex gap-3">
-            <div className="skeleton h-10 w-28 rounded-lg"></div>
-            <div className="skeleton h-10 w-28 rounded-lg"></div>
-          </div>
+        <div className="rounded-3xl bg-gray-200 dark:bg-gray-700 p-6 md:p-8 animate-pulse">
+          <div className="skeleton h-4 w-48 mb-2"></div>
+          <div className="skeleton h-8 w-64 mb-2"></div>
+          <div className="skeleton h-4 w-56"></div>
         </div>
         {/* Skeleton Stat Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-xl border border-gray-100 dark:border-gray-700 animate-fade-in-up" style={{ animationDelay: `${i * 75}ms` }}>
-              <div className="skeleton h-4 w-32 mb-3"></div>
-              <div className="skeleton h-9 w-16 mb-2"></div>
+            <div key={i} className="bg-white dark:bg-gray-800 p-5 rounded-2xl border border-gray-100 dark:border-gray-700 animate-pulse" style={{ animationDelay: `${i * 75}ms` }}>
+              <div className="skeleton h-10 w-10 rounded-xl mb-3"></div>
+              <div className="skeleton h-8 w-16 mb-2"></div>
               <div className="skeleton h-3 w-24"></div>
             </div>
           ))}
         </div>
         {/* Skeleton Chart */}
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-100 dark:border-gray-700 mb-8 animate-fade-in-up delay-300">
+        <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl border border-gray-100 dark:border-gray-700 animate-pulse">
           <div className="skeleton h-5 w-48 mb-2"></div>
           <div className="skeleton h-4 w-64 mb-6"></div>
           <div className="skeleton h-72 w-full rounded-lg"></div>
@@ -414,18 +409,29 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto page-enter">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 md:mb-8 gap-3 animate-fade-in-up">
+    <div className="max-w-7xl mx-auto page-enter space-y-6 md:space-y-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 rounded-3xl bg-gradient-to-br from-emerald-800 via-emerald-700 to-teal-700 p-6 md:p-8 text-white shadow-lg shadow-emerald-900/10 animate-fade-in-up">
         <div>
-          <h1 className="text-xl md:text-2xl font-bold gradient-text">Dashboard</h1>
-          <p className="text-sm text-amber-600 dark:text-gray-400 mt-1">
-            Terakhir diperbarui: {lastRefresh.toLocaleTimeString('id-ID')}
+          <p className="text-sm font-medium text-emerald-100">Ringkasan operasional peternakan</p>
+          <h1 className="mt-1 text-2xl md:text-3xl font-bold">Selamat datang di Olivia</h1>
+          <p className="mt-2 text-sm text-emerald-100">Pantau produksi telur dan kondisi kandang dalam satu tempat.</p>
+          <p className="mt-3 text-xs text-emerald-200">
+            <span className="mr-2 inline-block h-2 w-2 rounded-full bg-lime-300"></span>
+            Diperbarui {lastRefresh.toLocaleTimeString('id-ID')}
           </p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex w-full sm:w-auto gap-2">
+          <button
+            onClick={handleRefresh}
+            disabled={isRefreshing}
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/20 disabled:opacity-60"
+          >
+            <i className={`fas fa-sync-alt ${isRefreshing ? 'animate-spin' : ''}`}></i>
+            <span>Perbarui</span>
+          </button>
           <button
             onClick={handleViewAllData}
-            className="flex items-center gap-2 bg-amber-600 dark:bg-amber-700 text-white rounded-lg px-3 md:px-4 py-2 hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect text-sm md:text-base"
+            className="flex flex-1 sm:flex-none items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-emerald-800 shadow-sm transition hover:bg-emerald-50"
           >
             <i className="fas fa-list"></i>
             <span>Lihat Data</span>
@@ -453,93 +459,105 @@ const Dashboard = () => {
       )}
 
       {/* Stat Cards */}
-      <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-6 mb-6 md:mb-8 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
+      <div className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-5 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'
         }`}>
-        <div className="bg-amber-50 dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-amber transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-75">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-100 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-          <div className="relative z-10">
-            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Hari ini</p>
-            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
-            <p className={`text-sm flex items-center gap-1 mt-1 ${dashboardStats.trend >= 0
-                ? 'text-green-500 dark:text-green-400'
-                : 'text-red-500 dark:text-red-400'
+        {/* Total Telur */}
+        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+              <i className="fas fa-egg text-lg"></i>
+            </div>
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${dashboardStats.trend >= 0
+                ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
+                : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
               }`}>
-              <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} text-xs`}></i>
-              <span>{formatPercentage(Math.abs(dashboardStats.trend || 0))}% dari kemarin</span>
-            </p>
+              <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} mr-1 text-[10px]`}></i>
+              {formatPercentage(Math.abs(dashboardStats.trend || 0))}%
+            </span>
           </div>
-          <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
-              <i className="fas fa-chart-line animate-float"></i>
-            </div>
-          </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.totalEggs}</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Total Telur Hari Ini</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-green transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-100">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-green-50 dark:bg-green-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-          <div className="relative z-10">
-            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Bagus</p>
-            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.goodEggs}</h2>
-            <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1 mt-1">
-              <i className="fas fa-arrow-up text-xs"></i>
-              <span>{formatPercentage(dashboardStats.goodPercentage, 2)}%</span>
-            </p>
-          </div>
-          <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-green-500 dark:bg-green-800 text-white dark:text-green-300">
-              <i className="fas fa-check-circle animate-float"></i>
+        {/* Telur Bagus */}
+        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
+              <i className="fas fa-check-circle text-lg"></i>
             </div>
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
+              {formatPercentage(dashboardStats.goodPercentage, 1)}%
+            </span>
           </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.goodEggs}</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Telur Bagus</p>
         </div>
 
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-red transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-150">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-red-50 dark:bg-red-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-          <div className="relative z-10">
-            <p className="text-amber-600 dark:text-gray-400 mb-1">Jumlah Telur Jelek</p>
-            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">{dashboardStats.badEggs}</h2>
-            <p className="text-red-500 dark:text-red-400 text-sm flex items-center gap-1 mt-1">
-              <i className="fas fa-arrow-up text-xs"></i>
-              <span>{formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 2)}%</span>
-            </p>
-          </div>
-          <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-red-500 dark:bg-red-800 text-white dark:text-red-300">
-              <i className="fas fa-exclamation-circle animate-float"></i>
+        {/* Telur Jelek */}
+        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
+              <i className="fas fa-times-circle text-lg"></i>
             </div>
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+              {formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 1)}%
+            </span>
           </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">{dashboardStats.badEggs}</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Telur Jelek</p>
         </div>
 
-        {/* Card keempat - Status Sistem */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-sm card-hover-amber transition-all relative overflow-hidden border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-200">
-          <div className="absolute top-0 right-0 w-24 h-24 bg-amber-50 dark:bg-amber-900 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-          <div className="relative z-10">
-            <p className="text-amber-600 dark:text-gray-400 mb-1">Status Sistem</p>
-            <h2 className="text-3xl font-bold text-amber-800 dark:text-gray-100">Online</h2>
-            <p className="text-green-500 dark:text-green-400 text-sm flex items-center gap-1.5 mt-1">
-              <span className="w-2.5 h-2.5 rounded-full bg-green-500 active-dot inline-block mr-1"></span>
-              <span>Semua sistem berjalan</span>
-            </p>
-          </div>
-          <div className="absolute top-4 right-4 z-10">
-            <div className="p-2 rounded-full bg-amber-500 dark:bg-amber-800 text-white dark:text-amber-300">
-              <i className="fas fa-server animate-float"></i>
+        {/* Status Sistem */}
+        <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-200">
+          <div className="flex items-center justify-between mb-3">
+            <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center text-violet-600 dark:text-violet-400">
+              <i className="fas fa-server text-lg"></i>
             </div>
+            <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 active-dot"></span>
+              Aktif
+            </span>
           </div>
+          <h2 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-gray-100">Online</h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Status Sistem</p>
         </div>
       </div>
 
-      {/* ============================================ */}
-      {/* Pemantauan IoT Sensor Chart (NEW) */}
-      {/* ============================================ */}
-      <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber transition-all border border-amber-100 dark:border-gray-700 mb-8 animate-fade-in-up delay-250">
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-          <div>
-            <p className="text-amber-600 dark:text-gray-400 text-sm">Pemantauan Sensor</p>
-            <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">
-              Suhu, Kelembapan & Gas Amonia
-            </h3>
+      {/* Sensor Cards Row */}
+      {latestSensor && (
+        <div className="grid grid-cols-3 gap-3 md:gap-5 animate-fade-in-up delay-250">
+          <div className="bg-gradient-to-br from-orange-50 to-orange-100 dark:from-orange-950/40 dark:to-orange-900/30 rounded-2xl p-4 md:p-5 border border-orange-200/60 dark:border-orange-800/40">
+            <div className="flex items-center gap-2 mb-2">
+              <i className="fas fa-temperature-high text-orange-500 dark:text-orange-400"></i>
+              <span className="text-xs font-medium text-orange-600 dark:text-orange-300">Suhu</span>
+            </div>
+            <p className="text-2xl md:text-3xl font-bold text-orange-700 dark:text-orange-300">{latestSensor.temperature}<span className="text-base font-normal">°C</span></p>
           </div>
-          <div className="flex gap-2">
+          <div className="bg-gradient-to-br from-sky-50 to-sky-100 dark:from-sky-950/40 dark:to-sky-900/30 rounded-2xl p-4 md:p-5 border border-sky-200/60 dark:border-sky-800/40">
+            <div className="flex items-center gap-2 mb-2">
+              <i className="fas fa-tint text-sky-500 dark:text-sky-400"></i>
+              <span className="text-xs font-medium text-sky-600 dark:text-sky-300">Kelembapan</span>
+            </div>
+            <p className="text-2xl md:text-3xl font-bold text-sky-700 dark:text-sky-300">{latestSensor.humidity}<span className="text-base font-normal">%</span></p>
+          </div>
+          <div className="bg-gradient-to-br from-emerald-50 to-emerald-100 dark:from-emerald-950/40 dark:to-emerald-900/30 rounded-2xl p-4 md:p-5 border border-emerald-200/60 dark:border-emerald-800/40">
+            <div className="flex items-center gap-2 mb-2">
+              <i className="fas fa-wind text-emerald-500 dark:text-emerald-400"></i>
+              <span className="text-xs font-medium text-emerald-600 dark:text-emerald-300">Amonia</span>
+            </div>
+            <p className="text-2xl md:text-3xl font-bold text-emerald-700 dark:text-emerald-300">{latestSensor.ammonia}<span className="text-base font-normal"> ppm</span></p>
+          </div>
+        </div>
+      )}
+
+      {/* Sensor Chart */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-250">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+          <div>
+            <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Pemantauan Sensor</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Suhu, Kelembapan & Gas Amonia</p>
+          </div>
+          <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
             {[
               { key: '24h', label: '24 Jam' },
               { key: '7d', label: '7 Hari' },
@@ -548,9 +566,9 @@ const Dashboard = () => {
               <button
                 key={key}
                 onClick={() => handleSensorPeriodChange(key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all btn-press ripple-effect ${sensorPeriod === key
-                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
-                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${sensorPeriod === key
+                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                   }`}
               >
                 {label}
@@ -558,45 +576,10 @@ const Dashboard = () => {
             ))}
           </div>
         </div>
-
-        {/* Sensor value cards */}
-        {latestSensor && (
-          <div className="grid grid-cols-3 gap-2 md:gap-4 mb-4 animate-fade-in-up">
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-orange-200 dark:border-orange-800 card-hover-amber transition-all duration-300">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-orange-500 active-dot"></div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Suhu</span>
-              </div>
-              <p className="text-xl font-bold text-orange-600 dark:text-orange-400">
-                {latestSensor.temperature}°C
-              </p>
-            </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-blue-200 dark:border-blue-800 card-hover-blue transition-all duration-300">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-blue-500 active-dot"></div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Kelembapan</span>
-              </div>
-              <p className="text-xl font-bold text-blue-600 dark:text-blue-400">
-                {latestSensor.humidity}%
-              </p>
-            </div>
-            <div className="bg-white dark:bg-gray-700 rounded-lg p-3 border border-green-200 dark:border-green-800 card-hover-green transition-all duration-300">
-              <div className="flex items-center gap-2 mb-1">
-                <div className="w-3 h-3 rounded-full bg-green-500 active-dot"></div>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Amonia</span>
-              </div>
-              <p className="text-xl font-bold text-green-600 dark:text-green-400">
-                {latestSensor.ammonia} ppm
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Sensor chart */}
         <div className="h-56 md:h-72">
           {sensorLoading ? (
             <div className="flex justify-center items-center h-full">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500"></div>
             </div>
           ) : sensorChartData.labels.length > 0 ? (
             <div className="h-full chart-container">
@@ -625,6 +608,7 @@ const Dashboard = () => {
                       borderColor: isDarkMode ? '#374151' : '#e5e7eb',
                       borderWidth: 1,
                       padding: 12,
+                      cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
                           let label = context.dataset.label || '';
@@ -649,7 +633,7 @@ const Dashboard = () => {
                         font: { size: 11 }
                       },
                       grid: {
-                        color: isDarkMode ? '#374151' : '#e5e7eb'
+                        color: isDarkMode ? '#374151' : '#f3f4f6'
                       },
                       ticks: {
                         color: isDarkMode ? '#9ca3af' : '#6b7280'
@@ -674,7 +658,7 @@ const Dashboard = () => {
                     },
                     x: {
                       grid: {
-                        color: isDarkMode ? '#374151' : '#e5e7eb'
+                        color: isDarkMode ? '#374151' : '#f3f4f6'
                       },
                       ticks: {
                         color: isDarkMode ? '#9ca3af' : '#6b7280',
@@ -690,7 +674,7 @@ const Dashboard = () => {
               />
             </div>
           ) : (
-            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500 animate-fadeIn">
+            <div className="flex justify-center items-center h-full text-gray-400 dark:text-gray-500">
               <div className="text-center">
                 <i className="fas fa-thermometer-half text-4xl mb-2"></i>
                 <p>Belum ada data sensor</p>
@@ -700,20 +684,17 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Charts and Recent Data */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-8">
-        {/* Weekly Chart */}
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-300">
-          <div className="flex justify-between items-center mb-4">
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 md:gap-5">
+        {/* Weekly Line Chart */}
+        <div className="lg:col-span-3 bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-300">
+          <div className="flex justify-between items-center mb-5">
             <div>
-              <p className="text-amber-600 dark:text-gray-400 text-sm">Grafik Mingguan</p>
-              <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">Produksi Telur 7 Hari Terakhir</h3>
+              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Grafik mingguan</p>
             </div>
-            <button className="bg-amber-600 dark:bg-amber-700 text-white px-3 py-1.5 rounded-lg text-sm hover:bg-amber-700 dark:hover:bg-amber-800 transition-all shadow-sm btn-press ripple-effect">
-              Mingguan
-            </button>
+            <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">Mingguan</span>
           </div>
-
           <div className="h-52 md:h-64">
             <Line
               data={weeklyData}
@@ -722,14 +703,19 @@ const Dashboard = () => {
                 plugins: {
                   legend: {
                     display: true,
-                    position: 'bottom'
+                    position: 'bottom',
+                    labels: {
+                      color: isDarkMode ? '#9ca3af' : '#6b7280',
+                      usePointStyle: true,
+                      padding: 16,
+                    }
                   }
                 },
                 scales: {
                   y: {
                     beginAtZero: true,
                     grid: {
-                      color: isDarkMode ? '#374151' : '#e5e7eb'
+                      color: isDarkMode ? '#374151' : '#f3f4f6'
                     },
                     ticks: {
                       color: isDarkMode ? '#9ca3af' : '#6b7280'
@@ -737,7 +723,7 @@ const Dashboard = () => {
                   },
                   x: {
                     grid: {
-                      color: isDarkMode ? '#374151' : '#e5e7eb'
+                      color: isDarkMode ? '#374151' : '#f3f4f6'
                     },
                     ticks: {
                       color: isDarkMode ? '#9ca3af' : '#6b7280'
@@ -749,33 +735,32 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Donut Chart — Harian / Mingguan Toggle */}
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-350">
+        {/* Donut Chart */}
+        <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-350">
           <div className="flex justify-between items-center mb-4">
             <div>
-              <p className="text-amber-600 dark:text-gray-400 text-sm">Statistik Telur</p>
-              <h3 className="font-semibold text-lg text-amber-800 dark:text-gray-100">
+              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Kualitas Telur</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                 {donutMode === 'harian'
-                    ? `Statistik Telur Harian (${formatDateForDisplay(activeDate)})`
-                    : 'Statistik Telur 7 Hari Terakhir'
+                    ? formatDateForDisplay(activeDate)
+                    : '7 hari terakhir'
                 }
-              </h3>
+              </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-1 bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
               <button
                 onClick={() => handleDonutModeChange('harian')}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all btn-press ripple-effect ${donutMode === 'harian'
-                    ? 'bg-amber-600 dark:bg-amber-700 text-white shadow-sm'
-                    : 'bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600'
+                className={`px-2.5 py-1 rounded-md text-xs font-medium transition-all ${donutMode === 'harian'
+                    ? 'bg-white dark:bg-gray-600 text-gray-900 dark:text-gray-100 shadow-sm'
+                    : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'
                   }`}
               >
                 Harian
               </button>
-              {/* Tombol 'Mingguan' dihapus sesuai permintaan */}
             </div>
           </div>
 
-          <div className="h-52 md:h-64 flex justify-center items-center">
+          <div className="h-44 md:h-52 flex justify-center items-center">
             <Doughnut
               data={donutData}
               options={{
@@ -801,82 +786,75 @@ const Dashboard = () => {
             />
           </div>
 
-          <div className="flex justify-center gap-6 mt-4">
+          <div className="flex justify-center gap-5 mt-4">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Telur Bagus: {donutStats.goodEggs} ({formatPercentage(donutStats.goodPercentage, 0)}%)
+              <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>
+              <span className="text-xs text-gray-600 dark:text-gray-300">
+                Bagus: {donutStats.goodEggs} ({formatPercentage(donutStats.goodPercentage, 0)}%)
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full bg-red-500"></div>
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                Telur Jelek: {donutStats.badEggs} ({formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 0)}%)
+              <div className="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+              <span className="text-xs text-gray-600 dark:text-gray-300">
+                Jelek: {donutStats.badEggs} ({formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 0)}%)
               </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Recent Eggs */}
-      <div className="grid grid-cols-1 gap-8 mb-8">
-        <div className="bg-amber-50 dark:bg-gray-800 p-6 rounded-xl shadow-sm card-hover-amber border border-amber-100 dark:border-gray-700 animate-fade-in-up delay-400">
-          <div className="flex justify-between items-center mb-5">
-            <h2 className="text-lg font-semibold text-amber-800 dark:text-gray-100">Daftar Telur Terbaru</h2>
-            <button
-              onClick={handleViewAllData}
-              className="text-amber-600 dark:text-amber-400 text-sm hover:text-amber-700 dark:hover:text-amber-300 transition-all flex items-center gap-1 btn-press px-2 py-1 rounded"
-            >
-              <span>Lihat Semua Data</span>
-              <i className="fas fa-chevron-right text-xs"></i>
-            </button>
+      {/* Recent Eggs Table */}
+      <div className="bg-white dark:bg-gray-800 rounded-2xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
+        <div className="flex justify-between items-center mb-5">
+          <div>
+            <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Telur Terbaru</h3>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">5 telur terakhir yang terdeteksi</p>
           </div>
+          <button
+            onClick={handleViewAllData}
+            className="text-emerald-600 dark:text-emerald-400 text-xs font-medium hover:text-emerald-700 dark:hover:text-emerald-300 transition-all flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50"
+          >
+            <span>Lihat Semua</span>
+            <i className="fas fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full">
-              <thead>
-                <tr className="text-amber-600 dark:text-gray-400 border-b border-amber-200 dark:border-gray-700">
-                  <th className="py-3 px-4 text-left font-medium">KODE</th>
-                  <th className="py-3 px-4 text-left font-medium">KUALITAS</th>
-                  <th className="py-3 px-4 text-left font-medium">TANGGAL</th>
-                </tr>
-              </thead>
-              <tbody className="tbody-stagger">
-                {recentEggs.length > 0 ? (
-                  recentEggs.map((egg, index) => (
-                    <tr key={egg.scan_id || index} className="border-b border-amber-100 dark:border-gray-700 hover:bg-amber-100/50 dark:hover:bg-gray-700/50 table-row-animated">
-                      <td className="py-3 px-4 text-amber-800 dark:text-gray-200">{egg.egg_code}</td>
-                      <td className="py-3 px-4">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
-                            ? 'bg-green-100 dark:bg-green-900 text-green-600 dark:text-green-300'
-                            : 'bg-red-100 dark:bg-red-900 text-red-600 dark:text-red-300'
-                          }`}>
-                          {getQualityText(egg.quality)}
-                        </span>
-                      </td>
-                      <td className="py-3 px-4 text-amber-600 dark:text-gray-300">{formatDateForDisplay(egg.scanned_at)}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="3" className="py-6 text-center text-gray-500 dark:text-gray-400">
-                      Belum ada data telur hari ini
+        <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700">
+          <table className="min-w-full">
+            <thead>
+              <tr className="bg-gray-50 dark:bg-gray-750 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kode</th>
+                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kualitas</th>
+                <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Tanggal</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
+              {recentEggs.length > 0 ? (
+                recentEggs.map((egg, index) => (
+                  <tr key={egg.scan_id || index} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                    <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-200">{egg.egg_code}</td>
+                    <td className="py-3 px-4">
+                      <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'
+                          ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300'
+                          : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
+                        }`}>
+                        <i className={`fas ${egg.quality === 'good' ? 'fa-check' : 'fa-times'} text-[10px]`}></i>
+                        {getQualityText(egg.quality)}
+                      </span>
                     </td>
+                    <td className="py-3 px-4 text-sm text-gray-500 dark:text-gray-400">{formatDateForDisplay(egg.scanned_at)}</td>
                   </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="mt-5">
-            <button
-              onClick={handleViewAllData}
-              className="text-amber-600 dark:text-amber-400 flex items-center gap-1 hover:text-amber-700 dark:hover:text-amber-300 transition-all btn-press px-2 py-1 rounded"
-            >
-              <span>Lihat semua data telur</span>
-              <i className="fas fa-arrow-right ml-1 text-xs"></i>
-            </button>
-          </div>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="3" className="py-10 text-center text-gray-400 dark:text-gray-500">
+                    <i className="fas fa-inbox text-3xl mb-2 block"></i>
+                    Belum ada data telur hari ini
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

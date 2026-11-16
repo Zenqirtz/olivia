@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import newLogo from '../assets/logo.png';
-import smarternakLogo from '../assets/smarternak.png';
 
-const Sidebar = ({ isOpen, onClose }) => {
+const Sidebar = ({ isOpen, onClose, collapsed }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isSuperAdmin, logout } = useAuth();
@@ -79,17 +78,17 @@ const Sidebar = ({ isOpen, onClose }) => {
       )}
 
       {/* Sidebar */}
-      <div className={`fixed left-0 top-0 h-full w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-transform duration-300 ease-in-out z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
-        } lg:translate-x-0 lg:static lg:z-auto border-r border-gray-200 dark:border-gray-700`}>
+      <div className={`fixed left-0 top-0 h-full ${collapsed ? 'lg:w-20' : 'lg:w-64'} w-64 bg-white dark:bg-gray-800 shadow-lg transform transition-all duration-300 ease-in-out z-50 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0 lg:static lg:z-auto border-r border-gray-200 dark:border-gray-700 flex flex-col`}>
 
         {/* Header with Logo — tinggi diselaraskan dengan top bar di Layout (h-20) */}
-        <div className="h-20 px-4 flex items-center justify-between border-b border-amber-900 dark:border-amber-950 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 shrink-0">
-          <div className="flex-1 flex justify-center">
-            <div className="h-12 w-auto">
+        <div className="h-20 px-4 flex items-center justify-between border-b border-amber-900 dark:border-amber-950 bg-gradient-to-br from-amber-700 to-amber-800 dark:from-amber-800 dark:to-amber-900 shrink-0 overflow-hidden">
+          <div className="flex-1 flex justify-center items-center">
+            <div className="h-12 w-auto flex items-center justify-center">
               <img
                 src={newLogo}
                 alt="GardaOva Logo"
-                className="h-full w-auto object-contain"
+                className={`h-full w-auto object-contain transition-all duration-300 ${collapsed ? 'max-w-[40px]' : ''}`}
               />
             </div>
           </div>
@@ -102,12 +101,12 @@ const Sidebar = ({ isOpen, onClose }) => {
         </div>
 
         {/* User Info */}
-        <div className="px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800">
-          <div className="flex items-center">
+        <div className={`px-4 py-3 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all ${collapsed ? 'lg:px-2' : ''}`}>
+          <div className={`flex items-center ${collapsed ? 'lg:justify-center' : ''}`}>
             <div
               onClick={goToSettings}
-              className="w-10 h-10 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              title="Edit Profile"
+              className="w-10 h-10 shrink-0 bg-gradient-to-r from-amber-500 to-amber-600 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
+              title={collapsed ? `${user?.name} (${user?.role})` : 'Edit Profile'}
             >
               {user?.avatar_url ? (
                 <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
@@ -115,18 +114,22 @@ const Sidebar = ({ isOpen, onClose }) => {
                 user?.name?.charAt(0)?.toUpperCase() || 'U'
               )}
             </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900 dark:text-white">{user?.name}</p>
-              <p className="text-xs text-gray-500 dark:text-gray-400 capitalize">{user?.role}</p>
-            </div>
+            {!collapsed && (
+              <div className="ml-3 truncate">
+                <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 capitalize truncate">{user?.role}</p>
+              </div>
+            )}
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-3">
-          <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
-            Menu Utama
-          </div>
+        <nav className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
+          {!collapsed && (
+            <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
+              Menu Utama
+            </div>
+          )}
           <ul className="space-y-1">
             {filteredMenuItems.map((item) => {
               const isActive = location.pathname === item.path;
@@ -135,18 +138,23 @@ const Sidebar = ({ isOpen, onClose }) => {
                   <Link
                     to={item.path}
                     onClick={onClose}
-                    className={`flex items-start px-3 py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 btn-press ripple-effect ${isActive
+                    title={collapsed ? item.name : ''}
+                    className={`flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 btn-press ripple-effect ${isActive
                       ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 border-r-2 border-amber-600 dark:border-amber-400 shadow-sm'
                       : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 hover:text-amber-600 dark:hover:text-amber-400'
                       }`}
                   >
-                    <i className={`${item.icon} w-5 text-center mr-3 mt-[3px] shrink-0 transition-colors ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
+                    <i className={`${item.icon} w-5 text-center shrink-0 transition-colors ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'} ${isActive ? 'text-amber-600 dark:text-amber-400' : 'text-gray-400 dark:text-gray-500 group-hover:text-amber-600 dark:group-hover:text-amber-400'
                       }`}></i>
-                    <span className="font-medium text-sm leading-normal">{item.name}</span>
-                    {item.superAdminOnly && (
-                      <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full mt-0.5 shrink-0">
-                        Super
-                      </span>
+                    {!collapsed && (
+                      <>
+                        <span className="font-medium text-sm leading-normal truncate">{item.name}</span>
+                        {item.superAdminOnly && (
+                          <span className="ml-auto text-xs bg-amber-100 dark:bg-amber-900 text-amber-600 dark:text-amber-300 px-2 py-1 rounded-full shrink-0">
+                            Super
+                          </span>
+                        )}
+                      </>
                     )}
                   </Link>
                 </li>
@@ -156,16 +164,19 @@ const Sidebar = ({ isOpen, onClose }) => {
         </nav>
 
         {/* Logout Button */}
-        <div className="p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50">
-          <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
-            Akun
-          </div>
+        <div className={`p-3 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 ${collapsed ? 'lg:px-2' : ''}`}>
+          {!collapsed && (
+            <div className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3">
+              Akun
+            </div>
+          )}
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="w-full flex items-start px-3 py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 btn-press"
+            title={collapsed ? 'Logout' : ''}
+            className={`w-full flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 btn-press`}
           >
-            <i className="fas fa-sign-out-alt w-5 text-center mr-3 mt-[3px] shrink-0"></i>
-            <span className="font-medium text-sm leading-normal">Logout</span>
+            <i className={`fas fa-sign-out-alt w-5 text-center shrink-0 ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'}`}></i>
+            {!collapsed && <span className="font-medium text-sm leading-normal">Logout</span>}
           </button>
         </div>
       </div>
