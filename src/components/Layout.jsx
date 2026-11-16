@@ -14,6 +14,7 @@ const Layout = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [latestSensor, setLatestSensor] = useState(null);
   const [hasNotified, setHasNotified] = useState(false);
+  const [alertDismissed, setAlertDismissed] = useState(false);
 
   useEffect(() => {
     const fetchLatestSensor = async () => {
@@ -56,6 +57,7 @@ const Layout = ({ children }) => {
       }
     } else {
       setHasNotified(false);
+      setAlertDismissed(false);
     }
   }, [latestSensor, hasNotified]);
 
@@ -147,7 +149,7 @@ const Layout = ({ children }) => {
           </div>
 
           {/* Alert Banner — hanya muncul jika amonia > 20 ppm */}
-          {latestSensor && latestSensor.ammonia > 20 && (
+          {latestSensor && latestSensor.ammonia > 20 && !alertDismissed && (
             <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-500 to-orange-500 dark:from-red-800 dark:via-red-700 dark:to-orange-700 px-4 md:px-6 py-2.5 flex items-center gap-3 shadow-sm">
               {/* Animated shimmer layer */}
               <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-[shimmer_2s_linear_infinite] bg-[length:200%_100%] pointer-events-none" />
@@ -173,6 +175,16 @@ const Layout = ({ children }) => {
                 <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse inline-block"></span>
                 LIVE
               </div>
+
+              <button
+                type="button"
+                onClick={() => setAlertDismissed(true)}
+                aria-label="Tutup peringatan kritis"
+                title="Tutup peringatan"
+                className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
+              >
+                <i className="fas fa-times" aria-hidden="true"></i>
+              </button>
             </div>
           )}
         </div>
