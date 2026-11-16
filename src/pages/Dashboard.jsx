@@ -56,9 +56,11 @@ const Dashboard = () => {
       {
         label: 'Kualitas Telur',
         data: [0, 0],
-        backgroundColor: ['#3498db', '#f04438'],
-        borderColor: ['#3498db', '#f04438'],
-        cutout: '70%',
+        backgroundColor: ['#2b2796', '#f4536a'],
+        hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+        borderColor: ['#ffffff', '#ffffff'],
+        borderWidth: 2,
+        cutout: '72%',
       }
     ]
   });
@@ -181,7 +183,10 @@ const Dashboard = () => {
             ...prev,
             datasets: [{
               ...prev.datasets[0],
-              data: [stats.goodEggs, stats.badEggs]
+              data: [stats.goodEggs, stats.badEggs],
+              backgroundColor: ['#2b2796', '#f4536a'],
+              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
         }
@@ -200,7 +205,10 @@ const Dashboard = () => {
             ...prev,
             datasets: [{
               ...prev.datasets[0],
-              data: [stats.goodEggs, stats.badEggs]
+              data: [stats.goodEggs, stats.badEggs],
+              backgroundColor: ['#2b2796', '#f4536a'],
+              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
         }
@@ -680,74 +688,157 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Weekly Production Bar Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
-          <div className="flex justify-between items-center mb-6">
-            <div>
-              <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
-                <i className="fas fa-chart-bar"></i>
-                <span>Produksi Telur Mingguan</span>
+        {/* Production Charts: Harian (kiri) & Mingguan (kanan) */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          {/* Daily Production Donut Chart */}
+          <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
+            <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
+            <div className="relative flex justify-between items-start mb-6">
+              <div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <i className="fas fa-egg"></i>
+                  <span>Produksi Telur Harian</span>
+                </div>
+                <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">
+                  Ringkasan Hari Ini
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{formatDateForDisplay(activeDate)}</p>
               </div>
-              <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">Harian</span>
             </div>
-            <div className="flex items-center gap-2 bg-gray-100 dark:bg-gray-700 rounded-xl p-1">
-              <span className="text-xs font-medium text-gray-900 dark:text-white bg-white dark:bg-gray-600 px-2 py-1 rounded-md">Mingguan</span>
-              <i className="fas fa-chevron-down text-xs text-gray-500"></i>
-            </div>
-          </div>
 
-          {/* Chart Legend */}
-          <div className="flex justify-center gap-5 mb-6">
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
-              Telur Bagus
+            {/* Legend */}
+            <div className="relative flex justify-center gap-5 mb-4">
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
+                Telur Bagus
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
+                Telur Jelek
+              </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
-              Telur Jelek
-            </div>
-            <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
-              <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
-              Total
-            </div>
-          </div>
 
-          <div className="h-56 md:h-72">
-            <Bar
-              data={weeklyData}
-              options={{
-                maintainAspectRatio: false,
-                plugins: {
-                  legend: { display: false },
-                  tooltip: {
-                    backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
-                    titleColor: isDarkMode ? '#f3f4f6' : '#111827',
-                    bodyColor: isDarkMode ? '#d1d5db' : '#374151',
-                    borderColor: isDarkMode ? '#374151' : '#e5e7eb',
-                    borderWidth: 1,
-                    padding: 12,
-                    cornerRadius: 8,
-                    callbacks: {
-                      label: function (context) {
-                        return `${context.dataset.label}: ${context.raw}`;
+            <div className="relative h-56 md:h-72">
+              <Doughnut
+                data={donutData}
+                options={{
+                  maintainAspectRatio: false,
+                  cutout: '72%',
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                      titleColor: isDarkMode ? '#f3f4f6' : '#111827',
+                      bodyColor: isDarkMode ? '#d1d5db' : '#374151',
+                      borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                      borderWidth: 1,
+                      padding: 12,
+                      cornerRadius: 8,
+                      callbacks: {
+                        label: function (context) {
+                          const value = context.raw || 0;
+                          const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
+                          const pct = ((value / total) * 100).toFixed(1);
+                          return `${context.label}: ${value} (${pct}%)`;
+                        }
                       }
                     }
                   }
-                },
-                scales: {
-                  y: {
-                    beginAtZero: true,
-                    grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
-                    ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
-                    maxTicksLimit: 5
+                }}
+              />
+              {/* Center total */}
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <span className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
+                  {donutStats.totalEggs}
+                </span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">Total Telur</span>
+              </div>
+            </div>
+
+            {/* Footer stats */}
+            <div className="relative grid grid-cols-2 gap-3 mt-5">
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-750 p-3 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Telur Bagus</p>
+                <p className="text-lg font-bold text-[#2b2796] dark:text-indigo-300">{donutStats.goodEggs}</p>
+                <p className="text-[11px] text-gray-400">{formatPercentage(donutStats.goodPercentage, 1)}%</p>
+              </div>
+              <div className="rounded-xl bg-gray-50 dark:bg-gray-750 p-3 text-center">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Telur Jelek</p>
+                <p className="text-lg font-bold text-[#f4536a]">{donutStats.badEggs}</p>
+                <p className="text-[11px] text-gray-400">{formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 1)}%</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Weekly Production Bar Chart */}
+          <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-450">
+            <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-indigo-50 dark:bg-indigo-900/10 pointer-events-none"></div>
+            <div className="relative flex justify-between items-start mb-6">
+              <div>
+                <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  <i className="fas fa-chart-bar"></i>
+                  <span>Produksi Telur Mingguan</span>
+                </div>
+                <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan bagus, jelek, dan total</p>
+              </div>
+              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">Mingguan</span>
+            </div>
+
+            {/* Chart Legend */}
+            <div className="relative flex justify-center gap-5 mb-4">
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
+                Telur Bagus
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
+                Telur Jelek
+              </div>
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
+                Total
+              </div>
+            </div>
+
+            <div className="relative h-56 md:h-72">
+              <Bar
+                data={weeklyData}
+                options={{
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                      backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
+                      titleColor: isDarkMode ? '#f3f4f6' : '#111827',
+                      bodyColor: isDarkMode ? '#d1d5db' : '#374151',
+                      borderColor: isDarkMode ? '#374151' : '#e5e7eb',
+                      borderWidth: 1,
+                      padding: 12,
+                      cornerRadius: 8,
+                      callbacks: {
+                        label: function (context) {
+                          return `${context.dataset.label}: ${context.raw}`;
+                        }
+                      }
+                    }
                   },
-                  x: {
-                    grid: { display: false },
-                    ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
+                      ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
+                      maxTicksLimit: 5
+                    },
+                    x: {
+                      grid: { display: false },
+                      ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
+                    }
                   }
-                }
-              }}
-            />
+                }}
+              />
+            </div>
           </div>
         </div>
 
