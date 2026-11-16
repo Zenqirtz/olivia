@@ -5,6 +5,7 @@ import { Line, Doughnut, Bar } from 'react-chartjs-2';
 import { useTheme } from '../contexts/ThemeContext';
 import { useAuth } from '../contexts/AuthContext';
 import {
+  getAllEggs,
   getDailyEggSummary,
   getRecentEggs,
   getEggStatistics,
@@ -79,6 +80,16 @@ const Dashboard = () => {
     goodEggs: 0,
     badEggs: 0,
     goodPercentage: 0,
+  });
+
+  // State untuk grafik produksi harian (per jam)
+  const [dailyData, setDailyData] = useState({
+    labels: [],
+    datasets: [
+      { label: 'Telur Bagus', data: [], backgroundColor: '#2b2796', hoverBackgroundColor: '#3a34c0', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 },
+      { label: 'Telur Jelek', data: [], backgroundColor: '#f4536a', hoverBackgroundColor: '#e8384f', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 },
+      { label: 'Total', data: [], backgroundColor: '#f9b02b', hoverBackgroundColor: '#eda11c', borderRadius: 6, borderSkipped: false, maxBarThickness: 21, categoryPercentage: 0.62, barPercentage: 0.72 }
+    ]
   });
 
   // State untuk sensor/IoT chart
@@ -248,7 +259,10 @@ const Dashboard = () => {
             ...prev,
             datasets: [{
               ...prev.datasets[0],
-              data: [summary.good_eggs || 0, summary.bad_eggs || 0]
+              data: [summary.good_eggs || 0, summary.bad_eggs || 0],
+              backgroundColor: ['#2b2796', '#f4536a'],
+              hoverBackgroundColor: ['#3a34c0', '#e8384f'],
+              borderColor: isDarkMode ? '#1f2937' : '#ffffff',
             }]
           }));
         }
@@ -262,6 +276,9 @@ const Dashboard = () => {
 
       // Load weekly statistics for line chart
       await loadWeeklyStatistics();
+
+      // Load daily statistics for bar chart
+      await loadDailyStatistics();
 
       // Load sensor data
       await loadSensorData();
@@ -354,6 +371,84 @@ const Dashboard = () => {
 
     } catch (error) {
       console.error('Error loading weekly statistics:', error);
+    }
+  };
+
+  // Load daily statistics per hour block
+  const loadDailyStatistics = async () => {
+    try {
+      const hourBlocks = [
+        { label: '00:00', start: 0, end: 4 },
+        { label: '04:00', start: 4, end: 8 },
+        { label: '08:00', start: 8, end: 12 },
+        { label: '12:00', start: 12, end: 16 },
+        { label: '16:00', start: 16, end: 20 },
+        { label: '20:00', start: 20, end: 24 }
+      ];
+
+      const now = new Date();
+      const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+      const response = await getAllEggs({ date: todayStr, limit: 1000 });
+      const eggs = response?.success && response?.data?.eggs ? response.data.eggs : [];
+
+      const goodData = [0, 0, 0, 0, 0, 0];
+      const badData = [0, 0, 0, 0, 0, 0];
+
+      eggs.forEach((egg) => {
+        const d = new Date(egg.scanned_at);
+        const h = d.getHours();
+        const idx = hourBlocks.findIndex(b => h >= b.start && h < b.end);
+        if (idx !== -1) {
+          if (egg.quality === 'good') {
+            goodData[idx] += 1;
+          } else {
+            badData[idx] += 1;
+          }
+        }
+      });
+
+      const totalData = goodData.map((g, i) => g + badData[i]);
+
+      setDailyData({
+        labels: hourBlocks.map(b => b.label),
+        datasets: [
+          {
+            label: 'Telur Bagus',
+            data: goodData,
+            backgroundColor: '#2b2796',
+            hoverBackgroundColor: '#3a34c0',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
+          },
+          {
+            label: 'Telur Jelek',
+            data: badData,
+            backgroundColor: '#f4536a',
+            hoverBackgroundColor: '#e8384f',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
+          },
+          {
+            label: 'Total',
+            data: totalData,
+            backgroundColor: '#f9b02b',
+            hoverBackgroundColor: '#eda11c',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 21,
+            categoryPercentage: 0.62,
+            barPercentage: 0.72,
+          }
+        ]
+      });
+    } catch (error) {
+      console.error('Error loading daily statistics:', error);
     }
   };
 
@@ -688,26 +783,24 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Production Charts: Harian (kiri) & Mingguan (kanan) */}
+        {/* Production Charts: Harian (kiri) & Mingguan (kanan) - keduanya bentuk grafik bar */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-          {/* Daily Production Donut Chart */}
+          {/* Daily Production Bar Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
             <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
             <div className="relative flex justify-between items-start mb-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  <i className="fas fa-egg"></i>
+                  <i className="fas fa-chart-bar"></i>
                   <span>Produksi Telur Harian</span>
                 </div>
-                <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">
-                  Ringkasan Hari Ini
-                </h3>
-                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{formatDateForDisplay(activeDate)}</p>
+                <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi Hari Ini</h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan per jam ({formatDateForDisplay(activeDate)})</p>
               </div>
               <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">Harian</span>
             </div>
 
-            {/* Legend */}
+            {/* Chart Legend */}
             <div className="relative flex justify-center gap-5 mb-4">
               <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
                 <span className="w-2 h-2 rounded-full bg-[#2b2796]"></span>
@@ -717,14 +810,17 @@ const Dashboard = () => {
                 <span className="w-2 h-2 rounded-full bg-[#f4536a]"></span>
                 Telur Jelek
               </div>
+              <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400 font-medium">
+                <span className="w-2 h-2 rounded-full bg-[#f9b02b]"></span>
+                Total
+              </div>
             </div>
 
             <div className="relative h-56 md:h-72">
-              <Doughnut
-                data={donutData}
+              <Bar
+                data={dailyData}
                 options={{
                   maintainAspectRatio: false,
-                  cutout: '72%',
                   plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -737,37 +833,25 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          const value = context.raw || 0;
-                          const total = context.dataset.data.reduce((a, b) => a + b, 0) || 1;
-                          const pct = ((value / total) * 100).toFixed(1);
-                          return `${context.label}: ${value} (${pct}%)`;
+                          return `${context.dataset.label}: ${context.raw}`;
                         }
                       }
+                    }
+                  },
+                  scales: {
+                    y: {
+                      beginAtZero: true,
+                      grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
+                      ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
+                      maxTicksLimit: 5
+                    },
+                    x: {
+                      grid: { display: false },
+                      ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                     }
                   }
                 }}
               />
-              {/* Center total */}
-              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                <span className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
-                  {donutStats.totalEggs}
-                </span>
-                <span className="text-xs text-gray-500 dark:text-gray-400">Total Telur</span>
-              </div>
-            </div>
-
-            {/* Footer stats */}
-            <div className="relative grid grid-cols-2 gap-3 mt-5">
-              <div className="rounded-xl bg-gray-50 dark:bg-gray-750 p-3 text-center">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Telur Bagus</p>
-                <p className="text-lg font-bold text-[#2b2796] dark:text-indigo-300">{donutStats.goodEggs}</p>
-                <p className="text-[11px] text-gray-400">{formatPercentage(donutStats.goodPercentage, 1)}%</p>
-              </div>
-              <div className="rounded-xl bg-gray-50 dark:bg-gray-750 p-3 text-center">
-                <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">Telur Jelek</p>
-                <p className="text-lg font-bold text-[#f4536a]">{donutStats.badEggs}</p>
-                <p className="text-[11px] text-gray-400">{formatPercentage((donutStats.badEggs / (donutStats.totalEggs || 1)) * 100, 1)}%</p>
-              </div>
             </div>
           </div>
 
