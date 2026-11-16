@@ -83,18 +83,23 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
 
         {/* Header with Logo — tinggi diselaraskan dengan top bar di Layout (h-20) */}
         <div className="h-20 px-4 flex items-center justify-between border-b border-white/20 bg-white/5 shrink-0 overflow-hidden">
-          <div className="flex-1 flex justify-center items-center">
-            <div className="h-12 w-auto flex items-center justify-center">
+          <div className={`flex-1 flex items-center ${collapsed ? 'justify-center' : 'justify-start gap-3 pl-2'}`}>
+            <div className="h-11 w-11 flex items-center justify-center shrink-0">
               <img
                 src={logo2}
                 alt="GardaOva Logo"
-                className={`h-full w-auto object-contain transition-all duration-300 ${collapsed ? 'max-w-[40px]' : ''}`}
+                className="h-full w-auto object-contain transition-all duration-300"
               />
             </div>
+            {!collapsed && (
+              <span className="text-xl font-extrabold tracking-wider text-white select-none">
+                GardaOva
+              </span>
+            )}
           </div>
           <button
             onClick={onClose}
-            className="lg:hidden text-white hover:text-gray-200 p-1 rounded-lg hover:bg-white/10 transition-colors"
+            className="lg:hidden text-white hover:text-gray-200 p-1.5 rounded-lg hover:bg-white/10 transition-colors"
           >
             <i className="fas fa-times text-lg"></i>
           </button>
@@ -117,7 +122,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
             {!collapsed && (
               <div className="ml-3 truncate">
                 <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-                <p className="text-xs text-blue-100 capitalize truncate">{user?.role}</p>
+                <p className="text-xs text-white/90 capitalize truncate">{user?.role}</p>
               </div>
             )}
           </div>
@@ -126,7 +131,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
         {/* Navigation */}
         <nav className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
           {!collapsed && (
-            <div className="text-xs font-semibold text-blue-100/80 uppercase tracking-wider mb-2 px-3">
+            <div className="text-xs font-bold text-white uppercase tracking-wider mb-2 px-3">
               Menu Utama
             </div>
           )}
@@ -141,16 +146,16 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
                     title={collapsed ? item.name : ''}
                     className={`flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 rounded-lg transition-all duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white btn-press ripple-effect ${isActive
                       ? 'bg-white text-blue-600 font-semibold shadow-md border-r-0'
-                      : 'text-white/85 hover:bg-white/15 hover:text-white'
+                      : 'text-white hover:bg-white/15 hover:text-white'
                       }`}
                   >
-                    <i className={`${item.icon} w-5 text-center shrink-0 transition-colors ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'} ${isActive ? 'text-blue-600' : 'text-blue-100 group-hover:text-white'
+                    <i className={`${item.icon} w-5 text-center shrink-0 transition-colors ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'} ${isActive ? 'text-blue-600' : 'text-white'
                       }`}></i>
                     {!collapsed && (
                       <>
-                        <span className="font-medium text-sm leading-normal truncate">{item.name}</span>
+                        <span className="font-medium text-sm leading-normal truncate text-white">{item.name}</span>
                         {item.superAdminOnly && (
-                          <span className="ml-auto text-xs bg-white/20 text-white px-2 py-1 rounded-full shrink-0">
+                          <span className="ml-auto text-xs bg-white/25 text-white font-medium px-2 py-0.5 rounded-full shrink-0">
                             Super
                           </span>
                         )}
@@ -166,17 +171,17 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
         {/* Logout Button */}
         <div className={`p-3 border-t border-white/20 bg-white/5 ${collapsed ? 'lg:px-2' : ''}`}>
           {!collapsed && (
-            <div className="text-xs font-semibold text-blue-100/80 uppercase tracking-wider mb-2 px-3">
+            <div className="text-xs font-bold text-white uppercase tracking-wider mb-2 px-3">
               Akun
             </div>
           )}
           <button
             onClick={() => setShowLogoutModal(true)}
             title={collapsed ? 'Logout' : ''}
-            className={`w-full flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 text-red-200 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 btn-press`}
+            className={`w-full flex items-center ${collapsed ? 'lg:justify-center lg:px-2' : 'px-3'} py-2.5 text-white hover:bg-white/15 rounded-lg transition-colors duration-200 group focus:outline-none focus-visible:ring-2 focus-visible:ring-white btn-press`}
           >
-            <i className={`fas fa-sign-out-alt w-5 text-center shrink-0 ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'}`}></i>
-            {!collapsed && <span className="font-medium text-sm leading-normal">Logout</span>}
+            <i className={`fas fa-sign-out-alt w-5 text-center shrink-0 text-white ${collapsed ? 'lg:mr-0 mr-3' : 'mr-3'}`}></i>
+            {!collapsed && <span className="font-medium text-sm leading-normal text-white">Logout</span>}
           </button>
         </div>
       </div>
