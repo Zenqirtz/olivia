@@ -518,9 +518,10 @@ const Dashboard = () => {
 
 
         {/* Metric Cards (4 cards with circular rings) */}
-        <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
+        <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
           {/* Total Telur */}
-          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
                 <i className="fas fa-egg text-lg"></i>
@@ -537,22 +538,24 @@ const Dashboard = () => {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Total Telur Hari Ini</p>
           </div>
 
-          {/* Telur Bagus — highlighted active card like reference */}
-          <div className="group bg-[#2b2796] dark:bg-[#252075] text-white rounded-2xl p-5 shadow-lg shadow-indigo-900/20 border border-indigo-400/20 transition-all hover:shadow-indigo-500/25 animate-fade-in-up delay-100">
+          {/* Telur Bagus */}
+          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
+            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
             <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-indigo-200/20 flex items-center justify-center text-indigo-100 border border-indigo-400/30">
+              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
                 <i className="fas fa-check-circle text-lg"></i>
               </div>
-              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-white/10 text-white backdrop-blur-sm">
+              <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
                 {formatPercentage(dashboardStats.goodPercentage, 1)}%
               </span>
             </div>
-            <GaugeRing value={dashboardStats.goodPercentage} color="#60a5fa" label={dashboardStats.goodEggs} size={48} />
-            <p className="text-xs text-indigo-200 mt-3">Telur Bagus</p>
+            <GaugeRing value={dashboardStats.goodPercentage} color="#3b82f6" label={dashboardStats.goodEggs} size={48} />
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Telur Bagus</p>
           </div>
 
           {/* Telur Jelek */}
-          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+          <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+            <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
             <div className="flex items-center justify-between mb-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400">
                 <i className="fas fa-times-circle text-lg"></i>
@@ -563,21 +566,6 @@ const Dashboard = () => {
             </div>
             <GaugeRing value={formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)} color="#f4536a" label={dashboardStats.badEggs} size={48} />
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Telur Jelek</p>
-          </div>
-
-          {/* Akurasi / Status Sistem */}
-          <div className="group bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-200">
-            <div className="flex items-center justify-between mb-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                <i className="fas fa-shield-halved text-lg"></i>
-              </div>
-              <span className="flex items-center gap-1.5 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-500 active-dot"></span>
-                Aman
-              </span>
-            </div>
-            <GaugeRing value={98} color="#34d399" label="98%" size={48} />
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-3">Akurasi Sistem</p>
           </div>
         </div>
 
