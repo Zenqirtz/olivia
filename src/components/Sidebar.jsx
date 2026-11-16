@@ -105,29 +105,6 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
           </button>
         </div>
 
-        {/* User Info */}
-        <div className={`px-4 py-3 border-b border-white/20 bg-white/5 transition-all ${collapsed ? 'lg:px-2' : ''}`}>
-          <div className={`flex items-center ${collapsed ? 'lg:justify-center' : ''}`}>
-            <div
-              onClick={goToSettings}
-              className="w-10 h-10 shrink-0 bg-white/20 border border-white/30 rounded-full flex items-center justify-center text-white font-medium overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
-              title={collapsed ? `${user?.name} (${user?.role})` : 'Edit Profile'}
-            >
-              {user?.avatar_url ? (
-                <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
-              ) : (
-                user?.name?.charAt(0)?.toUpperCase() || 'U'
-              )}
-            </div>
-            {!collapsed && (
-              <div className="ml-3 truncate">
-                <p className="text-sm font-medium text-white truncate">{user?.name}</p>
-                <p className="text-xs text-white/90 capitalize truncate">{user?.role}</p>
-              </div>
-            )}
-          </div>
-        </div>
-
         {/* Navigation */}
         <nav className="flex-1 p-3 overflow-y-auto overflow-x-hidden">
           {!collapsed && (
@@ -168,13 +145,30 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
           </ul>
         </nav>
 
-        {/* Logout Button */}
-        <div className={`p-3 border-t border-white/20 bg-white/5 ${collapsed ? 'lg:px-2' : ''}`}>
-          {!collapsed && (
-            <div className="text-xs font-bold text-white uppercase tracking-wider mb-2 px-3">
-              Akun
+        {/* Footer: User Profile + Logout */}
+        <div className={`p-3 border-t border-white/20 bg-white/5 space-y-2 shrink-0 ${collapsed ? 'lg:px-2' : ''}`}>
+          {/* User Info */}
+          <div
+            onClick={goToSettings}
+            className={`flex items-center p-2 rounded-xl hover:bg-white/10 cursor-pointer transition-colors ${collapsed ? 'lg:justify-center' : ''}`}
+            title={collapsed ? `${user?.name} (${user?.role})` : 'Edit Profil'}
+          >
+            <div className="w-10 h-10 shrink-0 bg-white/20 border border-white/30 rounded-full flex items-center justify-center text-white font-medium overflow-hidden">
+              {user?.avatar_url ? (
+                <img src={user.avatar_url} alt="Avatar" className="w-full h-full object-cover" />
+              ) : (
+                user?.name?.charAt(0)?.toUpperCase() || 'U'
+              )}
             </div>
-          )}
+            {!collapsed && (
+              <div className="ml-3 truncate flex-1 min-w-0">
+                <p className="text-sm font-semibold text-white truncate">{user?.name}</p>
+                <p className="text-xs text-white/80 capitalize truncate">{user?.role}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Logout Button */}
           <button
             onClick={() => setShowLogoutModal(true)}
             title={collapsed ? 'Logout' : ''}
