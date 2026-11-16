@@ -468,39 +468,32 @@ const Dashboard = () => {
 
   return (
     <div className="max-w-7xl mx-auto page-enter space-y-6 md:space-y-8">
-      {/* Top Navigation Bar */}
-      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-0 rounded-3xl bg-[#f4f6fb] dark:bg-gray-800 p-4 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up">
-        <div className="relative w-full lg:w-auto flex items-center gap-2">
-          <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-            <i className="fas fa-search text-gray-400 text-sm"></i>
-          </div>
-          <input
-            type="text"
-            placeholder="Cari data, tanggal, sensor..."
-            className="w-full lg:w-64 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-          />
-        </div>
-        <div className="flex items-center gap-4 text-gray-500 dark:text-gray-400">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-gray-900 dark:text-white">
-              {new Date().toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-            </p>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}</p>
-          </div>
-          <div className="hidden lg:flex items-center gap-2">
-            <button className="p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-              <i className="fas fa-bell text-lg"></i>
-            </button>
-            <button className="p-2 rounded-lg bg-white dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">
-              <i className="fas fa-comment text-lg"></i>
-            </button>
-            <div className="relative group">
-              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold cursor-pointer group-hover:scale-105 transition-transform">
-                {user?.name?.charAt(0)?.toUpperCase() || 'U'}
-              </div>
-              <div className="absolute -right-1 -top-1 w-2 h-2 rounded-full bg-blue-500 ring-2 ring-[#f4f6fb] dark:ring-gray-800"></div>
+      {/* Welcome Card moved to top position */}
+      <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up">
+        <div className="flex items-center justify-between mb-5">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
+              <i className="fas fa-user text-base"></i>
+            </div>
+            <div className="text-left min-w-0">
+              <p className="text-xs text-gray-500 dark:text-gray-400">Hai, kembali lagi</p>
+              <h3 className="font-semibold text-base text-gray-900 dark:text-white truncate">{user?.name || 'Peternak'}</h3>
             </div>
           </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <button className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" aria-label="Notifikasi">
+              <i className="fas fa-bell text-sm"></i>
+            </button>
+            <button className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" aria-label="Pesan">
+              <i className="fas fa-comment text-sm"></i>
+            </button>
+          </div>
+        </div>
+        <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 shadow-lg shadow-blue-500/25 overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mt-4 -mr-4 pointer-events-none"></div>
+          <p className="text-xs text-blue-100 font-medium mb-1 relative">Selamat datang di Olivia</p>
+          <h2 className="text-xl md:text-2xl font-bold text-white mb-1 relative">Sistem monitoring kandang siap digunakan</h2>
+          <p className="text-xs text-blue-100/80 relative">Pantau suhu, kelembapan, dan amonia secara real-time melalui dashboard ini.</p>
         </div>
       </div>
 
@@ -523,10 +516,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      {/* Main dashboard: metrics and monitoring on left, quick panels on right */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-      {/* Left Column */}
-      <div className="lg:col-span-8 space-y-6 md:space-y-8">
+
         {/* Metric Cards (4 cards with circular rings) */}
         <div className={`grid grid-cols-2 sm:grid-cols-4 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
           {/* Total Telur */}
@@ -592,9 +582,9 @@ const Dashboard = () => {
         </div>
 
         {/* Sensors Row */}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Left stacked sensor cards */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="space-y-4">
             {/* Suhu Kandang */}
             <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 group relative overflow-hidden animate-fade-in-up delay-250">
               <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 dark:bg-orange-900/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
@@ -648,7 +638,7 @@ const Dashboard = () => {
           </div>
 
           {/* Amonia Arc Gauge */}
-          <div className="lg:col-span-2 bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden animate-fade-in-up delay-350">
+          <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 relative overflow-hidden animate-fade-in-up delay-350">
             <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-50 dark:bg-emerald-900/10 rounded-bl-full -mt-6 -mr-6 z-0"></div>
             <div className="flex flex-col items-center justify-center h-full">
               <div className="flex flex-col items-center gap-1">
@@ -830,109 +820,6 @@ const Dashboard = () => {
             </table>
           </div>
         </div>
-      </div>
-
-      {/* Right Widget Panel */}
-      <div className="lg:col-span-4 space-y-6">
-        {/* Welcome Card */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-500">
-          <div className="flex items-center justify-between mb-5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                <i className="fas fa-user text-sm"></i>
-              </div>
-              <div className="text-left">
-                <p className="text-xs text-gray-500 dark:text-gray-400">Hai, kembali lagi</p>
-                <h3 className="font-semibold text-base text-gray-900 dark:text-white">
-                  {user?.name || 'Peternak'}
-                </h3>
-              </div>
-            </div>
-            <div className="flex items-center gap-2">
-              <button className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
-                <i className="fas fa-bell text-xs"></i>
-              </button>
-              <button className="w-8 h-8 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors">
-                <i className="fas fa-comment text-xs"></i>
-              </button>
-            </div>
-          </div>
-          <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 shadow-lg shadow-blue-500/25 overflow-hidden relative group">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mt-4 -mr-4 z-0"></div>
-            <p className="text-xs text-blue-100 font-medium mb-1">Selamat datang di Olivia</p>
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Sistem monitoring kandang siap digunakan</h2>
-            <p className="text-xs text-blue-100/80">Pantau suhu, kelembapan, dan amonia secara real-time melalui dashboard ini.</p>
-          </div>
-        </div>
-
-        {/* My Devices */}
-        <div className="bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-550">
-          <div className="flex justify-between items-center mb-5">
-            <div className="flex flex-col gap-0">
-              <p className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Perangkat Pintar</p>
-              <h3 className="font-semibold text-base text-gray-900 dark:text-white">My Devices</h3>
-            </div>
-            <button className="text-xs font-medium text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
-              <i className="fas fa-ellipsis text-xs"></i>
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {/* AC / Exhaust Fan */}
-            <div className="bg-red-50 dark:bg-red-900/20 rounded-2xl p-4 border border-red-100/50 dark:border-red-900/30 flex flex-col items-center justify-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-800/30 flex items-center justify-center text-red-600 dark:text-red-400 shadow-sm">
-                <i className="fas fa-fan"></i>
-              </div>
-              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Exhaust Fan</h4>
-              <p className="text-[10px] text-red-600 dark:text-red-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Aktif
-              </p>
-            </div>
-            {/* Gateway IoT */}
-            <div className="bg-emerald-50 dark:bg-emerald-900/20 rounded-2xl p-4 border border-emerald-100/50 dark:border-emerald-900/30 flex flex-col items-center justify-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-800/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 shadow-sm">
-                <i className="fas fa-wifi"></i>
-              </div>
-              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Gateway IoT</h4>
-              <p className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Online
-              </p>
-            </div>
-            {/* Konveyor Telur */}
-            <div className="bg-amber-50 dark:bg-amber-900/20 rounded-2xl p-4 border border-amber-100/50 dark:border-amber-900/30 flex flex-col items-center justify-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-800/30 flex items-center justify-center text-amber-600 dark:text-amber-400 shadow-sm">
-                <i className="fas fa-conveyor-belt-alt"></i>
-              </div>
-              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Konveyor Telur</h4>
-              <p className="text-[10px] text-amber-600 dark:text-amber-400 font-medium">Standby</p>
-            </div>
-            {/* Kamera AI Scanner */}
-            <div className="bg-sky-50 dark:bg-sky-900/20 rounded-2xl p-4 border border-sky-100/50 dark:border-sky-900/30 flex flex-col items-center justify-center gap-2">
-              <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-800/30 flex items-center justify-center text-sky-600 dark:text-sky-400 shadow-sm">
-                <i className="fas fa-microchip"></i>
-              </div>
-              <h4 className="text-xs font-semibold text-gray-900 dark:text-white">Kamera AI</h4>
-              <p className="text-[10px] text-sky-600 dark:text-sky-400 font-medium">Siap</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Info / Illustration placeholder */}
-        <div className="bg-blue-50 dark:bg-blue-900/20 rounded-3xl p-5 md:p-6 border border-blue-100/50 dark:border-blue-900/20 animate-fade-in-up delay-600">
-          <div className="flex flex-col items-center gap-3 text-center">
-            <div className="w-16 h-16 rounded-full bg-white shadow-lg flex items-center justify-center text-blue-600">
-              <i className="fas fa-chicken text-2xl"></i>
-            </div>
-            <h3 className="font-semibold text-base text-gray-900 dark:text-white">Olivia Farm Monitor</h3>
-            <p className="text-xs text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-              Pantau kondisi kandang dan produksi telur secara real-time dari dashboard Olivia.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      </div>
     </div>
   );
 };
