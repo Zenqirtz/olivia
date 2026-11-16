@@ -14,7 +14,22 @@ const Layout = ({ children }) => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [latestSensor, setLatestSensor] = useState(null);
   const [hasNotified, setHasNotified] = useState(false);
-  const [alertDismissed, setAlertDismissed] = useState(false);
+  const [alertDismissed, setAlertDismissed] = useState(() => {
+    try {
+      return localStorage.getItem('ammonia_alert_dismissed') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
+  const dismissAlert = () => {
+    setAlertDismissed(true);
+    try {
+      localStorage.setItem('ammonia_alert_dismissed', 'true');
+    } catch (e) {
+      console.error('Failed to store alert dismissal:', e);
+    }
+  };
 
   useEffect(() => {
     const fetchLatestSensor = async () => {
@@ -58,6 +73,11 @@ const Layout = ({ children }) => {
     } else {
       setHasNotified(false);
       setAlertDismissed(false);
+      try {
+        localStorage.removeItem('ammonia_alert_dismissed');
+      } catch (e) {
+        console.error('Failed to clear alert dismissal:', e);
+      }
     }
   }, [latestSensor, hasNotified]);
 
@@ -178,7 +198,7 @@ const Layout = ({ children }) => {
 
               <button
                 type="button"
-                onClick={() => setAlertDismissed(true)}
+                onClick={dismissAlert}
                 aria-label="Tutup peringatan kritis"
                 title="Tutup peringatan"
                 className="shrink-0 w-8 h-8 flex items-center justify-center rounded-full text-white hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-white transition-colors"
