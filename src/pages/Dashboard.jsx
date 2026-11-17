@@ -33,13 +33,31 @@ const Dashboard = () => {
     labels: [],
     datasets: [
       {
+        label: 'Telur Bagus',
+        data: [],
+        backgroundColor: '#22c55e',
+        hoverBackgroundColor: '#16a34a',
+        borderRadius: 6,
+        borderSkipped: false,
+        maxBarThickness: 18,
+      },
+      {
+        label: 'Telur Jelek',
+        data: [],
+        backgroundColor: '#f4536a',
+        hoverBackgroundColor: '#e8384f',
+        borderRadius: 6,
+        borderSkipped: false,
+        maxBarThickness: 18,
+      },
+      {
         label: 'Total Produksi',
         data: [],
         backgroundColor: '#3b82f6',
         hoverBackgroundColor: '#2563eb',
-        borderRadius: 8,
+        borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 32,
+        maxBarThickness: 18,
       }
     ]
   });
@@ -79,18 +97,36 @@ const Dashboard = () => {
     goodPercentage: 0,
   });
 
-  // State untuk grafik produksi harian (per jam) - 1 bar per jam dengan rincian saat di-inspect
+  // State untuk grafik produksi harian (per jam) - 3 bar (hijau = bagus, merah = jelek, biru = total)
   const [dailyData, setDailyData] = useState({
     labels: [],
     datasets: [
+      {
+        label: 'Telur Bagus',
+        data: [],
+        backgroundColor: '#22c55e',
+        hoverBackgroundColor: '#16a34a',
+        borderRadius: 6,
+        borderSkipped: false,
+        maxBarThickness: 18,
+      },
+      {
+        label: 'Telur Jelek',
+        data: [],
+        backgroundColor: '#f4536a',
+        hoverBackgroundColor: '#e8384f',
+        borderRadius: 6,
+        borderSkipped: false,
+        maxBarThickness: 18,
+      },
       {
         label: 'Total Produksi',
         data: [],
         backgroundColor: '#3b82f6',
         hoverBackgroundColor: '#2563eb',
-        borderRadius: 8,
+        borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 32,
+        maxBarThickness: 18,
       }
     ]
   });
@@ -348,13 +384,31 @@ const Dashboard = () => {
         labels: labels,
         datasets: [
           {
+            label: 'Telur Bagus',
+            data: goodEggsData,
+            backgroundColor: '#22c55e',
+            hoverBackgroundColor: '#16a34a',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 18,
+          },
+          {
+            label: 'Telur Jelek',
+            data: badEggsData,
+            backgroundColor: '#f4536a',
+            hoverBackgroundColor: '#e8384f',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 18,
+          },
+          {
             label: 'Total Produksi',
             data: totalData,
             backgroundColor: '#3b82f6',
             hoverBackgroundColor: '#2563eb',
-            borderRadius: 8,
+            borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 32,
+            maxBarThickness: 18,
           }
         ]
       });
@@ -364,7 +418,7 @@ const Dashboard = () => {
     }
   };
 
-  // Load daily statistics per hour block (single bar per block with detailed breakdown on hover/inspect)
+  // Load daily statistics per hour block (3 bars per block: hijau = bagus, merah = jelek, biru = total)
   const loadDailyStatistics = async () => {
     try {
       const hourBlocks = [
@@ -409,13 +463,31 @@ const Dashboard = () => {
         labels: hourBlocks.map(b => b.label),
         datasets: [
           {
+            label: 'Telur Bagus',
+            data: goodData,
+            backgroundColor: '#22c55e',
+            hoverBackgroundColor: '#16a34a',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 18,
+          },
+          {
+            label: 'Telur Jelek',
+            data: badData,
+            backgroundColor: '#f4536a',
+            hoverBackgroundColor: '#e8384f',
+            borderRadius: 6,
+            borderSkipped: false,
+            maxBarThickness: 18,
+          },
+          {
             label: 'Total Produksi',
             data: totalData,
             backgroundColor: '#3b82f6',
             hoverBackgroundColor: '#2563eb',
-            borderRadius: 8,
+            borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 32,
+            maxBarThickness: 18,
           }
         ]
       });
@@ -678,13 +750,6 @@ const Dashboard = () => {
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Suhu Kandang</h4>
                   </div>
                 </div>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
-                  latestSensor && latestSensor.temperature >= 25 && latestSensor.temperature <= 33
-                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800'
-                    : 'bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 border-orange-100 dark:border-orange-800'
-                }`}>
-                  {latestSensor && latestSensor.temperature >= 25 && latestSensor.temperature <= 33 ? 'Optimal' : 'Perhatian'}
-                </span>
               </div>
               <div className="relative flex items-end justify-between pt-1">
                 <div>
@@ -713,13 +778,6 @@ const Dashboard = () => {
                     <h4 className="text-sm font-semibold text-gray-900 dark:text-white">Kelembapan Udara</h4>
                   </div>
                 </div>
-                <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
-                  latestSensor && latestSensor.humidity >= 50 && latestSensor.humidity <= 75
-                    ? 'bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border-emerald-100 dark:border-emerald-800'
-                    : 'bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-100 dark:border-blue-800'
-                }`}>
-                  {latestSensor && latestSensor.humidity >= 50 && latestSensor.humidity <= 75 ? 'Optimal' : 'Normal'}
-                </span>
               </div>
               <div className="relative flex items-end justify-between pt-1">
                 <div>
@@ -791,7 +849,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Production Charts: single bar per time period, details available on hover */}
+        {/* Production Charts: three color-coded bars per time period */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {/* Daily Production Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
@@ -808,10 +866,11 @@ const Dashboard = () => {
               <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Harian</span>
             </div>
 
-            <div className="relative flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4 px-1">
-              <div className="flex items-center gap-2 font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                <span className="text-gray-700 dark:text-gray-300">Total Produksi</span>
+            <div className="relative flex flex-wrap items-center justify-between gap-3 text-xs mb-4 px-1">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-medium">
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>Telur Bagus</span>
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-[#f4536a]"></span>Telur Jelek</span>
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Total</span>
               </div>
               <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
@@ -829,7 +888,7 @@ const Dashboard = () => {
                     tooltip: {
                       mode: 'index',
                       intersect: false,
-                      displayColors: false,
+                      displayColors: true,
                       backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                       titleColor: isDarkMode ? '#f3f4f6' : '#111827',
                       bodyColor: isDarkMode ? '#d1d5db' : '#374151',
@@ -839,12 +898,7 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          const index = context.dataIndex;
-                          return [
-                            `Telur Bagus: ${dailyDetails.good[index] || 0}`,
-                            `Telur Jelek: ${dailyDetails.bad[index] || 0}`,
-                            `Total: ${dailyDetails.total[index] || 0}`
-                          ];
+                          return ` ${context.dataset.label}: ${context.raw}`;
                         }
                       }
                     }
@@ -881,10 +935,11 @@ const Dashboard = () => {
               <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Mingguan</span>
             </div>
 
-            <div className="relative flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-4 px-1">
-              <div className="flex items-center gap-2 font-medium">
-                <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
-                <span className="text-gray-700 dark:text-gray-300">Total Produksi</span>
+            <div className="relative flex flex-wrap items-center justify-between gap-3 text-xs mb-4 px-1">
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-medium">
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-green-500"></span>Telur Bagus</span>
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-[#f4536a]"></span>Telur Jelek</span>
+                <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Total</span>
               </div>
               <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
@@ -902,7 +957,7 @@ const Dashboard = () => {
                     tooltip: {
                       mode: 'index',
                       intersect: false,
-                      displayColors: false,
+                      displayColors: true,
                       backgroundColor: isDarkMode ? '#1f2937' : '#ffffff',
                       titleColor: isDarkMode ? '#f3f4f6' : '#111827',
                       bodyColor: isDarkMode ? '#d1d5db' : '#374151',
@@ -912,12 +967,7 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          const index = context.dataIndex;
-                          return [
-                            `Telur Bagus: ${weeklyDetails.good[index] || 0}`,
-                            `Telur Jelek: ${weeklyDetails.bad[index] || 0}`,
-                            `Total: ${weeklyDetails.total[index] || 0}`
-                          ];
+                          return ` ${context.dataset.label}: ${context.raw}`;
                         }
                       }
                     }
