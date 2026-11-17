@@ -39,7 +39,8 @@ const Dashboard = () => {
         hoverBackgroundColor: '#16a34a',
         borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 18,
+        maxBarThickness: 34,
+        stack: 'eggs',
       },
       {
         label: 'Telur Jelek',
@@ -48,16 +49,25 @@ const Dashboard = () => {
         hoverBackgroundColor: '#e8384f',
         borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 18,
+        maxBarThickness: 34,
+        stack: 'eggs',
       },
       {
+        type: 'line',
         label: 'Total Produksi',
         data: [],
+        borderColor: '#3b82f6',
         backgroundColor: '#3b82f6',
-        hoverBackgroundColor: '#2563eb',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 18,
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0,
+        fill: false,
+        stack: 'total',
+        order: 0,
       }
     ]
   });
@@ -97,7 +107,7 @@ const Dashboard = () => {
     goodPercentage: 0,
   });
 
-  // State untuk grafik produksi harian (per jam) - 3 bar (hijau = bagus, merah = jelek, biru = total)
+  // State untuk grafik produksi harian (per jam) - 1 bar bertumpuk (hijau = bagus, merah = jelek, garis biru = total)
   const [dailyData, setDailyData] = useState({
     labels: [],
     datasets: [
@@ -108,7 +118,8 @@ const Dashboard = () => {
         hoverBackgroundColor: '#16a34a',
         borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 18,
+        maxBarThickness: 34,
+        stack: 'eggs',
       },
       {
         label: 'Telur Jelek',
@@ -117,16 +128,25 @@ const Dashboard = () => {
         hoverBackgroundColor: '#e8384f',
         borderRadius: 6,
         borderSkipped: false,
-        maxBarThickness: 18,
+        maxBarThickness: 34,
+        stack: 'eggs',
       },
       {
+        type: 'line',
         label: 'Total Produksi',
         data: [],
+        borderColor: '#3b82f6',
         backgroundColor: '#3b82f6',
-        hoverBackgroundColor: '#2563eb',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 18,
+        pointBackgroundColor: '#3b82f6',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0,
+        fill: false,
+        stack: 'total',
+        order: 0,
       }
     ]
   });
@@ -390,7 +410,8 @@ const Dashboard = () => {
             hoverBackgroundColor: '#16a34a',
             borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 18,
+            maxBarThickness: 34,
+            stack: 'eggs',
           },
           {
             label: 'Telur Jelek',
@@ -399,16 +420,25 @@ const Dashboard = () => {
             hoverBackgroundColor: '#e8384f',
             borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 18,
+            maxBarThickness: 34,
+            stack: 'eggs',
           },
           {
+            type: 'line',
             label: 'Total Produksi',
             data: totalData,
+            borderColor: '#3b82f6',
             backgroundColor: '#3b82f6',
-            hoverBackgroundColor: '#2563eb',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 18,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0,
+            fill: false,
+            stack: 'total',
+            order: 0,
           }
         ]
       });
@@ -469,7 +499,8 @@ const Dashboard = () => {
             hoverBackgroundColor: '#16a34a',
             borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 18,
+            maxBarThickness: 34,
+            stack: 'eggs',
           },
           {
             label: 'Telur Jelek',
@@ -478,16 +509,25 @@ const Dashboard = () => {
             hoverBackgroundColor: '#e8384f',
             borderRadius: 6,
             borderSkipped: false,
-            maxBarThickness: 18,
+            maxBarThickness: 34,
+            stack: 'eggs',
           },
           {
+            type: 'line',
             label: 'Total Produksi',
             data: totalData,
+            borderColor: '#3b82f6',
             backgroundColor: '#3b82f6',
-            hoverBackgroundColor: '#2563eb',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 18,
+            pointBackgroundColor: '#3b82f6',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0,
+            fill: false,
+            stack: 'total',
+            order: 0,
           }
         ]
       });
@@ -905,12 +945,14 @@ const Dashboard = () => {
                   },
                   scales: {
                     y: {
+                      stacked: true,
                       beginAtZero: true,
                       grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
                       maxTicksLimit: 5
                     },
                     x: {
+                      stacked: true,
                       grid: { display: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                     }
@@ -974,12 +1016,14 @@ const Dashboard = () => {
                   },
                   scales: {
                     y: {
+                      stacked: true,
                       beginAtZero: true,
                       grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
                       maxTicksLimit: 5
                     },
                     x: {
+                      stacked: true,
                       grid: { display: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                     }
