@@ -50,7 +50,11 @@ const Layout = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    if (latestSensor && latestSensor.ammonia > 20) {
+    // Jangan sentuh status dismiss selama data sensor belum ada (mis. saat halaman baru dimuat/refresh).
+    // Ini yang sebelumnya bikin notif muncul lagi setelah refresh, karena latestSensor masih null.
+    if (!latestSensor) return;
+
+    if (latestSensor.ammonia > 20) {
       if (!hasNotified) {
         if ('Notification' in window) {
           if (Notification.permission === 'granted') {
@@ -72,12 +76,13 @@ const Layout = ({ children }) => {
       }
     } else {
       setHasNotified(false);
-      setAlertDismissed(false);
+      // Amonia kembali aman: reset agar peringatan bisa muncul lagi bila kadar naik.
       try {
         localStorage.removeItem('ammonia_alert_dismissed');
       } catch (e) {
         console.error('Failed to clear alert dismissal:', e);
       }
+      setAlertDismissed(false);
     }
   }, [latestSensor, hasNotified]);
 
