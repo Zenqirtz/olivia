@@ -51,10 +51,14 @@ const Layout = ({ children }) => {
 
   useEffect(() => {
     // Jangan sentuh status dismiss selama data sensor belum ada (mis. saat halaman baru dimuat/refresh).
-    // Ini yang sebelumnya bikin notif muncul lagi setelah refresh, karena latestSensor masih null.
     if (!latestSensor) return;
 
+    const isDismissed = alertDismissed || localStorage.getItem('ammonia_alert_dismissed') === 'true';
+
     if (latestSensor.ammonia > 20) {
+      // Jika peringatan sudah di-dismiss/disilang, hentikan total baik banner maupun desktop notification Chrome
+      if (isDismissed) return;
+
       if (!hasNotified) {
         if ('Notification' in window) {
           if (Notification.permission === 'granted') {
@@ -84,7 +88,7 @@ const Layout = ({ children }) => {
       }
       setAlertDismissed(false);
     }
-  }, [latestSensor, hasNotified]);
+  }, [latestSensor, hasNotified, alertDismissed]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
