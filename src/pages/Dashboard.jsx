@@ -910,8 +910,7 @@ const Dashboard = () => {
                   />
                 </svg>
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                  <span>0</span>
-                  <span>50 ppm</span>
+                  <span>Ideal: 7–13 ppm</span>
                 </div>
               </div>
             </div>
