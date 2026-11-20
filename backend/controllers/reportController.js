@@ -695,19 +695,24 @@ const generatePDFReport = async (data, reportType, period, date) => {
       // Pipe the PDF to the file
       doc.pipe(writeStream);
 
-      // Add header with title and logo
-      doc.fontSize(20).text('GardaOva IoT Monitoring', { align: 'center' });
-      doc.fontSize(16).text(getReportTypeDisplayName(reportType), { align: 'center' });
-      doc.moveDown();
-      doc.fontSize(12).text(`Periode: ${formatPeriodForDisplay(period, date)}`, { align: 'left' });
-      doc.text(`Tanggal Generate: ${new Date().toLocaleDateString('id-ID')}`, { align: 'left' });
-      doc.moveDown();
+      // ── COVER HEADER ─────────────────────────────────────────────────────────
+      const logoPath = require('path').join(__dirname, '../../public/logo2.png');
+      const headerH = 90;
+      doc.rect(0, 0, doc.page.width, headerH).fill('#1d4ed8');
+      if (require('fs').existsSync(logoPath)) {
+        doc.image(logoPath, 36, 14, { height: 62 });
+      }
+      doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(20)
+        .text('GardaOva IoT Monitoring', 110, 20, { width: doc.page.width - 150 });
+      doc.font('Helvetica').fontSize(13)
+        .text(getReportTypeDisplayName(reportType), 110, 46, { width: doc.page.width - 150 });
+      doc.font('Helvetica').fontSize(9).fillColor('#bfdbfe')
+        .text(`Periode: ${formatPeriodForDisplay(period, date)}  •  Tanggal: ${new Date().toLocaleDateString('id-ID')}`, 110, 68, { width: doc.page.width - 150 });
 
-      // Draw a line separator
-      doc.moveTo(40, doc.y)
-         .lineTo(doc.page.width - 40, doc.y)
-         .stroke();
-      doc.moveDown();
+      // Reset color dan posisi ke bawah header
+      doc.fillColor('#111827').font('Helvetica').fontSize(10);
+      doc.y = headerH + 24;
+      // ─────────────────────────────────────────────────────────────────────────
 
       // At this point, we know we have data (checked in main function)
       const reportData = data.data || [];
@@ -715,81 +720,81 @@ const generatePDFReport = async (data, reportType, period, date) => {
       // Add report content based on report type
       if (reportType === 'kualitas-telur') {
         if (reportData.length === 0) {
-          doc.fontSize(11).font('Helvetica-Oblique').text('Tidak ada data pemindaian telur untuk periode ini.', { align: 'left' });
+          doc.fontSize(11).font('Helvetica-Oblique').fillColor('#64748b')
+            .text('Tidak ada data pemindaian telur untuk periode ini.', 40, doc.y, { align: 'left' });
           doc.moveDown(2);
         } else {
-          // Table headers
-          const tableTop = doc.y + 20;
-          const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia (ppm)', 'Tanggal Scan'];
-          const columnWidths = [25, 170, 70, 90, 160];
-          
-          const drawTableHeaders = (yPos) => {
-            doc.fontSize(10).font('Helvetica-Bold');
-            let xPosition = 40;
+          const tableX = 40;
+          const tableHeaders = ['No', 'Kode Telur', 'Kualitas', 'Amonia Terdekat', 'Tanggal Scan'];
+          const columnWidths = [30, 155, 75, 100, 155];
+          const tableWidth = columnWidths.reduce((s, w) => s + w, 0);
+          const rowHeight = 22;
+
+          const drawEggTableHeaders = (yPos) => {
+            doc.save();
+            doc.rect(tableX, yPos, tableWidth, 26).fill('#eaf1ff');
+            doc.restore();
+            doc.fillColor('#1e3a8a').font('Helvetica-Bold').fontSize(9);
+            let xPosition = tableX;
             tableHeaders.forEach((header, i) => {
-              doc.text(header, xPosition, yPos, { width: columnWidths[i], align: i === 1 || i === 4 ? 'left' : 'center' });
+              doc.text(header, xPosition + 5, yPos + 9, { width: columnWidths[i] - 10, align: i === 1 || i === 4 ? 'left' : 'center' });
               xPosition += columnWidths[i];
             });
           };
 
-          drawTableHeaders(tableTop);
-          
-          // Draw table rows
-          doc.fontSize(9).font('Helvetica');
-          let yPosition = tableTop + 25;
-          
-          // Only show first 30 rows to avoid very large files
-          const displayData = reportData.slice(0, 30);
-          
-          const qualityMap = {
-            'good': 'Bagus',
-            'bad': 'Jelek',
-            'uncertain': 'Ragu-ragu'
-          };
+          doc.fillColor('#1d4ed8').font('Helvetica-Bold').fontSize(13)
+            .text('Data Kualitas Telur', 40, doc.y);
+          doc.moveDown(0.5);
+
+          const tableTop = doc.y;
+          drawEggTableHeaders(tableTop);
+
+          doc.fillColor('#111827').font('Helvetica').fontSize(8.5);
+          let yPosition = tableTop + 26;
+
+          const displayData = reportData.slice(0, 50);
+          const qualityMap = { 'good': 'Bagus', 'bad': 'Jelek', 'uncertain': 'Ragu-ragu' };
 
           displayData.forEach((item, index) => {
-            xPosition = 40;
-            
-            // No
-            doc.text(index + 1, xPosition, yPosition, { width: columnWidths[0], align: 'center' });
-            xPosition += columnWidths[0];
-            
-            // Kode Telur
-            doc.text(item.egg_code, xPosition, yPosition, { width: columnWidths[1], align: 'left' });
-            xPosition += columnWidths[1];
-            
-            // Kualitas
-            const qualityText = qualityMap[item.quality] || item.quality;
-            doc.text(qualityText, xPosition, yPosition, { width: columnWidths[2], align: 'center' });
-            xPosition += columnWidths[2];
-            
-            // Amonia
-            const ammoniaVal = item.ammonia !== null && item.ammonia !== undefined ? `${item.ammonia} ppm` : '-';
-            doc.text(ammoniaVal, xPosition, yPosition, { width: columnWidths[3], align: 'center' });
-            xPosition += columnWidths[3];
-            
-            // Tanggal Scan
-            const scanDate = new Date(item.created_at).toLocaleString('id-ID');
-            doc.text(scanDate, xPosition, yPosition, { width: columnWidths[4], align: 'left' });
-            
-            // Move to next row
-            yPosition += 20;
-            
-            // Add a new page if needed
-            if (yPosition > doc.page.height - 60) {
+            if (yPosition + rowHeight > doc.page.height - 45) {
               doc.addPage();
-              yPosition = 40;
-              drawTableHeaders(yPosition);
-              yPosition += 25;
-              doc.fontSize(9).font('Helvetica');
+              doc.y = 40;
+              drawEggTableHeaders(doc.y);
+              yPosition = doc.y + 26;
             }
+
+            if (index % 2 === 1) {
+              doc.save();
+              doc.rect(tableX, yPosition, tableWidth, rowHeight).fill('#f8fafc');
+              doc.restore();
+            }
+            doc.strokeColor('#e2e8f0').lineWidth(0.5)
+              .moveTo(tableX, yPosition + rowHeight).lineTo(tableX + tableWidth, yPosition + rowHeight).stroke();
+
+            const cells = [
+              String(index + 1),
+              item.egg_code || '-',
+              qualityMap[item.quality] || item.quality,
+              item.ammonia !== null && item.ammonia !== undefined ? `${item.ammonia} ppm` : '-',
+              item.created_at ? new Date(item.created_at).toLocaleString('id-ID') : '-'
+            ];
+            doc.fillColor('#334155');
+            let xPosition = tableX;
+            cells.forEach((val, i) => {
+              doc.text(val, xPosition + 5, yPosition + 7, {
+                width: columnWidths[i] - 10,
+                align: i === 1 || i === 4 ? 'left' : 'center',
+                lineBreak: false,
+                ellipsis: true
+              });
+              xPosition += columnWidths[i];
+            });
+            yPosition += rowHeight;
           });
-          
-          // Add summary if there are more rows
-          if (reportData.length > 30) {
-            doc.moveDown(2);
-            doc.font('Helvetica-Oblique');
-            doc.text(`* Hanya menampilkan ${displayData.length} dari total ${reportData.length} data.`, { align: 'center' });
+
+          if (reportData.length > 50) {
+            doc.moveDown(1.5).fillColor('#64748b').font('Helvetica-Oblique').fontSize(8)
+              .text(`* Hanya menampilkan ${displayData.length} dari total ${reportData.length} data.`, { align: 'center' });
           }
         }
         
@@ -875,71 +880,80 @@ const generatePDFReport = async (data, reportType, period, date) => {
         }
       }
 
-      // Add Sensor Data Section
+      // Tambahkan seluruh pembacaan sensor sebagai lampiran terstruktur.
       if (data.sensorData && data.sensorData.length > 0) {
-        if (reportData.length > 0) {
-          doc.addPage();
-        } else {
-          doc.moveDown(2);
-        }
-        
-        doc.fontSize(14).font('Helvetica-Bold').text('Data Sensor Lingkungan', { align: 'left' });
-        doc.moveDown();
+        doc.addPage();
 
         const sensorHeaders = ['No', 'Suhu (°C)', 'Kelembapan (%)', 'Amonia (ppm)', 'Waktu Perekaman'];
-        const sensorWidths = [30, 90, 110, 110, 160];
-        
-        let yPosition = doc.y;
-        
-        const drawSensorHeaders = (yPos) => {
-          doc.fontSize(10).font('Helvetica-Bold');
-          let xPosition = 40;
-          sensorHeaders.forEach((header, i) => {
-            doc.text(header, xPosition, yPos, { width: sensorWidths[i], align: i === 4 ? 'left' : 'center' });
-            xPosition += sensorWidths[i];
-          });
+        const sensorWidths = [35, 90, 110, 100, 165];
+        const tableX = 40;
+        const tableWidth = sensorWidths.reduce((sum, width) => sum + width, 0);
+        const rowHeight = 22;
+        let yPosition = 0;
+
+        const drawSensorSectionHeader = () => {
+          doc.fillColor('#1d4ed8').font('Helvetica-Bold').fontSize(17)
+            .text('Lampiran Data Sensor', tableX, 40, { width: tableWidth });
+          doc.fillColor('#64748b').font('Helvetica').fontSize(9)
+            .text(`Seluruh pembacaan sensor • ${data.sensorData.length} data • Periode: ${formatPeriodForDisplay(period, date)}`, tableX, 64, { width: tableWidth });
+          yPosition = 88;
         };
 
-        drawSensorHeaders(yPosition);
-        yPosition += 25;
-        doc.fontSize(9).font('Helvetica');
+        const drawSensorTableHeaders = () => {
+          doc.save();
+          doc.rect(tableX, yPosition, tableWidth, 25).fill('#eaf1ff');
+          doc.restore();
+          doc.fillColor('#1e3a8a').font('Helvetica-Bold').fontSize(9);
+          let xPosition = tableX;
+          sensorHeaders.forEach((header, i) => {
+            doc.text(header, xPosition + 5, yPosition + 8, {
+              width: sensorWidths[i] - 10,
+              align: i === 4 ? 'left' : 'center'
+            });
+            xPosition += sensorWidths[i];
+          });
+          yPosition += 25;
+        };
 
-        // Only show first 50 rows of sensor data to keep size reasonable
-        const displaySensor = data.sensorData.slice(0, 50);
+        drawSensorSectionHeader();
+        drawSensorTableHeaders();
 
-        displaySensor.forEach((item, index) => {
-          let xPosition = 40;
-          doc.text(index + 1, xPosition, yPosition, { width: sensorWidths[0], align: 'center' });
-          xPosition += sensorWidths[0];
-          
-          doc.text(`${item.temperature} °C`, xPosition, yPosition, { width: sensorWidths[1], align: 'center' });
-          xPosition += sensorWidths[1];
-          
-          doc.text(`${item.humidity} %`, xPosition, yPosition, { width: sensorWidths[2], align: 'center' });
-          xPosition += sensorWidths[2];
-          
-          doc.text(`${item.ammonia} ppm`, xPosition, yPosition, { width: sensorWidths[3], align: 'center' });
-          xPosition += sensorWidths[3];
-          
-          const recordedAt = new Date(item.recorded_at).toLocaleString('id-ID');
-          doc.text(recordedAt, xPosition, yPosition, { width: sensorWidths[4], align: 'left' });
-
-          yPosition += 20;
-
-          if (yPosition > doc.page.height - 60) {
+        data.sensorData.forEach((item, index) => {
+          if (yPosition + rowHeight > doc.page.height - 45) {
             doc.addPage();
-            yPosition = 40;
-            drawSensorHeaders(yPosition);
-            yPosition += 25;
-            doc.fontSize(9).font('Helvetica');
+            drawSensorSectionHeader();
+            drawSensorTableHeaders();
           }
-        });
 
-        if (data.sensorData.length > 50) {
-          doc.moveDown(2);
-          doc.font('Helvetica-Oblique');
-          doc.text(`* Hanya menampilkan ${displaySensor.length} dari total ${data.sensorData.length} data sensor.`, { align: 'center' });
-        }
+          if (index % 2 === 1) {
+            doc.save();
+            doc.rect(tableX, yPosition, tableWidth, rowHeight).fill('#f8fafc');
+            doc.restore();
+          }
+          doc.strokeColor('#e2e8f0').lineWidth(0.5)
+            .moveTo(tableX, yPosition + rowHeight).lineTo(tableX + tableWidth, yPosition + rowHeight).stroke();
+
+          const recordedAt = item.recorded_at ? new Date(item.recorded_at).toLocaleString('id-ID') : '-';
+          const values = [
+            String(index + 1),
+            `${item.temperature ?? '-'} °C`,
+            `${item.humidity ?? '-'} %`,
+            `${item.ammonia ?? '-'} ppm`,
+            recordedAt
+          ];
+          doc.fillColor('#334155').font('Helvetica').fontSize(8.5);
+          let xPosition = tableX;
+          values.forEach((value, i) => {
+            doc.text(value, xPosition + 5, yPosition + 7, {
+              width: sensorWidths[i] - 10,
+              align: i === 4 ? 'left' : 'center',
+              lineBreak: false,
+              ellipsis: true
+            });
+            xPosition += sensorWidths[i];
+          });
+          yPosition += rowHeight;
+        });
       }
       
       // Add footer with page number
