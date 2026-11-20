@@ -940,7 +940,7 @@ const Dashboard = () => {
                 <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-[#f4536a]"></span>Telur Jelek</span>
                 <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Total</span>
               </div>
-              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
+              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
                 Arahkan kursor ke kurva untuk rincian
               </span>
@@ -1010,7 +1010,7 @@ const Dashboard = () => {
                 <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-[#f4536a]"></span>Telur Jelek</span>
                 <span className="flex items-center gap-1.5 text-gray-700 dark:text-gray-300"><span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>Total</span>
               </div>
-              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
+              <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-700 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
                 Arahkan kursor ke kurva untuk rincian
               </span>
@@ -1083,7 +1083,7 @@ const Dashboard = () => {
           <div className="overflow-x-auto rounded-xl border border-gray-100 dark:border-gray-700">
             <table className="min-w-full">
               <thead>
-                <tr className="bg-gray-50 dark:bg-gray-750 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
+                <tr className="bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 border-b border-gray-100 dark:border-gray-700">
                   <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kode</th>
                   <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Kualitas</th>
                   <th className="py-3 px-4 text-left text-xs font-semibold uppercase tracking-wider">Tanggal</th>
@@ -1092,7 +1092,7 @@ const Dashboard = () => {
               <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                 {recentEggs.length > 0 ? (
                   recentEggs.map((egg, index) => (
-                    <tr key={egg.scan_id || index} className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                    <tr key={egg.scan_id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                       <td className="py-3 px-4 text-sm font-medium text-gray-900 dark:text-gray-200">{egg.egg_code}</td>
                       <td className="py-3 px-4">
                         <span className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium ${egg.quality === 'good'

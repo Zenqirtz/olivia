@@ -12,6 +12,21 @@ body {
   margin: 0;
   min-height: 100vh;
   background-color: #f8fafc;
+  transition: background-color 200ms ease, color 200ms ease;
+}
+
+html {
+  min-height: 100%;
+  background-color: #f8fafc;
+}
+
+html.dark {
+  background-color: #111827;
+}
+
+html.dark body {
+  background-color: #111827;
+  color: #f3f4f6;
 }
 
 @layer components {

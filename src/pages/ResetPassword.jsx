@@ -167,7 +167,7 @@ const ResetPassword = () => {
             <div className="space-y-6">
               <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg animate-fadeIn text-center">
                 <div className="flex justify-center mb-3">
-                  <div className="bg-green-100 dark:bg-green-950 p-3 rounded-full">
+                  <div className="bg-green-100 dark:bg-green-900/50 p-3 rounded-full">
                     <i className="fas fa-check text-green-600 dark:text-green-400 text-2xl animate-pulse"></i>
                   </div>
                 </div>

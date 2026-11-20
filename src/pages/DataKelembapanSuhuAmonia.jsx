@@ -292,11 +292,11 @@ const DataKelembapanSuhuAmonia = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Suhu Udara</span>
-                    <h3 className="text-3xl font-extrabold text-gray-850 dark:text-gray-100 mt-1">
+                    <h3 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 mt-1">
                       {latestSensor ? `${latestSensor.temperature}°C` : '--°C'}
                     </h3>
                   </div>
-                  <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-950/30 text-orange-500 dark:text-orange-400">
+                  <div className="p-3 rounded-xl bg-orange-50 dark:bg-orange-900/30 text-orange-500 dark:text-orange-400">
                     <i className="fas fa-thermometer-half text-xl animate-float"></i>
                   </div>
                 </div>
@@ -304,7 +304,7 @@ const DataKelembapanSuhuAmonia = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${status.bg}`}>
                     {status.label}
                   </span>
-                  <span className="text-xs text-gray-550 dark:text-gray-450">Aman: &lt; 30°C</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Aman: &lt; 30°C</span>
                 </div>
               </div>
             </div>
@@ -321,11 +321,11 @@ const DataKelembapanSuhuAmonia = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Kelembapan</span>
-                    <h3 className="text-3xl font-extrabold text-gray-850 dark:text-gray-100 mt-1">
+                    <h3 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 mt-1">
                       {latestSensor ? `${latestSensor.humidity}%` : '--%'}
                     </h3>
                   </div>
-                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-950/30 text-blue-500 dark:text-blue-400">
+                  <div className="p-3 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-500 dark:text-blue-400">
                     <i className="fas fa-tint text-xl animate-float"></i>
                   </div>
                 </div>
@@ -333,7 +333,7 @@ const DataKelembapanSuhuAmonia = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${status.bg}`}>
                     {status.label}
                   </span>
-                  <span className="text-xs text-gray-550 dark:text-gray-450">Aman: 60% - 70%</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Aman: 60% - 70%</span>
                 </div>
               </div>
             </div>
@@ -350,11 +350,11 @@ const DataKelembapanSuhuAmonia = () => {
                 <div className="flex justify-between items-start mb-4">
                   <div>
                     <span className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">Gas Amonia</span>
-                    <h3 className="text-3xl font-extrabold text-gray-850 dark:text-gray-100 mt-1">
+                    <h3 className="text-3xl font-extrabold text-gray-800 dark:text-gray-100 mt-1">
                       {latestSensor ? `${latestSensor.ammonia} ppm` : '-- ppm'}
                     </h3>
                   </div>
-                  <div className="p-3 rounded-xl bg-green-50 dark:bg-green-950/30 text-green-500 dark:text-green-400">
+                  <div className="p-3 rounded-xl bg-green-50 dark:bg-green-900/30 text-green-500 dark:text-green-400">
                     <i className="fas fa-wind text-xl animate-float"></i>
                   </div>
                 </div>
@@ -362,7 +362,7 @@ const DataKelembapanSuhuAmonia = () => {
                   <span className={`px-3 py-1 rounded-full text-xs font-bold ${status.bg}`}>
                     {status.label}
                   </span>
-                  <span className="text-xs text-gray-550 dark:text-gray-450">Aman: &lt; 20 ppm</span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">Aman: &lt; 20 ppm</span>
                 </div>
               </div>
             </div>
@@ -374,7 +374,7 @@ const DataKelembapanSuhuAmonia = () => {
       <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700 mb-8 card-hover-blue transition-all">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-3">
           <div>
-            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-150">Grafik Analisis Tren</h2>
+          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Grafik Analisis Tren</h2>
             <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">Pantau dinamika iklim kandang ayam secara visual</p>
           </div>
           <div className="flex gap-2">
@@ -389,7 +389,7 @@ const DataKelembapanSuhuAmonia = () => {
                 className={`px-3.5 py-1.5 rounded-xl text-sm font-medium transition-all btn-press ripple-effect ${
                   chartPeriod === key
                     ? 'bg-blue-600 dark:bg-blue-700 text-white shadow-sm'
-                    : 'bg-gray-50 dark:bg-gray-700 text-gray-650 dark:text-gray-300 border border-gray-200 dark:border-gray-650 hover:bg-gray-100 dark:hover:bg-gray-600'
+                    : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600'
                 }`}
               >
                 {label}
@@ -509,8 +509,8 @@ const DataKelembapanSuhuAmonia = () => {
         {/* Table Filter / Controls */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4 border-b border-gray-100 dark:border-gray-700/60 pb-5">
           <div>
-            <h2 className="text-lg font-bold text-gray-850 dark:text-gray-150">Riwayat Pembacaan Sensor</h2>
-            <p className="text-xs text-gray-400 dark:text-gray-550 mt-0.5">Daftar rekaman mentah sensor kandang</p>
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">Riwayat Pembacaan Sensor</h2>
+            <p className="text-xs text-gray-400 dark:text-gray-400 mt-0.5">Daftar rekaman mentah sensor kandang</p>
           </div>
           <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:flex-initial">
@@ -521,13 +521,13 @@ const DataKelembapanSuhuAmonia = () => {
                 type="date"
                 value={selectedDate}
                 onChange={handleDateChange}
-                className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-250 dark:border-gray-600 text-gray-800 dark:text-gray-150 text-sm rounded-xl pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                className="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 text-sm rounded-xl pl-9 pr-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
               />
             </div>
             {selectedDate && (
               <button
                 onClick={handleResetFilters}
-                className="text-sm px-3.5 py-2 rounded-xl border border-gray-250 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium btn-press transition-all"
+                className="text-sm px-3.5 py-2 rounded-xl border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 font-medium btn-press transition-all"
               >
                 Reset Filter
               </button>
@@ -562,7 +562,7 @@ const DataKelembapanSuhuAmonia = () => {
                     <th className="py-4 px-5 text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider text-center">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 dark:divide-gray-750 tbody-stagger">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700 tbody-stagger">
                   {logs.map((log, index) => {
                     const rowNumber = ((pagination.current_page - 1) * pagination.per_page) + index + 1;
                     const overallStat = getOverallStatus(log.temperature, log.humidity, log.ammonia);
@@ -573,24 +573,24 @@ const DataKelembapanSuhuAmonia = () => {
                     return (
                       <tr key={log.reading_id || index} className="hover:bg-blue-500/[0.02] dark:hover:bg-gray-700/25 transition-all table-row-animated">
                         <td className="py-4 px-5 font-semibold text-gray-400 dark:text-gray-500 text-sm">{rowNumber}</td>
-                        <td className="py-4 px-5 font-medium text-gray-800 dark:text-gray-250 text-sm whitespace-nowrap">
+                        <td className="py-4 px-5 font-medium text-gray-800 dark:text-gray-300 text-sm whitespace-nowrap">
                           {formatDateForDisplay(log.recorded_at)}
                         </td>
                         <td className="py-4 px-5 text-gray-600 dark:text-gray-400 text-sm whitespace-nowrap">
                           {formatTimeForDisplay(log.recorded_at)}
                         </td>
                         <td className="py-4 px-5 text-sm">
-                          <span className={tempStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-bold' : tempStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-250'}>
+                          <span className={tempStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-bold' : tempStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-300'}>
                             {log.temperature}°C
                           </span>
                         </td>
                         <td className="py-4 px-5 text-sm">
-                          <span className={humStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-bold' : humStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-250'}>
+                          <span className={humStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-bold' : humStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-300'}>
                             {log.humidity}%
                           </span>
                         </td>
                         <td className="py-4 px-5 text-sm font-medium">
-                          <span className={ammStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-extrabold animate-pulse' : ammStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-250'}>
+                          <span className={ammStat.color === 'red' ? 'text-red-500 dark:text-red-400 font-extrabold animate-pulse' : ammStat.color === 'orange' ? 'text-orange-500 dark:text-orange-400 font-semibold' : 'text-gray-800 dark:text-gray-300'}>
                             {log.ammonia} ppm
                           </span>
                         </td>
@@ -609,14 +609,14 @@ const DataKelembapanSuhuAmonia = () => {
             {/* Pagination Controls */}
             {pagination.total_pages > 1 && (
               <div className="flex flex-col sm:flex-row justify-between items-center mt-6 gap-4 pt-4 border-t border-gray-100 dark:border-gray-700/60">
-                <div className="text-xs text-gray-500 dark:text-gray-450 font-medium">
+                <div className="text-xs text-gray-500 dark:text-gray-400 font-medium">
                   Menampilkan {((pagination.current_page - 1) * pagination.per_page) + 1}-{Math.min(pagination.current_page * pagination.per_page, pagination.total_records)} dari {pagination.total_records} data sensor
                 </div>
                 <div className="flex items-center gap-1.5">
                   <button
                     disabled={!pagination.has_prev}
                     onClick={() => handlePageChange(pagination.current_page - 1)}
-                    className="px-3 py-2 border border-gray-200 dark:border-gray-600 hover:bg-gray-55 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed btn-press transition-all"
+                    className="px-3 py-2 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed btn-press transition-all"
                   >
                     <i className="fas fa-chevron-left text-xs"></i>
                   </button>
@@ -632,7 +632,7 @@ const DataKelembapanSuhuAmonia = () => {
                           className={`px-3.5 py-1.5 rounded-xl text-sm font-semibold transition-all btn-press ${
                             pageNum === pagination.current_page
                               ? 'bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-sm'
-                              : 'border border-gray-200 dark:border-gray-650 text-gray-650 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                              : 'border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
                           }`}
                         >
                           {pageNum}
@@ -647,7 +647,7 @@ const DataKelembapanSuhuAmonia = () => {
                   <button
                     disabled={!pagination.has_next}
                     onClick={() => handlePageChange(pagination.current_page + 1)}
-                    className="px-3 py-2 border border-gray-200 dark:border-gray-600 hover:bg-gray-55 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed btn-press transition-all"
+                    className="px-3 py-2 border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-xl disabled:opacity-40 disabled:cursor-not-allowed btn-press transition-all"
                   >
                     <i className="fas fa-chevron-right text-xs"></i>
                   </button>
