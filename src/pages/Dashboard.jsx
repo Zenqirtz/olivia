@@ -669,14 +669,6 @@ const Dashboard = () => {
               <h3 className="font-semibold text-base text-gray-900 dark:text-white truncate">{user?.name || 'Peternak'}</h3>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <button className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" aria-label="Notifikasi">
-              <i className="fas fa-bell text-sm"></i>
-            </button>
-            <button className="w-9 h-9 rounded-xl bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-blue-800 transition-colors" aria-label="Pesan">
-              <i className="fas fa-comment text-sm"></i>
-            </button>
-          </div>
         </div>
         <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 shadow-lg shadow-blue-500/25 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mt-4 -mr-4 pointer-events-none"></div>
@@ -711,17 +703,10 @@ const Dashboard = () => {
           {/* Total Telur */}
           <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+            <div className="relative z-10 mb-5">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-egg text-lg"></i>
               </div>
-              <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full whitespace-nowrap ${dashboardStats.trend >= 0
-                  ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300'
-                  : 'bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300'
-                }`}>
-                <i className={`fas ${dashboardStats.trend >= 0 ? 'fa-arrow-up' : 'fa-arrow-down'} text-[10px]`}></i>
-                {formatPercentage(Math.abs(dashboardStats.trend || 0))}% dari kemarin
-              </span>
             </div>
             <div className="relative z-10 flex items-end justify-between gap-3">
               <div className="min-w-0">
@@ -735,13 +720,10 @@ const Dashboard = () => {
           {/* Telur Bagus */}
           <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-blue-50 dark:bg-blue-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+            <div className="relative z-10 mb-5">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-check-circle text-lg"></i>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 whitespace-nowrap">
-                {formatPercentage(dashboardStats.goodPercentage, 1)}%
-              </span>
             </div>
             <div className="relative z-10 flex items-end justify-between gap-3">
               <div className="min-w-0">
@@ -755,13 +737,10 @@ const Dashboard = () => {
           {/* Telur Jelek */}
           <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-red-50 dark:bg-red-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center justify-between gap-3 mb-5">
+            <div className="relative z-10 mb-5">
               <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
                 <i className="fas fa-times-circle text-lg"></i>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300 whitespace-nowrap">
-                {formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 1)}%
-              </span>
             </div>
             <div className="relative z-10 flex items-end justify-between gap-3">
               <div className="min-w-0">
@@ -894,7 +873,7 @@ const Dashboard = () => {
           {/* Daily Production Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-400">
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-50/70 dark:bg-blue-900/10 rounded-full pointer-events-none"></div>
-            <div className="relative flex justify-between items-start mb-6">
+            <div className="relative mb-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
                   <i className="fas fa-chart-bar"></i>
@@ -903,7 +882,6 @@ const Dashboard = () => {
                 <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi Hari Ini</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan per jam ({formatDateForDisplay(activeDate)})</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Harian</span>
             </div>
 
             <div className="relative flex flex-wrap items-center justify-between gap-3 text-xs mb-4 px-1">
@@ -965,7 +943,7 @@ const Dashboard = () => {
           {/* Weekly Production Chart */}
           <div className="relative overflow-hidden bg-white dark:bg-gray-800 rounded-3xl p-5 md:p-6 shadow-sm border border-gray-100 dark:border-gray-700 animate-fade-in-up delay-450">
             <div className="absolute -top-12 -right-12 w-32 h-32 bg-blue-50/70 dark:bg-blue-900/10 rounded-full pointer-events-none"></div>
-            <div className="relative flex justify-between items-start mb-6">
+            <div className="relative mb-6">
               <div>
                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
                   <i className="fas fa-chart-bar"></i>
@@ -974,7 +952,6 @@ const Dashboard = () => {
                 <h3 className="font-semibold text-base text-gray-900 dark:text-gray-100">Produksi 7 Hari Terakhir</h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Perbandingan bagus, jelek, dan total</p>
               </div>
-              <span className="text-xs font-medium px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">Mingguan</span>
             </div>
 
             <div className="relative flex flex-wrap items-center justify-between gap-3 text-xs mb-4 px-1">
