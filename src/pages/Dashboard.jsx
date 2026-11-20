@@ -647,7 +647,7 @@ const Dashboard = () => {
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-[11px] font-bold text-gray-700 dark:text-gray-200">
+          <span className="text-xs font-bold text-gray-800 dark:text-gray-100">
             {label !== undefined ? label : `${Math.round(progress)}%`}
           </span>
         </div>
@@ -701,46 +701,46 @@ const Dashboard = () => {
         {/* Metric Cards */}
         <div className={`grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-70' : 'opacity-100'}`}>
           {/* Total Telur */}
-          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
+          <div className="group relative isolate flex min-h-[148px] flex-col overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-75">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-emerald-50 dark:bg-emerald-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center gap-3 mb-4">
+            <div className="relative z-10 flex min-h-10 items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-egg text-lg"></i>
               </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Telur Hari Ini</span>
+              <span className="text-sm leading-snug font-medium text-gray-600 dark:text-gray-300">Total Telur Hari Ini</span>
             </div>
-            <div className="relative z-10 flex items-end justify-between gap-3 pt-1">
-              <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.totalEggs}</p>
+            <div className="relative z-10 mt-auto flex h-14 items-center justify-between gap-3 pt-3">
+              <p className="text-4xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.totalEggs}</p>
               <GaugeRing value={Math.min(dashboardStats.totalEggs, 100)} color="#3b82f6" label={`${Math.min(dashboardStats.totalEggs, 100)}%`} size={56} />
             </div>
           </div>
 
           {/* Telur Bagus */}
-          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
+          <div className="group relative isolate flex min-h-[148px] flex-col overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-100">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-blue-50 dark:bg-blue-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center gap-3 mb-4">
+            <div className="relative z-10 flex min-h-10 items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-blue-100 dark:bg-blue-900/50 flex items-center justify-center text-blue-600 dark:text-blue-400 shrink-0">
                 <i className="fas fa-check-circle text-lg"></i>
               </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Telur Bagus</span>
+              <span className="text-sm leading-snug font-medium text-gray-600 dark:text-gray-300">Telur Bagus</span>
             </div>
-            <div className="relative z-10 flex items-end justify-between gap-3 pt-1">
-              <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.goodEggs}</p>
+            <div className="relative z-10 mt-auto flex h-14 items-center justify-between gap-3 pt-3">
+              <p className="text-4xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.goodEggs}</p>
               <GaugeRing value={dashboardStats.goodPercentage} color="#3b82f6" label={`${formatPercentage(dashboardStats.goodPercentage, 0)}%`} size={56} />
             </div>
           </div>
 
           {/* Telur Jelek */}
-          <div className="group relative isolate overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
+          <div className="group relative isolate flex min-h-[148px] flex-col overflow-hidden bg-white dark:bg-gray-800 rounded-2xl p-4 md:p-5 shadow-sm border border-gray-100 dark:border-gray-700 transition-all hover:shadow-md animate-fade-in-up delay-150">
             <div className="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-red-50 dark:bg-red-900/10 pointer-events-none"></div>
-            <div className="relative z-10 flex items-center gap-3 mb-4">
+            <div className="relative z-10 flex min-h-10 items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
                 <i className="fas fa-times-circle text-lg"></i>
               </div>
-              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Telur Jelek</span>
+              <span className="text-sm leading-snug font-medium text-gray-600 dark:text-gray-300">Telur Jelek</span>
             </div>
-            <div className="relative z-10 flex items-end justify-between gap-3 pt-1">
-              <p className="text-3xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.badEggs}</p>
+            <div className="relative z-10 mt-auto flex h-14 items-center justify-between gap-3 pt-3">
+              <p className="text-4xl font-bold leading-none tracking-tight text-gray-900 dark:text-white">{dashboardStats.badEggs}</p>
               <GaugeRing value={(dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100} color="#f4536a" label={`${formatPercentage((dashboardStats.badEggs / (dashboardStats.totalEggs || 1)) * 100, 0)}%`} size={56} />
             </div>
           </div>
