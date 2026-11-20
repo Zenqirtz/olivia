@@ -24,7 +24,7 @@ const Sidebar = ({ isOpen, onClose, collapsed }) => {
     },
     {
       path: '/data-kelembapan-suhu-amonia',
-      name: 'Data Kelembapan, Suhu, dan Amonia',
+      name: 'Data Sensor',
       icon: 'fas fa-thermometer-half',
       requiredRole: null
     },

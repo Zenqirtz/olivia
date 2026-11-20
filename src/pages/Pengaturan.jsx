@@ -619,7 +619,7 @@ const Pengaturan = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
+      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 rounded-2xl mb-6 md:mb-8 shadow-lg animate-fade-in-up">
         <div className="px-4 md:px-8 py-6 md:py-10 text-white">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Pengaturan</h1>
           <p className="text-blue-100 text-sm md:text-base">Kelola profil, akun, dan preferensi sistem Anda.</p>

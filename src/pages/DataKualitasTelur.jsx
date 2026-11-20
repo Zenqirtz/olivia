@@ -217,7 +217,7 @@ const DataKualitasTelur = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 md:p-8 page-enter">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl shadow-xl mb-6 md:mb-8 overflow-hidden animate-fade-in-up">
+      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 rounded-2xl shadow-xl mb-6 md:mb-8 overflow-hidden animate-fade-in-up">
         <div className="px-4 md:px-8 py-6 md:py-10 text-white">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Data Kualitas Telur</h1>
           <p className="text-blue-100 text-sm md:text-base">Monitoring dan analisis kualitas produksi telur</p>

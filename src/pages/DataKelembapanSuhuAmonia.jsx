@@ -249,7 +249,7 @@ const DataKelembapanSuhuAmonia = () => {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 p-4 sm:p-6 md:p-8 page-enter">
       {/* Header Section */}
-      <div className="bg-gradient-to-r from-blue-700 to-blue-800 dark:from-blue-800 dark:to-blue-900 rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in-up">
+      <div className="bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-blue-700 dark:to-indigo-800 rounded-2xl shadow-xl mb-8 overflow-hidden animate-fade-in-up">
         <div className="px-6 py-8 sm:px-8 sm:py-10 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 className="text-2xl sm:text-3xl font-bold mb-2">Data Kelembapan, Suhu, dan Amonia</h1>
