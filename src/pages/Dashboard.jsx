@@ -25,6 +25,18 @@ const Dashboard = () => {
     return isNaN(num) ? '0.0' : num.toFixed(decimals);
   };
 
+  // Helper baris tooltip live sensor kandang
+  const sensorTooltipLines = (sensor) => {
+    if (!sensor) return [];
+    return [
+      '',
+      '── Data Sensor Live ──',
+      ` Suhu: ${sensor.temperature != null ? sensor.temperature : 0} °C`,
+      ` Kelembapan: ${sensor.humidity != null ? sensor.humidity : 0} %`,
+      ` Amonia: ${sensor.ammonia != null ? sensor.ammonia : 0} ppm (${(sensor.ammonia ?? 0) <= 20 ? 'Aman' : 'Tinggi'})`
+    ];
+  };
+
   const { isDarkMode } = useTheme();
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -33,24 +45,36 @@ const Dashboard = () => {
     labels: [],
     datasets: [
       {
+        type: 'line',
         label: 'Telur Bagus',
         data: [],
+        borderColor: '#22c55e',
         backgroundColor: '#22c55e',
-        hoverBackgroundColor: '#16a34a',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 34,
-        stack: 'eggs',
+        pointBackgroundColor: '#22c55e',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0.35,
+        fill: false,
+        order: 1,
       },
       {
+        type: 'line',
         label: 'Telur Jelek',
         data: [],
+        borderColor: '#f4536a',
         backgroundColor: '#f4536a',
-        hoverBackgroundColor: '#e8384f',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 34,
-        stack: 'eggs',
+        pointBackgroundColor: '#f4536a',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0.35,
+        fill: false,
+        order: 1,
       },
       {
         type: 'line',
@@ -64,9 +88,8 @@ const Dashboard = () => {
         pointRadius: 4,
         pointHoverRadius: 6,
         borderWidth: 3,
-        tension: 0,
+        tension: 0.35,
         fill: false,
-        stack: 'total',
         order: 0,
       }
     ]
@@ -107,29 +130,41 @@ const Dashboard = () => {
     goodPercentage: 0,
   });
 
-  // State untuk grafik produksi harian (per jam) - 1 bar bertumpuk (hijau = bagus, merah = jelek, garis biru = total)
+  // State untuk grafik produksi harian (per jam) - kurva garis (hijau = bagus, merah = jelek, biru = total)
   const [dailyData, setDailyData] = useState({
     labels: [],
     datasets: [
       {
+        type: 'line',
         label: 'Telur Bagus',
         data: [],
+        borderColor: '#22c55e',
         backgroundColor: '#22c55e',
-        hoverBackgroundColor: '#16a34a',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 34,
-        stack: 'eggs',
+        pointBackgroundColor: '#22c55e',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0.35,
+        fill: false,
+        order: 1,
       },
       {
+        type: 'line',
         label: 'Telur Jelek',
         data: [],
+        borderColor: '#f4536a',
         backgroundColor: '#f4536a',
-        hoverBackgroundColor: '#e8384f',
-        borderRadius: 6,
-        borderSkipped: false,
-        maxBarThickness: 34,
-        stack: 'eggs',
+        pointBackgroundColor: '#f4536a',
+        pointBorderColor: '#ffffff',
+        pointBorderWidth: 2,
+        pointRadius: 3,
+        pointHoverRadius: 6,
+        borderWidth: 3,
+        tension: 0.35,
+        fill: false,
+        order: 1,
       },
       {
         type: 'line',
@@ -143,9 +178,8 @@ const Dashboard = () => {
         pointRadius: 4,
         pointHoverRadius: 6,
         borderWidth: 3,
-        tension: 0,
+        tension: 0.35,
         fill: false,
-        stack: 'total',
         order: 0,
       }
     ]
@@ -404,24 +438,36 @@ const Dashboard = () => {
         labels: labels,
         datasets: [
           {
+            type: 'line',
             label: 'Telur Bagus',
             data: goodEggsData,
+            borderColor: '#22c55e',
             backgroundColor: '#22c55e',
-            hoverBackgroundColor: '#16a34a',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 34,
-            stack: 'eggs',
+            pointBackgroundColor: '#22c55e',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0.35,
+            fill: false,
+            order: 1,
           },
           {
+            type: 'line',
             label: 'Telur Jelek',
             data: badEggsData,
+            borderColor: '#f4536a',
             backgroundColor: '#f4536a',
-            hoverBackgroundColor: '#e8384f',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 34,
-            stack: 'eggs',
+            pointBackgroundColor: '#f4536a',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0.35,
+            fill: false,
+            order: 1,
           },
           {
             type: 'line',
@@ -435,9 +481,8 @@ const Dashboard = () => {
             pointRadius: 4,
             pointHoverRadius: 6,
             borderWidth: 3,
-            tension: 0,
+            tension: 0.35,
             fill: false,
-            stack: 'total',
             order: 0,
           }
         ]
@@ -493,24 +538,36 @@ const Dashboard = () => {
         labels: hourBlocks.map(b => b.label),
         datasets: [
           {
+            type: 'line',
             label: 'Telur Bagus',
             data: goodData,
+            borderColor: '#22c55e',
             backgroundColor: '#22c55e',
-            hoverBackgroundColor: '#16a34a',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 34,
-            stack: 'eggs',
+            pointBackgroundColor: '#22c55e',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0.35,
+            fill: false,
+            order: 1,
           },
           {
+            type: 'line',
             label: 'Telur Jelek',
             data: badData,
+            borderColor: '#f4536a',
             backgroundColor: '#f4536a',
-            hoverBackgroundColor: '#e8384f',
-            borderRadius: 6,
-            borderSkipped: false,
-            maxBarThickness: 34,
-            stack: 'eggs',
+            pointBackgroundColor: '#f4536a',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 3,
+            pointHoverRadius: 6,
+            borderWidth: 3,
+            tension: 0.35,
+            fill: false,
+            order: 1,
           },
           {
             type: 'line',
@@ -524,9 +581,8 @@ const Dashboard = () => {
             pointRadius: 4,
             pointHoverRadius: 6,
             borderWidth: 3,
-            tension: 0,
+            tension: 0.35,
             fill: false,
-            stack: 'total',
             order: 0,
           }
         ]
@@ -886,15 +942,16 @@ const Dashboard = () => {
               </div>
               <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
-                Arahkan kursor ke bar untuk rincian
+                Arahkan kursor ke kurva untuk rincian
               </span>
             </div>
 
             <div className="relative h-56 md:h-72">
-              <Bar
+              <Line
                 data={dailyData}
                 options={{
                   maintainAspectRatio: false,
+                  interaction: { mode: 'index', intersect: false },
                   plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -910,21 +967,20 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          return ` ${context.dataset.label}: ${context.raw}`;
-                        }
+                          return ` ${context.dataset.label}: ${context.raw} butir`;
+                        },
+                        afterBody: () => sensorTooltipLines(latestSensor)
                       }
                     }
                   },
                   scales: {
                     y: {
-                      stacked: true,
                       beginAtZero: true,
                       grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
                       maxTicksLimit: 5
                     },
                     x: {
-                      stacked: true,
                       grid: { display: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                     }
@@ -956,15 +1012,16 @@ const Dashboard = () => {
               </div>
               <span className="text-[11px] text-gray-400 dark:text-gray-500 flex items-center gap-1.5 bg-gray-50 dark:bg-gray-750 px-2.5 py-1 rounded-full">
                 <i className="fas fa-info-circle text-blue-500 text-[10px]"></i>
-                Arahkan kursor ke bar untuk rincian
+                Arahkan kursor ke kurva untuk rincian
               </span>
             </div>
 
             <div className="relative h-56 md:h-72">
-              <Bar
+              <Line
                 data={weeklyData}
                 options={{
                   maintainAspectRatio: false,
+                  interaction: { mode: 'index', intersect: false },
                   plugins: {
                     legend: { display: false },
                     tooltip: {
@@ -980,21 +1037,20 @@ const Dashboard = () => {
                       cornerRadius: 8,
                       callbacks: {
                         label: function (context) {
-                          return ` ${context.dataset.label}: ${context.raw}`;
-                        }
+                          return ` ${context.dataset.label}: ${context.raw} butir`;
+                        },
+                        afterBody: () => sensorTooltipLines(latestSensor)
                       }
                     }
                   },
                   scales: {
                     y: {
-                      stacked: true,
                       beginAtZero: true,
                       grid: { color: isDarkMode ? '#374151' : '#f3f4f6', drawBorder: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 10 }, stepSize: 1 },
                       maxTicksLimit: 5
                     },
                     x: {
-                      stacked: true,
                       grid: { display: false },
                       ticks: { color: isDarkMode ? '#9ca3af' : '#6b7280', font: { size: 11 }, maxRotation: 0 }
                     }
