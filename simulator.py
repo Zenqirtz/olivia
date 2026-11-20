@@ -85,36 +85,50 @@ def run_sensor_monitoring():
     Tujuan: Monitoring kondisi lingkungan kandang saja.
     TIDAK ada hubungannya dengan klasifikasi kualitas telur.
     """
-    ammonia_state = 12.0
+    ammonia_state = 9.5
+    high_ammonia_event = 0
+    was_high = False
     step = 0
 
     while not stop_event.is_set():
         try:
             timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-            # --- Simulasi data sensor ---
-            time_factor = (step % 100) / 100.0 * 2 * math.pi
+            # --- STANDAR PETERNAKAN AYAM PETELUR (LAYER/BROILER) ---
+            # Suhu ideal: 20°C - 26°C (optimal 22°C - 24.5°C)
+            # Kelembapan ideal: 55% - 70% (optimal 60% - 65%)
+            # Kadar amonia aman: < 20 ppm (kondisi normal bersih: 7 - 13 ppm)
+            
+            time_factor = (step % 120) / 120.0 * 2 * math.pi
+            temperature = round(23.5 + math.sin(time_factor) * 1.2 + random.uniform(-0.3, 0.3), 2)
+            humidity = round(62.0 - math.sin(time_factor) * 4.0 + random.uniform(-1.5, 1.5), 2)
 
-            # Suhu berkisar antara 26°C sampai 32°C
-            temp_base = 29.0
-            temp_wave = math.sin(time_factor) * 3.0
-            temp_noise = random.uniform(-0.3, 0.3)
-            temperature = round(temp_base + temp_wave + temp_noise, 2)
-
-            # Kelembapan berkisar antara 55% sampai 75%
-            humidity_base = 65.0
-            humidity_wave = -math.sin(time_factor) * 10.0
-            humidity_noise = random.uniform(-1.0, 1.0)
-            humidity = round(humidity_base + humidity_wave + humidity_noise, 2)
-
-            # Amonia berkisar antara 5 - 25 ppm (random walk)
-            if random.random() < 0.10:
-                ammonia_state = random.uniform(20.5, 24.5)
+            # Simulasi amonia: normalnya stabil rendah (7 - 13 ppm).
+            # Setiap ~35 siklus (atau siklus ke-5 untuk uji coba awal), terjadi lonjakan singkat (>20 ppm).
+            # Ventilasi otomatis kandang kemudian menurunkan kembali ke rentang normal.
+            if high_ammonia_event > 0:
+                ammonia_state -= random.uniform(0.9, 1.6)
+                high_ammonia_event -= 1
+            elif step == 4 or (step > 10 and step % 35 == 0):
+                # Trigger pengujian alarm/notifikasi: amonia naik di atas batas 20 ppm
+                ammonia_state = round(random.uniform(21.5, 23.8), 2)
+                high_ammonia_event = random.randint(3, 4)
             else:
-                ammonia_change = random.uniform(-0.8, 0.8)
-                ammonia_state += ammonia_change
-            ammonia_state = max(5.0, min(23.0, ammonia_state))
+                # Fluktuasi normal sehari-hari di sekitar 9.5 ppm
+                ammonia_state += (9.5 - ammonia_state) * 0.2 + random.uniform(-0.4, 0.4)
+            
+            ammonia_state = max(4.0, min(24.5, ammonia_state))
             ammonia = round(ammonia_state, 2)
+
+            is_high = ammonia > 20.0
+
+            # Notifikasi hanya muncul saat status berubah (naik melewati batas / kembali normal)
+            # supaya terminal tidak banjir peringatan berulang di setiap pembacaan.
+            if is_high and not was_high:
+                safe_print(f"\n{COLOR_BOLD}{COLOR_RED}⚠ PERINGATAN: AMONIA TINGGI {ammonia} ppm (batas aman 20 ppm){COLOR_RESET}")
+            elif was_high and not is_high:
+                safe_print(f"\n{COLOR_BOLD}{COLOR_GREEN}✓ Amonia kembali normal: {ammonia} ppm{COLOR_RESET}")
+            was_high = is_high
 
             # Payload sensor (murni data lingkungan kandang)
             sensor_payload = {
