@@ -909,9 +909,10 @@ const Dashboard = () => {
                     className="transition-all duration-1000 ease-out"
                   />
                 </svg>
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 flex items-center gap-1 text-[10px] text-gray-400 font-medium uppercase tracking-wider">
-                  <span>Ideal: 7–13 ppm</span>
-                </div>
+              </div>
+              <div className="text-center mt-3">
+                <span className="text-[11px] font-medium text-gray-400 dark:text-gray-500 block">Rentang Ideal</span>
+                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">0 - 20 ppm</span>
               </div>
             </div>
           </div>
