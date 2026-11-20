@@ -728,7 +728,7 @@ const Dashboard = () => {
         </div>
         <div className="rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 p-4 md:p-5 shadow-lg shadow-blue-500/25 overflow-hidden relative">
           <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -mt-4 -mr-4 pointer-events-none"></div>
-          <p className="text-xs text-blue-100 font-medium mb-1 relative">Selamat datang di Olivia</p>
+          <p className="text-xs text-blue-100 font-medium mb-1 relative">Selamat datang di GardaOva</p>
           <h2 className="text-xl md:text-2xl font-bold text-white mb-1 relative">Sistem monitoring kandang siap digunakan</h2>
           <p className="text-xs text-blue-100/80 relative">Pantau suhu, kelembapan, dan amonia secara real-time melalui dashboard ini.</p>
         </div>
